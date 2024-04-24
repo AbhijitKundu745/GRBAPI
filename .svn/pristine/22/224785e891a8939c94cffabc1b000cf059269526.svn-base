@@ -1,0 +1,53 @@
+﻿using PSL.Laundry.CentralService.DBContext;
+using PSL.Laundry.CentralService.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace PSL.Laundry.CentralService.IDataAccessLayer
+{
+    public interface IPDADAL
+    {
+        List<CustomerMaster> GetAllCustomers();
+
+        List<Vendor> GetAllVendors(Guid tenantID);
+
+        List<AssetTypeMaster> GetAllAssetType(Guid tenantID);
+
+        List<AssetMaster> GetAllAssets(Guid tenantID);
+
+        User GetUserData(User user);
+
+        LoginResponse MobileLogin(LoginModel login);
+
+        bool createActivity(Activity activity);
+
+        bool registerAsset(RegisterModel registerModel);
+        List<AssetMasterResponse> GetAllAssetsforMobile(Guid tenantID);
+        bool RegisterAssetMobile(RegisterModelMobile registerModel);
+        bool CreateActivityMobile(ActivityModel activity);
+
+
+
+
+
+
+        //List<TaskMaster> GetTaskMaster(DateTime? ModifiedDateTime);
+
+        //List<TransactionType> GetTansactionTypes(DateTime? ModifiedDateTime);
+
+        //List<PDAUser> GetUsers(DateTime? ModifiedDateTime);
+
+        //List<PDASourcePlant> GetSourcePlants(DateTime? ModifiedDateTime);
+
+        //List<TouchPoint> GetTouchPoints(DateTime? ModifiedDateTime);
+
+        //List<Location> GetLocations(DateTime? ModifiedDateTime);
+
+        //int InsertTripDetail(PDATripDetail tripdetail);
+
+        //TripDetailsInfo GetLastTripByTruckId(string truckId);
+    }
+}

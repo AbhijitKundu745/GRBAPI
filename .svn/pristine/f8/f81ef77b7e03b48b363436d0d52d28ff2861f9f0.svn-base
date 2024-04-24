@@ -1,0 +1,164 @@
+2021-10-26 16:02:49,851 [6] ERROR PDAController - System.Data.Entity.Infrastructure.UnintentionalCodeFirstException: The context is being used in Code First mode with code that was generated from an EDMX file for either Database First or Model First development.  This will not work correctly. To fix this problem do not remove the line of code that throws this exception. If you wish to use Database First or Model First, then make sure that the Entity Framework connection string is included in the app.config or web.config of the start-up project. If you are creating your own DbConnection, then make sure that it is an EntityConnection and not some other type of DbConnection, and that you pass it to one of the base DbContext constructors that take a DbConnection. To learn more about Code First, Database First, and Model First see the Entity Framework documentation here: http://go.microsoft.com/fwlink/?LinkId=394715
+   at PSL.Laundry.CentralService.DBContext.LaundryManagementEntities.OnModelCreating(DbModelBuilder modelBuilder) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\DBContext\LaundryManagementEntities.cs:line 19
+   at System.Data.Entity.Internal.LazyInternalContext.CreateModelBuilder()
+   at System.Data.Entity.Internal.LazyInternalContext.CreateModel(LazyInternalContext internalContext)
+   at System.Data.Entity.Internal.RetryLazy`2.GetValue(TInput input)
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeContext()
+   at System.Data.Entity.Internal.InternalContext.Initialize()
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.ActOnSet(Action action, EntityState newState, Object entity, String methodName)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Add(Object entity)
+   at System.Data.Entity.DbSet`1.Add(TEntity entity)
+   at PSL.Laundry.CentralService.DataAccessLayer.PDADAL.createActivity(Activity activity) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\DataAccessLayer\PDADAL.cs:line 97
+   at PSL.Laundry.CentralService.Controllers.PDAController.Transaction(Activity activity) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\Controllers\PDAController.cs:line 146
+2021-10-26 16:12:00,326 [9] ERROR PDAController - System.Data.Entity.ModelConfiguration.ModelValidationException: One or more validation errors were detected during model generation:
+
+PSL.Laundry.CentralService.DBContext.ActivityDetail: : EntityType 'ActivityDetail' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.AssetMaster: : EntityType 'AssetMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.AssetTypeMaster: : EntityType 'AssetTypeMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.CustomerMaster: : EntityType 'CustomerMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.SerialNumber: : EntityType 'SerialNumber' has no key defined. Define the key for this EntityType.
+ActivityDetails: EntityType: EntitySet 'ActivityDetails' is based on type 'ActivityDetail' that has no keys defined.
+AssetMasters: EntityType: EntitySet 'AssetMasters' is based on type 'AssetMaster' that has no keys defined.
+AssetTypeMasters: EntityType: EntitySet 'AssetTypeMasters' is based on type 'AssetTypeMaster' that has no keys defined.
+CustomerMasters: EntityType: EntitySet 'CustomerMasters' is based on type 'CustomerMaster' that has no keys defined.
+SerialNumbers: EntityType: EntitySet 'SerialNumbers' is based on type 'SerialNumber' that has no keys defined.
+
+   at System.Data.Entity.Core.Metadata.Edm.EdmModel.Validate()
+   at System.Data.Entity.DbModelBuilder.Build(DbProviderManifest providerManifest, DbProviderInfo providerInfo)
+   at System.Data.Entity.DbModelBuilder.Build(DbConnection providerConnection)
+   at System.Data.Entity.Internal.LazyInternalContext.CreateModel(LazyInternalContext internalContext)
+   at System.Data.Entity.Internal.RetryLazy`2.GetValue(TInput input)
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeContext()
+   at System.Data.Entity.Internal.InternalContext.Initialize()
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()
+   at System.Linq.Queryable.First[TSource](IQueryable`1 source, Expression`1 predicate)
+   at PSL.Laundry.CentralService.DataAccessLayer.PDADAL.registerAsset(RegisterModel registerModel) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\DataAccessLayer\PDADAL.cs:line 138
+   at PSL.Laundry.CentralService.Controllers.PDAController.RegisterAsset(RegisterModel registerModel) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\Controllers\PDAController.cs:line 167
+2021-10-26 16:12:45,999 [8] ERROR PDAController - System.Data.Entity.ModelConfiguration.ModelValidationException: One or more validation errors were detected during model generation:
+
+PSL.Laundry.CentralService.DBContext.ActivityDetail: : EntityType 'ActivityDetail' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.AssetMaster: : EntityType 'AssetMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.AssetTypeMaster: : EntityType 'AssetTypeMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.CustomerMaster: : EntityType 'CustomerMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.SerialNumber: : EntityType 'SerialNumber' has no key defined. Define the key for this EntityType.
+ActivityDetails: EntityType: EntitySet 'ActivityDetails' is based on type 'ActivityDetail' that has no keys defined.
+AssetMasters: EntityType: EntitySet 'AssetMasters' is based on type 'AssetMaster' that has no keys defined.
+AssetTypeMasters: EntityType: EntitySet 'AssetTypeMasters' is based on type 'AssetTypeMaster' that has no keys defined.
+CustomerMasters: EntityType: EntitySet 'CustomerMasters' is based on type 'CustomerMaster' that has no keys defined.
+SerialNumbers: EntityType: EntitySet 'SerialNumbers' is based on type 'SerialNumber' that has no keys defined.
+
+   at System.Data.Entity.Core.Metadata.Edm.EdmModel.Validate()
+   at System.Data.Entity.DbModelBuilder.Build(DbProviderManifest providerManifest, DbProviderInfo providerInfo)
+   at System.Data.Entity.DbModelBuilder.Build(DbConnection providerConnection)
+   at System.Data.Entity.Internal.LazyInternalContext.CreateModel(LazyInternalContext internalContext)
+   at System.Data.Entity.Internal.RetryLazy`2.GetValue(TInput input)
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeContext()
+   at System.Data.Entity.Internal.InternalContext.Initialize()
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()
+   at System.Linq.Queryable.First[TSource](IQueryable`1 source, Expression`1 predicate)
+   at PSL.Laundry.CentralService.DataAccessLayer.PDADAL.registerAsset(RegisterModel registerModel) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\DataAccessLayer\PDADAL.cs:line 138
+   at PSL.Laundry.CentralService.Controllers.PDAController.RegisterAsset(RegisterModel registerModel) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\Controllers\PDAController.cs:line 167
+2021-10-26 16:17:43,007 [9] ERROR PDAController - System.Data.Entity.ModelConfiguration.ModelValidationException: One or more validation errors were detected during model generation:
+
+PSL.Laundry.CentralService.DBContext.ActivityDetail: : EntityType 'ActivityDetail' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.AssetMaster: : EntityType 'AssetMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.AssetTypeMaster: : EntityType 'AssetTypeMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.CustomerMaster: : EntityType 'CustomerMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.SerialNumber: : EntityType 'SerialNumber' has no key defined. Define the key for this EntityType.
+ActivityDetails: EntityType: EntitySet 'ActivityDetails' is based on type 'ActivityDetail' that has no keys defined.
+AssetMasters: EntityType: EntitySet 'AssetMasters' is based on type 'AssetMaster' that has no keys defined.
+AssetTypeMasters: EntityType: EntitySet 'AssetTypeMasters' is based on type 'AssetTypeMaster' that has no keys defined.
+CustomerMasters: EntityType: EntitySet 'CustomerMasters' is based on type 'CustomerMaster' that has no keys defined.
+SerialNumbers: EntityType: EntitySet 'SerialNumbers' is based on type 'SerialNumber' that has no keys defined.
+
+   at System.Data.Entity.Core.Metadata.Edm.EdmModel.Validate()
+   at System.Data.Entity.DbModelBuilder.Build(DbProviderManifest providerManifest, DbProviderInfo providerInfo)
+   at System.Data.Entity.DbModelBuilder.Build(DbConnection providerConnection)
+   at System.Data.Entity.Internal.LazyInternalContext.CreateModel(LazyInternalContext internalContext)
+   at System.Data.Entity.Internal.RetryLazy`2.GetValue(TInput input)
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeContext()
+   at System.Data.Entity.Internal.InternalContext.Initialize()
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()
+   at System.Linq.Queryable.First[TSource](IQueryable`1 source, Expression`1 predicate)
+   at PSL.Laundry.CentralService.DataAccessLayer.PDADAL.registerAsset(RegisterModel registerModel) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\DataAccessLayer\PDADAL.cs:line 138
+   at PSL.Laundry.CentralService.Controllers.PDAController.RegisterAsset(RegisterModel registerModel) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\Controllers\PDAController.cs:line 167
+2021-10-26 16:18:24,076 [8] ERROR PDAController - System.Data.Entity.ModelConfiguration.ModelValidationException: One or more validation errors were detected during model generation:
+
+PSL.Laundry.CentralService.DBContext.ActivityDetail: : EntityType 'ActivityDetail' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.AssetMaster: : EntityType 'AssetMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.AssetTypeMaster: : EntityType 'AssetTypeMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.CustomerMaster: : EntityType 'CustomerMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.SerialNumber: : EntityType 'SerialNumber' has no key defined. Define the key for this EntityType.
+ActivityDetails: EntityType: EntitySet 'ActivityDetails' is based on type 'ActivityDetail' that has no keys defined.
+AssetMasters: EntityType: EntitySet 'AssetMasters' is based on type 'AssetMaster' that has no keys defined.
+AssetTypeMasters: EntityType: EntitySet 'AssetTypeMasters' is based on type 'AssetTypeMaster' that has no keys defined.
+CustomerMasters: EntityType: EntitySet 'CustomerMasters' is based on type 'CustomerMaster' that has no keys defined.
+SerialNumbers: EntityType: EntitySet 'SerialNumbers' is based on type 'SerialNumber' that has no keys defined.
+
+   at System.Data.Entity.Core.Metadata.Edm.EdmModel.Validate()
+   at System.Data.Entity.DbModelBuilder.Build(DbProviderManifest providerManifest, DbProviderInfo providerInfo)
+   at System.Data.Entity.DbModelBuilder.Build(DbConnection providerConnection)
+   at System.Data.Entity.Internal.LazyInternalContext.CreateModel(LazyInternalContext internalContext)
+   at System.Data.Entity.Internal.RetryLazy`2.GetValue(TInput input)
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeContext()
+   at System.Data.Entity.Internal.InternalContext.Initialize()
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()
+   at System.Linq.Queryable.First[TSource](IQueryable`1 source, Expression`1 predicate)
+   at PSL.Laundry.CentralService.DataAccessLayer.PDADAL.registerAsset(RegisterModel registerModel) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\DataAccessLayer\PDADAL.cs:line 138
+   at PSL.Laundry.CentralService.Controllers.PDAController.RegisterAsset(RegisterModel registerModel) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\Controllers\PDAController.cs:line 167
+2021-10-26 16:18:53,386 [8] ERROR PDAController - System.Data.Entity.ModelConfiguration.ModelValidationException: One or more validation errors were detected during model generation:
+
+PSL.Laundry.CentralService.DBContext.ActivityDetail: : EntityType 'ActivityDetail' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.AssetMaster: : EntityType 'AssetMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.AssetTypeMaster: : EntityType 'AssetTypeMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.CustomerMaster: : EntityType 'CustomerMaster' has no key defined. Define the key for this EntityType.
+PSL.Laundry.CentralService.DBContext.SerialNumber: : EntityType 'SerialNumber' has no key defined. Define the key for this EntityType.
+ActivityDetails: EntityType: EntitySet 'ActivityDetails' is based on type 'ActivityDetail' that has no keys defined.
+AssetMasters: EntityType: EntitySet 'AssetMasters' is based on type 'AssetMaster' that has no keys defined.
+AssetTypeMasters: EntityType: EntitySet 'AssetTypeMasters' is based on type 'AssetTypeMaster' that has no keys defined.
+CustomerMasters: EntityType: EntitySet 'CustomerMasters' is based on type 'CustomerMaster' that has no keys defined.
+SerialNumbers: EntityType: EntitySet 'SerialNumbers' is based on type 'SerialNumber' that has no keys defined.
+
+   at System.Data.Entity.Core.Metadata.Edm.EdmModel.Validate()
+   at System.Data.Entity.DbModelBuilder.Build(DbProviderManifest providerManifest, DbProviderInfo providerInfo)
+   at System.Data.Entity.DbModelBuilder.Build(DbConnection providerConnection)
+   at System.Data.Entity.Internal.LazyInternalContext.CreateModel(LazyInternalContext internalContext)
+   at System.Data.Entity.Internal.RetryLazy`2.GetValue(TInput input)
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeContext()
+   at System.Data.Entity.Internal.InternalContext.Initialize()
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()
+   at System.Linq.Queryable.First[TSource](IQueryable`1 source, Expression`1 predicate)
+   at PSL.Laundry.CentralService.DataAccessLayer.PDADAL.registerAsset(RegisterModel registerModel) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\DataAccessLayer\PDADAL.cs:line 138
+   at PSL.Laundry.CentralService.Controllers.PDAController.RegisterAsset(RegisterModel registerModel) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\Controllers\PDAController.cs:line 167
+2021-10-26 16:21:31,977 [6] ERROR PDAController - System.Data.Entity.Infrastructure.UnintentionalCodeFirstException: The context is being used in Code First mode with code that was generated from an EDMX file for either Database First or Model First development.  This will not work correctly. To fix this problem do not remove the line of code that throws this exception. If you wish to use Database First or Model First, then make sure that the Entity Framework connection string is included in the app.config or web.config of the start-up project. If you are creating your own DbConnection, then make sure that it is an EntityConnection and not some other type of DbConnection, and that you pass it to one of the base DbContext constructors that take a DbConnection. To learn more about Code First, Database First, and Model First see the Entity Framework documentation here: http://go.microsoft.com/fwlink/?LinkId=394715
+   at PSL.Laundry.CentralService.DBContext.LaundryManagementEntities.OnModelCreating(DbModelBuilder modelBuilder) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\DBContext\LaundryManagementEntities.cs:line 19
+   at System.Data.Entity.Internal.LazyInternalContext.CreateModelBuilder()
+   at System.Data.Entity.Internal.LazyInternalContext.CreateModel(LazyInternalContext internalContext)
+   at System.Data.Entity.Internal.RetryLazy`2.GetValue(TInput input)
+   at System.Data.Entity.Internal.LazyInternalContext.InitializeContext()
+   at System.Data.Entity.Internal.InternalContext.Initialize()
+   at System.Data.Entity.Internal.InternalContext.GetEntitySetAndBaseTypeForType(Type entityType)
+   at System.Data.Entity.Internal.Linq.InternalSet`1.Initialize()
+   at System.Data.Entity.Internal.Linq.InternalSet`1.get_InternalContext()
+   at System.Data.Entity.Infrastructure.DbQuery`1.System.Linq.IQueryable.get_Provider()
+   at System.Linq.Queryable.First[TSource](IQueryable`1 source, Expression`1 predicate)
+   at PSL.Laundry.CentralService.DataAccessLayer.PDADAL.registerAsset(RegisterModel registerModel) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\DataAccessLayer\PDADAL.cs:line 138
+   at PSL.Laundry.CentralService.Controllers.PDAController.RegisterAsset(RegisterModel registerModel) in D:\LaundryService\LaundryService\PSL.Laundry.CentralService\Controllers\PDAController.cs:line 167

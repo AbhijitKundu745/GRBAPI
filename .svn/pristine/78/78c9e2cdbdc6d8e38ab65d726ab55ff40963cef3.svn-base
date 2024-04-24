@@ -1,0 +1,8 @@
+2021-11-12 18:15:25,817 [5] ERROR PDAController - System.InvalidCastException: Specified cast is not valid.
+   at System.Data.DataRowExtensions.UnboxT`1.ValueField(Object value)
+   at System.Data.DataRowExtensions.Field[T](DataRow row, String columnName)
+   at PSL.Laundry.CentralService.DataAccessLayer.PDADAL.<>c.<MobileLogin>b__10_0(DataRow dataRow) in D:\Code\Testing\LaundryAPI\LaundryService\LaundryService\PSL.Laundry.CentralService\DataAccessLayer\PDADAL.cs:line 232
+   at System.Linq.Enumerable.WhereSelectEnumerableIterator`2.MoveNext()
+   at System.Linq.Enumerable.First[TSource](IEnumerable`1 source)
+   at PSL.Laundry.CentralService.DataAccessLayer.PDADAL.MobileLogin(LoginModel login) in D:\Code\Testing\LaundryAPI\LaundryService\LaundryService\PSL.Laundry.CentralService\DataAccessLayer\PDADAL.cs:line 231
+   at PSL.Laundry.CentralService.Controllers.PDAController.MobileLogin(LoginModel login) in D:\Code\Testing\LaundryAPI\LaundryService\LaundryService\PSL.Laundry.CentralService\Controllers\PDAController.cs:line 164

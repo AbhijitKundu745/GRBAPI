@@ -1,0 +1,13 @@
+2020-09-14 17:54:25,189 [1] ERROR PSL.OTS.CentralService.Global.AppSettings - Error in loadAppSettings
+System.Exception: Error at loading mailSettingscould not send mail because of invalid parameters..please check parameters
+   at PSL.OTS.CentralService.Global.AppSettings.EmailSettings.LoadEmailSettings() in D:\Vinod\Projects\Goa\PIP\API\OTSService\OTSService\PSL.OTS.CentralService\Global\AppSettings.cs:line 121
+   at PSL.OTS.CentralService.Global.AppSettings.loadAppSettings() in D:\Vinod\Projects\Goa\PIP\API\OTSService\OTSService\PSL.OTS.CentralService\Global\AppSettings.cs:line 26
+2020-09-14 17:56:33,256 [1] ERROR PSL.OTS.CentralService.Global.AppSettings - Error in loadAppSettings
+System.Exception: Error at loading mailSettingscould not send mail because of invalid parameters..please check parameters
+   at PSL.OTS.CentralService.Global.AppSettings.EmailSettings.LoadEmailSettings() in D:\Vinod\Projects\Goa\PIP\API\OTSService\OTSService\PSL.OTS.CentralService\Global\AppSettings.cs:line 121
+   at PSL.OTS.CentralService.Global.AppSettings.loadAppSettings() in D:\Vinod\Projects\Goa\PIP\API\OTSService\OTSService\PSL.OTS.CentralService\Global\AppSettings.cs:line 26
+2020-09-14 18:01:24,526 [1] ERROR PSL.OTS.CentralService.Global.AppSettings - Error in loadAppSettings
+System.Exception: Error at loading mailSettingscould not send mail because of invalid parameters..please check parameters
+   at PSL.OTS.CentralService.Global.AppSettings.EmailSettings.LoadEmailSettings() in D:\Vinod\Projects\Goa\PIP\API\OTSService\OTSService\PSL.OTS.CentralService\Global\AppSettings.cs:line 121
+   at PSL.OTS.CentralService.Global.AppSettings.loadAppSettings() in D:\Vinod\Projects\Goa\PIP\API\OTSService\OTSService\PSL.OTS.CentralService\Global\AppSettings.cs:line 26
+2020-09-14 18:01:41,661 [5] ERROR TransactionApprovalController - Error while sending message =>  url is required to send message

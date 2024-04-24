@@ -1,0 +1,2965 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="LaundryManagementModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Activity">
+          <Key>
+            <PropertyRef Name="ActivityID" />
+          </Key>
+          <Property Name="ActivityID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ActivityType" Type="nvarchar" MaxLength="50" />
+          <Property Name="StartDate" Type="datetime" />
+          <Property Name="EndDate" Type="datetime" Nullable="false" />
+          <Property Name="TransactionDateTime" Type="datetime" />
+          <Property Name="VendorID" Type="int" />
+          <Property Name="CustomerID" Type="uniqueidentifier" />
+          <Property Name="TouchPointID" Type="int" />
+          <Property Name="Count" Type="int" />
+          <Property Name="UID" Type="uniqueidentifier" />
+          <Property Name="RoomID" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="ActivityDetails">
+          <Key>
+            <PropertyRef Name="ActivityDetailsID" />
+          </Key>
+          <Property Name="ActivityDetailsID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AssetID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ActivityID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="AssetMaster">
+          <Key>
+            <PropertyRef Name="AssetID" />
+          </Key>
+          <Property Name="AssetID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AName" Type="nvarchar" MaxLength="50" />
+          <Property Name="ADescription" Type="nvarchar" MaxLength="200" />
+          <Property Name="ATypeID" Type="int" />
+          <Property Name="ATagID" Type="nvarchar" MaxLength="100" />
+          <Property Name="SID" Type="bigint" />
+          <Property Name="ASerialNo" Type="bigint" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="UID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AStateDateTime" Type="datetime" />
+          <Property Name="AState" Type="nchar" MaxLength="10" />
+          <Property Name="LastInventoryDateTime" Type="datetime" />
+          <Property Name="CustomerID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TransactionDateTime" Type="datetime" />
+          <Property Name="IsRegistered" Type="bit" />
+          <Property Name="AssetLife" Type="int" />
+        </EntityType>
+        <EntityType Name="AssetTypeCustomerMapping">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ATypeID" Type="int" Nullable="false" />
+          <Property Name="CustomerID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="BillingAmount" Type="float" />
+          <Property Name="EndOfLife" Type="int" />
+        </EntityType>
+        <EntityType Name="AssetTypeMaster">
+          <Key>
+            <PropertyRef Name="ATypeID" />
+          </Key>
+          <Property Name="ATypeID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AssetName" Type="nvarchar" MaxLength="50" />
+          <Property Name="AssetDisplay" Type="nvarchar" MaxLength="100" />
+          <Property Name="AssetDesc" Type="nvarchar" MaxLength="100" />
+          <Property Name="IsActive" Type="bit" />
+        </EntityType>
+        <EntityType Name="CustomerMaster">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="CustomerName" Type="nvarchar" MaxLength="100" />
+          <Property Name="CompanyCode" Type="int" />
+          <Property Name="ContactNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="EmailId" Type="nvarchar" MaxLength="50" />
+          <Property Name="MissingDaysCheck" Type="int" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="Address" Type="nvarchar" MaxLength="200" />
+        </EntityType>
+        <EntityType Name="DeviceMaster">
+          <Key>
+            <PropertyRef Name="DeviceID" />
+          </Key>
+          <Property Name="DeviceID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ClientDeviceID" Type="nvarchar" MaxLength="30" />
+          <Property Name="DeviceName" Type="nvarchar" MaxLength="30" />
+          <Property Name="CustomerID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ErrorActivityDetails">
+          <Key>
+            <PropertyRef Name="ERRActivityDetailID" />
+          </Key>
+          <Property Name="ERRActivityDetailID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ActivityID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TagID" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LaundryManagement2.dbo.Locations' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Locations">
+          <Key>
+            <PropertyRef Name="LocationId" />
+            <PropertyRef Name="LocationName" />
+            <PropertyRef Name="CreatedOn" />
+            <PropertyRef Name="IsActive" />
+          </Key>
+          <Property Name="LocationId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LocationName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LaundryManagement2.dbo.Readers' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="Readers">
+          <Key>
+            <PropertyRef Name="ReaderId" />
+            <PropertyRef Name="ReaderIP" />
+            <PropertyRef Name="AntennaID" />
+            <PropertyRef Name="IsActive" />
+          </Key>
+          <Property Name="ReaderId" Type="smallint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ReaderIP" Type="nvarchar" MaxLength="15" Nullable="false" />
+          <Property Name="AntennaID" Type="smallint" Nullable="false" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="LastUpdatedDateTime" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LaundryManagement2.dbo.ReadersTransactionLog' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ReadersTransactionLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="TagId" Type="nvarchar" MaxLength="50" />
+          <Property Name="AssetSerialNo" Type="bigint" />
+          <Property Name="AssetteType" Type="int" />
+          <Property Name="ReaderIP" Type="nvarchar" MaxLength="20" />
+          <Property Name="AntennaID" Type="smallint" />
+          <Property Name="RSSI" Type="smallint" />
+          <Property Name="LocationID" Type="smallint" />
+          <Property Name="TouchPointID" Type="smallint" />
+          <Property Name="TouchPointType" Type="nvarchar" MaxLength="25" />
+          <Property Name="IsProcessed" Type="bit" />
+          <Property Name="ProcessesOn" Type="datetime" />
+          <Property Name="TransDatetime" Type="datetime" />
+          <Property Name="ServerDatetime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="RoomMaster">
+          <Key>
+            <PropertyRef Name="RoomID" />
+          </Key>
+          <Property Name="RoomID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RoomNo" Type="nvarchar" MaxLength="50" />
+          <Property Name="RoomDesc" Type="nvarchar" MaxLength="100" />
+          <Property Name="CustomerID" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="SerialNumbers">
+          <Key>
+            <PropertyRef Name="SID" />
+          </Key>
+          <Property Name="SID" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="AssetTypeID" Type="int" />
+          <Property Name="SerialNumber" Type="bigint" />
+          <Property Name="TagID" Type="nvarchar" MaxLength="100" />
+          <Property Name="CustomerID" Type="uniqueidentifier" />
+          <Property Name="ServerDateTime" Type="datetime" />
+          <Property Name="ChipID" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="sysdiagrams">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="principal_id" Type="int" Nullable="false" />
+          <Property Name="diagram_id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="version" Type="int" />
+          <Property Name="definition" Type="varbinary(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LaundryManagement2.dbo.TouchPoints' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="TouchPoints">
+          <Key>
+            <PropertyRef Name="TouchPointId" />
+            <PropertyRef Name="TouchPointName" />
+            <PropertyRef Name="LocationId" />
+            <PropertyRef Name="CreatedOn" />
+            <PropertyRef Name="IsActive" />
+          </Key>
+          <Property Name="TouchPointId" Type="smallint" Nullable="false" />
+          <Property Name="TouchPointName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="LocationId" Type="smallint" Nullable="false" />
+          <Property Name="CreatedOn" Type="datetime" Nullable="false" />
+          <Property Name="ModifiedOn" Type="datetime" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="Direction" Type="varchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="Users">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Password" Type="nvarchar" MaxLength="50" />
+          <Property Name="FirstName" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+          <Property Name="CustomerID" Type="uniqueidentifier" />
+          <Property Name="IsActive" Type="bit" />
+          <Property Name="TransactionDateTime" Type="datetime" />
+        </EntityType>
+        <EntityType Name="Vendor">
+          <Key>
+            <PropertyRef Name="VendorID" />
+          </Key>
+          <Property Name="VendorID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" />
+          <Property Name="Location" Type="nvarchar" MaxLength="100" />
+          <Property Name="CustomerID" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LaundryManagement2.sys.database_firewall_rules' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="database_firewall_rules">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="name" />
+            <PropertyRef Name="start_ip_address" />
+            <PropertyRef Name="end_ip_address" />
+            <PropertyRef Name="create_date" />
+            <PropertyRef Name="modify_date" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="start_ip_address" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="end_ip_address" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="create_date" Type="datetime" Nullable="false" />
+          <Property Name="modify_date" Type="datetime" Nullable="false" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view 'LaundryManagement2.sys.ipv6_database_firewall_rules' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="ipv6_database_firewall_rules">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="name" />
+            <PropertyRef Name="start_ipv6_address" />
+            <PropertyRef Name="end_ipv6_address" />
+            <PropertyRef Name="create_date" />
+            <PropertyRef Name="modify_date" />
+          </Key>
+          <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="128" Nullable="false" />
+          <Property Name="start_ipv6_address" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="end_ipv6_address" Type="varchar" MaxLength="45" Nullable="false" />
+          <Property Name="create_date" Type="datetime" Nullable="false" />
+          <Property Name="modify_date" Type="datetime" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_Activity_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="Activity1" Type="Self.Activity" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="Activity1">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="0..1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_RoomMaster">
+          <End Role="RoomMaster" Type="Self.RoomMaster" Multiplicity="0..1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RoomMaster">
+              <PropertyRef Name="RoomID" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_Users">
+          <End Role="Users" Type="Self.Users" Multiplicity="0..1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="UID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_Vendor">
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="0..1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendor">
+              <PropertyRef Name="VendorID" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="VendorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActivityDetails_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="ActivityDetails" Type="Self.ActivityDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="ActivityDetails">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActivityDetails_AssetMaster">
+          <End Role="AssetMaster" Type="Self.AssetMaster" Multiplicity="1" />
+          <End Role="ActivityDetails" Type="Self.ActivityDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AssetMaster">
+              <PropertyRef Name="AssetID" />
+            </Principal>
+            <Dependent Role="ActivityDetails">
+              <PropertyRef Name="AssetID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AssetMaster_AssetTypeMaster">
+          <End Role="AssetTypeMaster" Type="Self.AssetTypeMaster" Multiplicity="0..1" />
+          <End Role="AssetMaster" Type="Self.AssetMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AssetTypeMaster">
+              <PropertyRef Name="ATypeID" />
+            </Principal>
+            <Dependent Role="AssetMaster">
+              <PropertyRef Name="ATypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AssetMaster_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="1" />
+          <End Role="AssetMaster" Type="Self.AssetMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="AssetMaster">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AssetMaster_SerialNumbers">
+          <End Role="SerialNumbers" Type="Self.SerialNumbers" Multiplicity="0..1" />
+          <End Role="AssetMaster" Type="Self.AssetMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SerialNumbers">
+              <PropertyRef Name="SID" />
+            </Principal>
+            <Dependent Role="AssetMaster">
+              <PropertyRef Name="SID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AssetTypeCustomerMapping_AssetTypeMaster">
+          <End Role="AssetTypeMaster" Type="Self.AssetTypeMaster" Multiplicity="1" />
+          <End Role="AssetTypeCustomerMapping" Type="Self.AssetTypeCustomerMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AssetTypeMaster">
+              <PropertyRef Name="ATypeID" />
+            </Principal>
+            <Dependent Role="AssetTypeCustomerMapping">
+              <PropertyRef Name="ATypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AssetTypeCustomerMapping_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="1" />
+          <End Role="AssetTypeCustomerMapping" Type="Self.AssetTypeCustomerMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="AssetTypeCustomerMapping">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeviceMaster_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="1" />
+          <End Role="DeviceMaster" Type="Self.DeviceMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="DeviceMaster">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ErrorActivityDetails_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="ErrorActivityDetails" Type="Self.ErrorActivityDetails" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="ErrorActivityDetails">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RoomMaster_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="0..1" />
+          <End Role="RoomMaster" Type="Self.RoomMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="RoomMaster">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SerialNumbers_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="0..1" />
+          <End Role="SerialNumbers" Type="Self.SerialNumbers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="SerialNumbers">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.Users" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vendor_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="1" />
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Vendor">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Function Name="fn_diagramobjects" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" ReturnType="int" />
+        <Function Name="Prc_DeleteCustomerDevice" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="DeviceID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_DeleteRegisteredAsset" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="AssetID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_DeleteRoom" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RoomID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_EOLLaundry" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetAssetByActivity" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="ActivityID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetAssetLife" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="AssetID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetAssetsForMapping" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetAssetTypeByCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetDashboardCountData" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetDeviceDetailsByCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetRegisteredAssets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetRoomsByCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetSID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="SerialNumber" Type="bigint" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetTagDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetUnkownAssetByActivity" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="ActivityID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetUserLogin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="password" Type="nvarchar" Mode="In" />
+          <Parameter Name="ComapnyId" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetUserLoginWeb" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="password" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Prc_GetVendors" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_InOutReport" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FromDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="ToDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="ActivityType" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Prc_InsertActivity" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ActivityType" Type="nvarchar" Mode="In" />
+          <Parameter Name="StartDate" Type="datetime" Mode="In" />
+          <Parameter Name="EndDate" Type="datetime" Mode="In" />
+          <Parameter Name="TransactionDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="VendorID" Type="int" Mode="In" />
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="TouchPointID" Type="int" Mode="In" />
+          <Parameter Name="Count" Type="int" Mode="In" />
+          <Parameter Name="UID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="ActivityID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_InsertActivityDetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="AssetID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="ActivityID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="UID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="AState" Type="nchar" Mode="In" />
+          <Parameter Name="AssetLife" Type="int" Mode="In" />
+          <Parameter Name="LastInventoryDateTime" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="Prc_InsertAssetRegistration" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="AName" Type="nvarchar" Mode="In" />
+          <Parameter Name="ADescription" Type="nvarchar" Mode="In" />
+          <Parameter Name="ATypeID" Type="int" Mode="In" />
+          <Parameter Name="IsActive" Type="bit" Mode="In" />
+          <Parameter Name="UID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="TransactionDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="IsRegistered" Type="bit" Mode="In" />
+          <Parameter Name="AssetLife" Type="int" Mode="In" />
+        </Function>
+        <Function Name="Prc_InsertCustomerDevice" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientDeviceID" Type="nvarchar" Mode="In" />
+          <Parameter Name="DeviceName" Type="nvarchar" Mode="In" />
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_InsertErrorActivity" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ActivityID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="TagID" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Prc_InsertRooms" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RoomNo" Type="nvarchar" Mode="In" />
+          <Parameter Name="RoomDesc" Type="nvarchar" Mode="In" />
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_MapAssets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="AssetTypeID" Type="int" Mode="In" />
+          <Parameter Name="TagID" Type="nvarchar" Mode="In" />
+          <Parameter Name="SID" Type="bigint" Mode="In" />
+          <Parameter Name="ATagID" Type="nvarchar" Mode="In" />
+          <Parameter Name="ASerialNo" Type="bigint" Mode="In" />
+          <Parameter Name="UID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="TransactionDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="AssetID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="IsRegistered" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="Prc_MapAssetsToTag" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ATagID" Type="nvarchar" Mode="In" />
+          <Parameter Name="ASerialNo" Type="bigint" Mode="In" />
+          <Parameter Name="SID" Type="bigint" Mode="In" />
+          <Parameter Name="TransactionDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="AssetID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_MissingLaundry" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_MobileLogin" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="password" Type="nvarchar" Mode="In" />
+          <Parameter Name="ClientDeviceId" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="Prc_PendingLaundry" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FromDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="ToDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_UpdateCustomerDevice" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ClientDeviceID" Type="nvarchar" Mode="In" />
+          <Parameter Name="DeviceName" Type="nvarchar" Mode="In" />
+          <Parameter Name="DeviceID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_UpdateRegisteredAsset" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="AName" Type="nvarchar" Mode="In" />
+          <Parameter Name="ADescription" Type="nvarchar" Mode="In" />
+          <Parameter Name="IsActive" Type="bit" Mode="In" />
+          <Parameter Name="AssetID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="Prc_UpdateRoom" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="RoomNo" Type="nvarchar" Mode="In" />
+          <Parameter Name="RoomDesc" Type="nvarchar" Mode="In" />
+          <Parameter Name="RoomID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="PSL_AssetRegistrationMobile" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="AssetTypeID" Type="int" Mode="In" />
+          <Parameter Name="TagID" Type="nvarchar" Mode="In" />
+          <Parameter Name="SID" Type="bigint" Mode="In" />
+          <Parameter Name="ATagID" Type="nvarchar" Mode="In" />
+          <Parameter Name="ASerialNo" Type="bigint" Mode="In" />
+          <Parameter Name="UID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="TransactionDateTime" Type="datetime" Mode="In" />
+          <Parameter Name="AssetID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="PSL_AssetTypeCustomerMapping" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="AtypeID" Type="int" Mode="In" />
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="endOflife" Type="int" Mode="In" />
+          <Parameter Name="billingamount" Type="float" Mode="In" />
+        </Function>
+        <Function Name="PSL_customer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="custId" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="PSL_DeleteassetType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="assetID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="PSL_DeleteAssetTypeCustMap" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="ID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="PSL_DeleteCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="custID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="PSL_DeleteUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="userID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="PSL_DeleteVendor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="VenID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="PSL_GetAllAssets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TenantID" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="PSL_GetAllAssetsForMobile" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TenantID" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="PSL_GetAllAssetTypes" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TenantID" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="PSL_GetAllCustomers" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PSL_GetAllVendors" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TenantID" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="PSL_GetAssetType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PSL_GetAssetTypeCustMapping" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="PSL_GetAssetTypeList" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PSL_GetCustomerforSerialNo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PSL_getcustomerlist" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PSL_getcustomersdetails" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PSL_GetCustomerSerialNo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="PSL_GetSerialNo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PSL_GetSerialNumber" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustomerID" Type="varchar" Mode="In" />
+        </Function>
+        <Function Name="PSL_GetUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PSL_GetUserDetail" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PSL_GetVendor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="PSL_InsertAssetType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="assetname" Type="nvarchar" Mode="In" />
+          <Parameter Name="assetdisplay" Type="nvarchar" Mode="In" />
+          <Parameter Name="assetdesc" Type="nvarchar" Mode="In" />
+          <Parameter Name="isactive" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="PSL_InsertSerialNo" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="SerialNo" Type="bigint" Mode="In" />
+          <Parameter Name="tagID" Type="nvarchar" Mode="In" />
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="servertime" Type="datetime" Mode="In" />
+          <Parameter Name="chipID" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="PSL_InsertUser" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="password" Type="nvarchar" Mode="In" />
+          <Parameter Name="firstname" Type="nvarchar" Mode="In" />
+          <Parameter Name="lastname" Type="nvarchar" Mode="In" />
+          <Parameter Name="custID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="isActive" Type="bit" Mode="In" />
+          <Parameter Name="transactiontime" Type="datetime" Mode="In" />
+        </Function>
+        <Function Name="PSL_insertVendor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="name" Type="nvarchar" Mode="In" />
+          <Parameter Name="location" Type="nvarchar" Mode="In" />
+          <Parameter Name="CustID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="PSL_UpdateAssetType" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="assetname" Type="nvarchar" Mode="In" />
+          <Parameter Name="assetdisplay" Type="nvarchar" Mode="In" />
+          <Parameter Name="assetdesc" Type="nvarchar" Mode="In" />
+          <Parameter Name="isactive" Type="bit" Mode="In" />
+          <Parameter Name="assetID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="PSL_UpdateAssetTypeCustomerMapping" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="id" Type="int" Mode="In" />
+          <Parameter Name="AtypeID" Type="int" Mode="In" />
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="billingamount" Type="float" Mode="In" />
+          <Parameter Name="endOflife" Type="int" Mode="In" />
+        </Function>
+        <Function Name="PSL_UpdateChipID" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="tagID" Type="nvarchar" Mode="In" />
+          <Parameter Name="CustomerID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="chipID" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="PSL_UpdateCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="customerID" Type="uniqueidentifier" Mode="In" />
+          <Parameter Name="Customername" Type="nvarchar" Mode="In" />
+          <Parameter Name="compCode" Type="int" Mode="In" />
+          <Parameter Name="email" Type="nvarchar" Mode="In" />
+          <Parameter Name="phone" Type="nvarchar" Mode="In" />
+          <Parameter Name="address" Type="nvarchar" Mode="In" />
+          <Parameter Name="isactive" Type="bit" Mode="In" />
+        </Function>
+        <Function Name="PSL_UpdateVendor" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="name" Type="nvarchar" Mode="In" />
+          <Parameter Name="location" Type="nvarchar" Mode="In" />
+          <Parameter Name="venID" Type="int" Mode="In" />
+        </Function>
+        <Function Name="PSL_User" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="username" Type="nvarchar" Mode="In" />
+          <Parameter Name="password" Type="nvarchar" Mode="In" />
+          <Parameter Name="firstname" Type="nvarchar" Mode="In" />
+          <Parameter Name="lastname" Type="nvarchar" Mode="In" />
+          <Parameter Name="isActive" Type="bit" Mode="In" />
+          <Parameter Name="UserID" Type="uniqueidentifier" Mode="In" />
+        </Function>
+        <Function Name="sp_alterdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_creatediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="version" Type="int" Mode="In" />
+          <Parameter Name="definition" Type="varbinary(max)" Mode="In" />
+        </Function>
+        <Function Name="sp_dropdiagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagramdefinition" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_helpdiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+        </Function>
+        <Function Name="sp_renamediagram" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="diagramname" Type="nvarchar" Mode="In" />
+          <Parameter Name="owner_id" Type="int" Mode="In" />
+          <Parameter Name="new_diagramname" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="sp_upgraddiagrams" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="st_insertCustomer" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="CustoName" Type="nvarchar" Mode="In" />
+          <Parameter Name="custCode" Type="int" Mode="In" />
+          <Parameter Name="email" Type="nvarchar" Mode="In" />
+          <Parameter Name="phone" Type="nvarchar" Mode="In" />
+          <Parameter Name="address" Type="nvarchar" Mode="In" />
+          <Parameter Name="isactive" Type="bit" Mode="In" />
+        </Function>
+        <EntityContainer Name="LaundryManagementModelStoreContainer">
+          <EntitySet Name="Activity" EntityType="Self.Activity" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ActivityDetails" EntityType="Self.ActivityDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AssetMaster" EntityType="Self.AssetMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AssetTypeCustomerMapping" EntityType="Self.AssetTypeCustomerMapping" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AssetTypeMaster" EntityType="Self.AssetTypeMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomerMaster" EntityType="Self.CustomerMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeviceMaster" EntityType="Self.DeviceMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ErrorActivityDetails" EntityType="Self.ErrorActivityDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RoomMaster" EntityType="Self.RoomMaster" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SerialNumbers" EntityType="Self.SerialNumbers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagrams" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Vendor" EntityType="Self.Vendor" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Locations" EntityType="Self.Locations" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Locations].[LocationId] AS [LocationId], 
+    [Locations].[LocationName] AS [LocationName], 
+    [Locations].[CreatedOn] AS [CreatedOn], 
+    [Locations].[ModifiedOn] AS [ModifiedOn], 
+    [Locations].[IsActive] AS [IsActive]
+    FROM [dbo].[Locations] AS [Locations]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="Readers" EntityType="Self.Readers" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [Readers].[ReaderId] AS [ReaderId], 
+    [Readers].[ReaderIP] AS [ReaderIP], 
+    [Readers].[AntennaID] AS [AntennaID], 
+    [Readers].[Description] AS [Description], 
+    [Readers].[IsActive] AS [IsActive], 
+    [Readers].[LastUpdatedDateTime] AS [LastUpdatedDateTime]
+    FROM [dbo].[Readers] AS [Readers]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ReadersTransactionLog" EntityType="Self.ReadersTransactionLog" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [ReadersTransactionLog].[ID] AS [ID], 
+    [ReadersTransactionLog].[TagId] AS [TagId], 
+    [ReadersTransactionLog].[AssetSerialNo] AS [AssetSerialNo], 
+    [ReadersTransactionLog].[AssetteType] AS [AssetteType], 
+    [ReadersTransactionLog].[ReaderIP] AS [ReaderIP], 
+    [ReadersTransactionLog].[AntennaID] AS [AntennaID], 
+    [ReadersTransactionLog].[RSSI] AS [RSSI], 
+    [ReadersTransactionLog].[LocationID] AS [LocationID], 
+    [ReadersTransactionLog].[TouchPointID] AS [TouchPointID], 
+    [ReadersTransactionLog].[TouchPointType] AS [TouchPointType], 
+    [ReadersTransactionLog].[IsProcessed] AS [IsProcessed], 
+    [ReadersTransactionLog].[ProcessesOn] AS [ProcessesOn], 
+    [ReadersTransactionLog].[TransDatetime] AS [TransDatetime], 
+    [ReadersTransactionLog].[ServerDatetime] AS [ServerDatetime]
+    FROM [dbo].[ReadersTransactionLog] AS [ReadersTransactionLog]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="TouchPoints" EntityType="Self.TouchPoints" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [TouchPoints].[TouchPointId] AS [TouchPointId], 
+    [TouchPoints].[TouchPointName] AS [TouchPointName], 
+    [TouchPoints].[LocationId] AS [LocationId], 
+    [TouchPoints].[CreatedOn] AS [CreatedOn], 
+    [TouchPoints].[ModifiedOn] AS [ModifiedOn], 
+    [TouchPoints].[IsActive] AS [IsActive], 
+    [TouchPoints].[Direction] AS [Direction]
+    FROM [dbo].[TouchPoints] AS [TouchPoints]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="database_firewall_rules" EntityType="Self.database_firewall_rules" store:Type="Views" store:Schema="sys">
+            <DefiningQuery>SELECT 
+    [database_firewall_rules].[id] AS [id], 
+    [database_firewall_rules].[name] AS [name], 
+    [database_firewall_rules].[start_ip_address] AS [start_ip_address], 
+    [database_firewall_rules].[end_ip_address] AS [end_ip_address], 
+    [database_firewall_rules].[create_date] AS [create_date], 
+    [database_firewall_rules].[modify_date] AS [modify_date]
+    FROM [sys].[database_firewall_rules] AS [database_firewall_rules]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="ipv6_database_firewall_rules" EntityType="Self.ipv6_database_firewall_rules" store:Type="Views" store:Schema="sys">
+            <DefiningQuery>SELECT 
+    [ipv6_database_firewall_rules].[id] AS [id], 
+    [ipv6_database_firewall_rules].[name] AS [name], 
+    [ipv6_database_firewall_rules].[start_ipv6_address] AS [start_ipv6_address], 
+    [ipv6_database_firewall_rules].[end_ipv6_address] AS [end_ipv6_address], 
+    [ipv6_database_firewall_rules].[create_date] AS [create_date], 
+    [ipv6_database_firewall_rules].[modify_date] AS [modify_date]
+    FROM [sys].[ipv6_database_firewall_rules] AS [ipv6_database_firewall_rules]</DefiningQuery>
+          </EntitySet>
+          <AssociationSet Name="FK_Activity_Activity" Association="Self.FK_Activity_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="Activity1" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_CustomerMaster" Association="Self.FK_Activity_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMaster" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_RoomMaster" Association="Self.FK_Activity_RoomMaster">
+            <End Role="RoomMaster" EntitySet="RoomMaster" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_Users" Association="Self.FK_Activity_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_Vendor" Association="Self.FK_Activity_Vendor">
+            <End Role="Vendor" EntitySet="Vendor" />
+            <End Role="Activity" EntitySet="Activity" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActivityDetails_Activity" Association="Self.FK_ActivityDetails_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="ActivityDetails" EntitySet="ActivityDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActivityDetails_AssetMaster" Association="Self.FK_ActivityDetails_AssetMaster">
+            <End Role="AssetMaster" EntitySet="AssetMaster" />
+            <End Role="ActivityDetails" EntitySet="ActivityDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AssetMaster_AssetTypeMaster" Association="Self.FK_AssetMaster_AssetTypeMaster">
+            <End Role="AssetTypeMaster" EntitySet="AssetTypeMaster" />
+            <End Role="AssetMaster" EntitySet="AssetMaster" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AssetMaster_CustomerMaster" Association="Self.FK_AssetMaster_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMaster" />
+            <End Role="AssetMaster" EntitySet="AssetMaster" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AssetMaster_SerialNumbers" Association="Self.FK_AssetMaster_SerialNumbers">
+            <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+            <End Role="AssetMaster" EntitySet="AssetMaster" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AssetTypeCustomerMapping_AssetTypeMaster" Association="Self.FK_AssetTypeCustomerMapping_AssetTypeMaster">
+            <End Role="AssetTypeMaster" EntitySet="AssetTypeMaster" />
+            <End Role="AssetTypeCustomerMapping" EntitySet="AssetTypeCustomerMapping" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AssetTypeCustomerMapping_CustomerMaster" Association="Self.FK_AssetTypeCustomerMapping_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMaster" />
+            <End Role="AssetTypeCustomerMapping" EntitySet="AssetTypeCustomerMapping" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeviceMaster_CustomerMaster" Association="Self.FK_DeviceMaster_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMaster" />
+            <End Role="DeviceMaster" EntitySet="DeviceMaster" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ErrorActivityDetails_Activity" Association="Self.FK_ErrorActivityDetails_Activity">
+            <End Role="Activity" EntitySet="Activity" />
+            <End Role="ErrorActivityDetails" EntitySet="ErrorActivityDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RoomMaster_CustomerMaster" Association="Self.FK_RoomMaster_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMaster" />
+            <End Role="RoomMaster" EntitySet="RoomMaster" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SerialNumbers_CustomerMaster" Association="Self.FK_SerialNumbers_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMaster" />
+            <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_CustomerMaster" Association="Self.FK_Users_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMaster" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vendor_CustomerMaster" Association="Self.FK_Vendor_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMaster" />
+            <End Role="Vendor" EntitySet="Vendor" />
+          </AssociationSet>
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="LaundryManagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="Activity">
+          <Key>
+            <PropertyRef Name="ActivityID" />
+          </Key>
+          <Property Name="ActivityID" Type="Guid" Nullable="false" />
+          <Property Name="ActivityType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StartDate" Type="DateTime" Precision="3" />
+          <Property Name="EndDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TransactionDateTime" Type="DateTime" Precision="3" />
+          <Property Name="VendorID" Type="Int32" />
+          <Property Name="CustomerID" Type="Guid" />
+          <Property Name="TouchPointID" Type="Int32" />
+          <Property Name="Count" Type="Int32" />
+          <Property Name="UID" Type="Guid" />
+          <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_Activity_CustomerMaster" FromRole="Activity" ToRole="CustomerMaster" />
+          <NavigationProperty Name="User" Relationship="Self.FK_Activity_Users" FromRole="Activity" ToRole="Users" />
+          <NavigationProperty Name="Vendor" Relationship="Self.FK_Activity_Vendor" FromRole="Activity" ToRole="Vendor" />
+          <NavigationProperty Name="ActivityDetails" Relationship="Self.FK_ActivityDetails_Activity" FromRole="Activity" ToRole="ActivityDetails" />
+          <NavigationProperty Name="ErrorActivityDetails" Relationship="LaundryManagementModel.FK_ErrorActivityDetails_Activity" FromRole="Activity" ToRole="ErrorActivityDetail" />
+          <Property Name="RoomID" Type="Guid" />
+          <NavigationProperty Name="Activity1" Relationship="LaundryManagementModel.FK_Activity_Activity" FromRole="Activity" ToRole="Activity1" />
+          <NavigationProperty Name="Activity2" Relationship="LaundryManagementModel.FK_Activity_Activity" FromRole="Activity1" ToRole="Activity" />
+          <NavigationProperty Name="RoomMaster" Relationship="LaundryManagementModel.FK_Activity_RoomMaster" FromRole="Activity" ToRole="RoomMaster" />
+        </EntityType>
+        <EntityType Name="ActivityDetail">
+          <Key>
+            <PropertyRef Name="ActivityDetailsID" />
+          </Key>
+          <Property Name="ActivityDetailsID" Type="Guid" Nullable="false" />
+          <Property Name="AssetID" Type="Guid" Nullable="false" />
+          <Property Name="ActivityID" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Activity" Relationship="Self.FK_ActivityDetails_Activity" FromRole="ActivityDetails" ToRole="Activity" />
+          <NavigationProperty Name="AssetMaster" Relationship="Self.FK_ActivityDetails_AssetMaster" FromRole="ActivityDetails" ToRole="AssetMaster" />
+        </EntityType>
+        <EntityType Name="AssetMaster">
+          <Key>
+            <PropertyRef Name="AssetID" />
+          </Key>
+          <Property Name="AssetID" Type="Guid" Nullable="false" />
+          <Property Name="AName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ADescription" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="ATypeID" Type="Int32" />
+          <Property Name="ATagID" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="SID" Type="Int64" />
+          <Property Name="ASerialNo" Type="Int64" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="UID" Type="Guid" Nullable="false" />
+          <Property Name="AStateDateTime" Type="DateTime" Precision="3" />
+          <Property Name="AState" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="LastInventoryDateTime" Type="DateTime" Precision="3" />
+          <Property Name="CustomerID" Type="Guid" Nullable="false" />
+          <Property Name="TransactionDateTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="ActivityDetails" Relationship="Self.FK_ActivityDetails_AssetMaster" FromRole="AssetMaster" ToRole="ActivityDetails" />
+          <NavigationProperty Name="AssetTypeMaster" Relationship="Self.FK_AssetMaster_AssetTypeMaster" FromRole="AssetMaster" ToRole="AssetTypeMaster" />
+          <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_AssetMaster_CustomerMaster" FromRole="AssetMaster" ToRole="CustomerMaster" />
+          <NavigationProperty Name="SerialNumber" Relationship="Self.FK_AssetMaster_SerialNumbers" FromRole="AssetMaster" ToRole="SerialNumbers" />
+          <Property Name="IsRegistered" Type="Boolean" />
+          <Property Name="AssetLife" Type="Int32" />
+        </EntityType>
+        <EntityType Name="AssetTypeCustomerMapping">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ATypeID" Type="Int32" Nullable="false" />
+          <Property Name="CustomerID" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="AssetTypeMaster" Relationship="Self.FK_AssetTypeCustomerMapping_AssetTypeMaster" FromRole="AssetTypeCustomerMapping" ToRole="AssetTypeMaster" />
+          <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_AssetTypeCustomerMapping_CustomerMaster" FromRole="AssetTypeCustomerMapping" ToRole="CustomerMaster" />
+          <Property Name="BillingAmount" Type="Double" />
+          <Property Name="EndOfLife" Type="Int32" />
+        </EntityType>
+        <EntityType Name="AssetTypeMaster">
+          <Key>
+            <PropertyRef Name="ATypeID" />
+          </Key>
+          <Property Name="ATypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AssetName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AssetDisplay" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="AssetDesc" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" />
+          <NavigationProperty Name="AssetMasters" Relationship="Self.FK_AssetMaster_AssetTypeMaster" FromRole="AssetTypeMaster" ToRole="AssetMaster" />
+          <NavigationProperty Name="AssetTypeCustomerMappings" Relationship="Self.FK_AssetTypeCustomerMapping_AssetTypeMaster" FromRole="AssetTypeMaster" ToRole="AssetTypeCustomerMapping" />
+        </EntityType>
+        <EntityType Name="CustomerMaster">
+          <Key>
+            <PropertyRef Name="CustomerID" />
+          </Key>
+          <Property Name="CustomerID" Type="Guid" Nullable="false" />
+          <Property Name="CustomerName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CompanyCode" Type="Int32" />
+          <Property Name="ContactNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EmailId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Activities" Relationship="Self.FK_Activity_CustomerMaster" FromRole="CustomerMaster" ToRole="Activity" />
+          <NavigationProperty Name="AssetMasters" Relationship="Self.FK_AssetMaster_CustomerMaster" FromRole="CustomerMaster" ToRole="AssetMaster" />
+          <NavigationProperty Name="AssetTypeCustomerMappings" Relationship="Self.FK_AssetTypeCustomerMapping_CustomerMaster" FromRole="CustomerMaster" ToRole="AssetTypeCustomerMapping" />
+          <NavigationProperty Name="DeviceMasters" Relationship="Self.FK_DeviceMaster_CustomerMaster" FromRole="CustomerMaster" ToRole="DeviceMaster" />
+          <NavigationProperty Name="SerialNumbers" Relationship="Self.FK_SerialNumbers_CustomerMaster" FromRole="CustomerMaster" ToRole="SerialNumbers" />
+          <NavigationProperty Name="Users" Relationship="Self.FK_Users_CustomerMaster" FromRole="CustomerMaster" ToRole="Users" />
+          <NavigationProperty Name="Vendors" Relationship="Self.FK_Vendor_CustomerMaster" FromRole="CustomerMaster" ToRole="Vendor" />
+          <Property Name="MissingDaysCheck" Type="Int32" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="Address" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="RoomMasters" Relationship="LaundryManagementModel.FK_RoomMaster_CustomerMaster" FromRole="CustomerMaster" ToRole="RoomMaster" />
+        </EntityType>
+        <EntityType Name="DeviceMaster">
+          <Key>
+            <PropertyRef Name="DeviceID" />
+          </Key>
+          <Property Name="DeviceID" Type="Guid" Nullable="false" />
+          <Property Name="ClientDeviceID" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerID" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_DeviceMaster_CustomerMaster" FromRole="DeviceMaster" ToRole="CustomerMaster" />
+        </EntityType>
+        <EntityType Name="SerialNumber">
+          <Key>
+            <PropertyRef Name="SID" />
+          </Key>
+          <Property Name="SID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="AssetTypeID" Type="Int32" />
+          <Property Name="SerialNumber1" Type="Int64" />
+          <Property Name="TagID" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerID" Type="Guid" />
+          <Property Name="ServerDateTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="AssetMasters" Relationship="Self.FK_AssetMaster_SerialNumbers" FromRole="SerialNumbers" ToRole="AssetMaster" />
+          <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_SerialNumbers_CustomerMaster" FromRole="SerialNumbers" ToRole="CustomerMaster" />
+          <Property Name="ChipID" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="UserID" />
+          </Key>
+          <Property Name="UserID" Type="Guid" Nullable="false" />
+          <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerID" Type="Guid" />
+          <Property Name="IsActive" Type="Boolean" />
+          <Property Name="TransactionDateTime" Type="DateTime" Precision="3" />
+          <NavigationProperty Name="Activities" Relationship="Self.FK_Activity_Users" FromRole="Users" ToRole="Activity" />
+          <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_Users_CustomerMaster" FromRole="Users" ToRole="CustomerMaster" />
+        </EntityType>
+        <EntityType Name="Vendor">
+          <Key>
+            <PropertyRef Name="VendorID" />
+          </Key>
+          <Property Name="VendorID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerID" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="Activities" Relationship="Self.FK_Activity_Vendor" FromRole="Vendor" ToRole="Activity" />
+          <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_Vendor_CustomerMaster" FromRole="Vendor" ToRole="CustomerMaster" />
+        </EntityType>
+        <EntityType Name="Location">
+          <Key>
+            <PropertyRef Name="LocationId" />
+            <PropertyRef Name="LocationName" />
+            <PropertyRef Name="CreatedOn" />
+            <PropertyRef Name="IsActive" />
+          </Key>
+          <Property Name="LocationId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LocationName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Reader">
+          <Key>
+            <PropertyRef Name="ReaderId" />
+            <PropertyRef Name="ReaderIP" />
+            <PropertyRef Name="AntennaID" />
+            <PropertyRef Name="IsActive" />
+          </Key>
+          <Property Name="ReaderId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ReaderIP" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="AntennaID" Type="Int16" Nullable="false" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="LastUpdatedDateTime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="ReadersTransactionLog">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Guid" Nullable="false" />
+          <Property Name="TagId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AssetSerialNo" Type="Int64" />
+          <Property Name="AssetteType" Type="Int32" />
+          <Property Name="ReaderIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="AntennaID" Type="Int16" />
+          <Property Name="RSSI" Type="Int16" />
+          <Property Name="LocationID" Type="Int16" />
+          <Property Name="TouchPointID" Type="Int16" />
+          <Property Name="TouchPointType" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+          <Property Name="IsProcessed" Type="Boolean" />
+          <Property Name="ProcessesOn" Type="DateTime" Precision="3" />
+          <Property Name="TransDatetime" Type="DateTime" Precision="3" />
+          <Property Name="ServerDatetime" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="TouchPoint">
+          <Key>
+            <PropertyRef Name="TouchPointId" />
+            <PropertyRef Name="TouchPointName" />
+            <PropertyRef Name="LocationId" />
+            <PropertyRef Name="CreatedOn" />
+            <PropertyRef Name="IsActive" />
+          </Key>
+          <Property Name="TouchPointId" Type="Int16" Nullable="false" />
+          <Property Name="TouchPointName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="LocationId" Type="Int16" Nullable="false" />
+          <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="Direction" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <Association Name="FK_Activity_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="0..1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_Users">
+          <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserID" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="UID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_Vendor">
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="0..1" />
+          <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Vendor">
+              <PropertyRef Name="VendorID" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="VendorID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActivityDetails_Activity">
+          <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+          <End Role="ActivityDetails" Type="Self.ActivityDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="ActivityDetails">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_ActivityDetails_AssetMaster">
+          <End Role="AssetMaster" Type="Self.AssetMaster" Multiplicity="1" />
+          <End Role="ActivityDetails" Type="Self.ActivityDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AssetMaster">
+              <PropertyRef Name="AssetID" />
+            </Principal>
+            <Dependent Role="ActivityDetails">
+              <PropertyRef Name="AssetID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AssetMaster_AssetTypeMaster">
+          <End Role="AssetTypeMaster" Type="Self.AssetTypeMaster" Multiplicity="0..1" />
+          <End Role="AssetMaster" Type="Self.AssetMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AssetTypeMaster">
+              <PropertyRef Name="ATypeID" />
+            </Principal>
+            <Dependent Role="AssetMaster">
+              <PropertyRef Name="ATypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AssetMaster_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="1" />
+          <End Role="AssetMaster" Type="Self.AssetMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="AssetMaster">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AssetMaster_SerialNumbers">
+          <End Role="SerialNumbers" Type="Self.SerialNumber" Multiplicity="0..1" />
+          <End Role="AssetMaster" Type="Self.AssetMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SerialNumbers">
+              <PropertyRef Name="SID" />
+            </Principal>
+            <Dependent Role="AssetMaster">
+              <PropertyRef Name="SID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AssetTypeCustomerMapping_AssetTypeMaster">
+          <End Role="AssetTypeMaster" Type="Self.AssetTypeMaster" Multiplicity="1" />
+          <End Role="AssetTypeCustomerMapping" Type="Self.AssetTypeCustomerMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="AssetTypeMaster">
+              <PropertyRef Name="ATypeID" />
+            </Principal>
+            <Dependent Role="AssetTypeCustomerMapping">
+              <PropertyRef Name="ATypeID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_AssetTypeCustomerMapping_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="1" />
+          <End Role="AssetTypeCustomerMapping" Type="Self.AssetTypeCustomerMapping" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="AssetTypeCustomerMapping">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_DeviceMaster_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="1" />
+          <End Role="DeviceMaster" Type="Self.DeviceMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="DeviceMaster">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_SerialNumbers_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="0..1" />
+          <End Role="SerialNumbers" Type="Self.SerialNumber" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="SerialNumbers">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Users_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="0..1" />
+          <End Role="Users" Type="Self.User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Users">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Vendor_CustomerMaster">
+          <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="1" />
+          <End Role="Vendor" Type="Self.Vendor" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="Vendor">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityContainer Name="LaundryManagementEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Activities" EntityType="Self.Activity" />
+          <EntitySet Name="ActivityDetails" EntityType="Self.ActivityDetail" />
+          <EntitySet Name="AssetMasters" EntityType="Self.AssetMaster" />
+          <EntitySet Name="AssetTypeCustomerMappings" EntityType="Self.AssetTypeCustomerMapping" />
+          <EntitySet Name="AssetTypeMasters" EntityType="Self.AssetTypeMaster" />
+          <EntitySet Name="CustomerMasters" EntityType="Self.CustomerMaster" />
+          <EntitySet Name="DeviceMasters" EntityType="Self.DeviceMaster" />
+          <EntitySet Name="SerialNumbers" EntityType="Self.SerialNumber" />
+          <EntitySet Name="Users" EntityType="Self.User" />
+          <EntitySet Name="Vendors" EntityType="Self.Vendor" />
+          <EntitySet Name="Locations" EntityType="Self.Location" />
+          <EntitySet Name="Readers" EntityType="Self.Reader" />
+          <EntitySet Name="ReadersTransactionLogs" EntityType="Self.ReadersTransactionLog" />
+          <EntitySet Name="TouchPoints" EntityType="Self.TouchPoint" />
+          <AssociationSet Name="FK_Activity_CustomerMaster" Association="Self.FK_Activity_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+            <End Role="Activity" EntitySet="Activities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_Users" Association="Self.FK_Activity_Users">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="Activity" EntitySet="Activities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_Vendor" Association="Self.FK_Activity_Vendor">
+            <End Role="Vendor" EntitySet="Vendors" />
+            <End Role="Activity" EntitySet="Activities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActivityDetails_Activity" Association="Self.FK_ActivityDetails_Activity">
+            <End Role="Activity" EntitySet="Activities" />
+            <End Role="ActivityDetails" EntitySet="ActivityDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_ActivityDetails_AssetMaster" Association="Self.FK_ActivityDetails_AssetMaster">
+            <End Role="AssetMaster" EntitySet="AssetMasters" />
+            <End Role="ActivityDetails" EntitySet="ActivityDetails" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AssetMaster_AssetTypeMaster" Association="Self.FK_AssetMaster_AssetTypeMaster">
+            <End Role="AssetTypeMaster" EntitySet="AssetTypeMasters" />
+            <End Role="AssetMaster" EntitySet="AssetMasters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AssetMaster_CustomerMaster" Association="Self.FK_AssetMaster_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+            <End Role="AssetMaster" EntitySet="AssetMasters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AssetMaster_SerialNumbers" Association="Self.FK_AssetMaster_SerialNumbers">
+            <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+            <End Role="AssetMaster" EntitySet="AssetMasters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AssetTypeCustomerMapping_AssetTypeMaster" Association="Self.FK_AssetTypeCustomerMapping_AssetTypeMaster">
+            <End Role="AssetTypeMaster" EntitySet="AssetTypeMasters" />
+            <End Role="AssetTypeCustomerMapping" EntitySet="AssetTypeCustomerMappings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_AssetTypeCustomerMapping_CustomerMaster" Association="Self.FK_AssetTypeCustomerMapping_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+            <End Role="AssetTypeCustomerMapping" EntitySet="AssetTypeCustomerMappings" />
+          </AssociationSet>
+          <AssociationSet Name="FK_DeviceMaster_CustomerMaster" Association="Self.FK_DeviceMaster_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+            <End Role="DeviceMaster" EntitySet="DeviceMasters" />
+          </AssociationSet>
+          <AssociationSet Name="FK_SerialNumbers_CustomerMaster" Association="Self.FK_SerialNumbers_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+            <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Users_CustomerMaster" Association="Self.FK_Users_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+            <End Role="Users" EntitySet="Users" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Vendor_CustomerMaster" Association="Self.FK_Vendor_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+            <End Role="Vendor" EntitySet="Vendors" />
+          </AssociationSet>
+          <EntitySet Name="ErrorActivityDetails" EntityType="LaundryManagementModel.ErrorActivityDetail" />
+          <AssociationSet Name="FK_ErrorActivityDetails_Activity" Association="LaundryManagementModel.FK_ErrorActivityDetails_Activity">
+            <End Role="Activity" EntitySet="Activities" />
+            <End Role="ErrorActivityDetail" EntitySet="ErrorActivityDetails" />
+          </AssociationSet>
+          <EntitySet Name="RoomMasters" EntityType="LaundryManagementModel.RoomMaster" />
+          <EntitySet Name="sysdiagrams" EntityType="LaundryManagementModel.sysdiagram" />
+          <EntitySet Name="database_firewall_rules" EntityType="LaundryManagementModel.database_firewall_rules" />
+          <EntitySet Name="ipv6_database_firewall_rules" EntityType="LaundryManagementModel.ipv6_database_firewall_rules" />
+          <AssociationSet Name="FK_Activity_Activity" Association="LaundryManagementModel.FK_Activity_Activity">
+            <End Role="Activity" EntitySet="Activities" />
+            <End Role="Activity1" EntitySet="Activities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Activity_RoomMaster" Association="LaundryManagementModel.FK_Activity_RoomMaster">
+            <End Role="RoomMaster" EntitySet="RoomMasters" />
+            <End Role="Activity" EntitySet="Activities" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RoomMaster_CustomerMaster" Association="LaundryManagementModel.FK_RoomMaster_CustomerMaster">
+            <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+            <End Role="RoomMaster" EntitySet="RoomMasters" />
+          </AssociationSet>
+          <FunctionImport Name="Prc_DeleteCustomerDevice">
+          <Parameter Name="DeviceID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_DeleteRegisteredAsset">
+          <Parameter Name="AssetID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_EOLLaundry" ReturnType="Collection(LaundryManagementModel.Prc_EOLLaundry_Result)">
+          <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetAssetByActivity" ReturnType="Collection(LaundryManagementModel.Prc_GetAssetByActivity_Result)">
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+            <Parameter Name="ActivityID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetAssetLife" ReturnType="Collection(Int32)">
+          <Parameter Name="AssetID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetAssetsForMapping" ReturnType="Collection(LaundryManagementModel.Prc_GetAssetsForMapping_Result)">
+          <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetAssetTypeByCustomer" ReturnType="Collection(LaundryManagementModel.Prc_GetAssetTypeByCustomer_Result)">
+          <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetDashboardCountData" ReturnType="Collection(LaundryManagementModel.Prc_GetDashboardCountData_Result)">
+          <Parameter Name="CustomerID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetDeviceDetailsByCustomer" ReturnType="Collection(LaundryManagementModel.Prc_GetDeviceDetailsByCustomer_Result)">
+          <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetRegisteredAssets" ReturnType="Collection(LaundryManagementModel.Prc_GetRegisteredAssets_Result)">
+          <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetSID" ReturnType="Collection(LaundryManagementModel.Prc_GetSID_Result)">
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+            <Parameter Name="SerialNumber" Mode="In" Type="Int64" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetTagDetails" ReturnType="Collection(LaundryManagementModel.Prc_GetTagDetails_Result)">
+          <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetUnkownAssetByActivity" ReturnType="Collection(LaundryManagementModel.Prc_GetUnkownAssetByActivity_Result)">
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+            <Parameter Name="ActivityID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetUserLogin" ReturnType="Collection(LaundryManagementModel.Prc_GetUserLogin_Result)">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="ComapnyId" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetUserLoginWeb" ReturnType="Collection(LaundryManagementModel.Prc_GetUserLoginWeb_Result)">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetVendors" ReturnType="Collection(LaundryManagementModel.Prc_GetVendors_Result)">
+          <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_InOutReport" ReturnType="Collection(LaundryManagementModel.Prc_InOutReport_Result)">
+            <Parameter Name="FromDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="ToDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+            <Parameter Name="ActivityType" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_InsertActivity">
+            <Parameter Name="ActivityType" Mode="In" Type="String" />
+            <Parameter Name="StartDate" Mode="In" Type="DateTime" />
+            <Parameter Name="EndDate" Mode="In" Type="DateTime" />
+            <Parameter Name="TransactionDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="VendorID" Mode="In" Type="Int32" />
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+            <Parameter Name="TouchPointID" Mode="In" Type="Int32" />
+            <Parameter Name="Count" Mode="In" Type="Int32" />
+            <Parameter Name="UID" Mode="In" Type="Guid" />
+            <Parameter Name="ActivityID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_InsertActivityDetails">
+            <Parameter Name="AssetID" Mode="In" Type="Guid" />
+            <Parameter Name="ActivityID" Mode="In" Type="Guid" />
+            <Parameter Name="UID" Mode="In" Type="Guid" />
+            <Parameter Name="AState" Mode="In" Type="String" />
+            <Parameter Name="AssetLife" Mode="In" Type="Int32" />
+            <Parameter Name="LastInventoryDateTime" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_InsertAssetRegistration">
+            <Parameter Name="AName" Mode="In" Type="String" />
+            <Parameter Name="ADescription" Mode="In" Type="String" />
+            <Parameter Name="ATypeID" Mode="In" Type="Int32" />
+            <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+            <Parameter Name="UID" Mode="In" Type="Guid" />
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+            <Parameter Name="TransactionDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="IsRegistered" Mode="In" Type="Boolean" />
+            <Parameter Name="AssetLife" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_InsertCustomerDevice">
+            <Parameter Name="ClientDeviceID" Mode="In" Type="String" />
+            <Parameter Name="DeviceName" Mode="In" Type="String" />
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_InsertErrorActivity">
+            <Parameter Name="ActivityID" Mode="In" Type="Guid" />
+            <Parameter Name="TagID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_MapAssets">
+            <Parameter Name="AssetTypeID" Mode="In" Type="Int32" />
+            <Parameter Name="TagID" Mode="In" Type="String" />
+            <Parameter Name="SID" Mode="In" Type="Int64" />
+            <Parameter Name="ATagID" Mode="In" Type="String" />
+            <Parameter Name="ASerialNo" Mode="In" Type="Int64" />
+            <Parameter Name="UID" Mode="In" Type="Guid" />
+            <Parameter Name="TransactionDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="AssetID" Mode="In" Type="Guid" />
+            <Parameter Name="IsRegistered" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_MapAssetsToTag">
+            <Parameter Name="ATagID" Mode="In" Type="String" />
+            <Parameter Name="ASerialNo" Mode="In" Type="Int64" />
+            <Parameter Name="SID" Mode="In" Type="Int64" />
+            <Parameter Name="TransactionDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="AssetID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_MissingLaundry" ReturnType="Collection(LaundryManagementModel.Prc_MissingLaundry_Result)">
+          <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_MobileLogin" ReturnType="Collection(LaundryManagementModel.Prc_MobileLogin_Result)">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="ClientDeviceId" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_PendingLaundry" ReturnType="Collection(LaundryManagementModel.Prc_PendingLaundry_Result)">
+            <Parameter Name="FromDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="ToDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_UpdateCustomerDevice">
+            <Parameter Name="ClientDeviceID" Mode="In" Type="String" />
+            <Parameter Name="DeviceName" Mode="In" Type="String" />
+            <Parameter Name="DeviceID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_UpdateRegisteredAsset">
+            <Parameter Name="AName" Mode="In" Type="String" />
+            <Parameter Name="ADescription" Mode="In" Type="String" />
+            <Parameter Name="IsActive" Mode="In" Type="Boolean" />
+            <Parameter Name="AssetID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_AssetRegistrationMobile">
+            <Parameter Name="AssetTypeID" Mode="In" Type="Int32" />
+            <Parameter Name="TagID" Mode="In" Type="String" />
+            <Parameter Name="SID" Mode="In" Type="Int64" />
+            <Parameter Name="ATagID" Mode="In" Type="String" />
+            <Parameter Name="ASerialNo" Mode="In" Type="Int64" />
+            <Parameter Name="UID" Mode="In" Type="Guid" />
+            <Parameter Name="TransactionDateTime" Mode="In" Type="DateTime" />
+            <Parameter Name="AssetID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_AssetTypeCustomerMapping">
+            <Parameter Name="AtypeID" Mode="In" Type="Int32" />
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+            <Parameter Name="endOflife" Mode="In" Type="Int32" />
+            <Parameter Name="billingamount" Mode="In" Type="Double" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_customer">
+          <Parameter Name="custId" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_DeleteassetType">
+          <Parameter Name="assetID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_DeleteAssetTypeCustMap">
+          <Parameter Name="ID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_DeleteCustomer">
+          <Parameter Name="custID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_DeleteUser">
+          <Parameter Name="userID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_DeleteVendor">
+          <Parameter Name="VenID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_GetAllAssets" ReturnType="Collection(LaundryManagementModel.PSL_GetAllAssets_Result)">
+          <Parameter Name="TenantID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_GetAllAssetsForMobile" ReturnType="Collection(LaundryManagementModel.PSL_GetAllAssetsForMobile_Result)">
+          <Parameter Name="TenantID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_GetAllAssetTypes" ReturnType="Collection(LaundryManagementModel.PSL_GetAllAssetTypes_Result)">
+          <Parameter Name="TenantID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_GetAllCustomers" ReturnType="Collection(LaundryManagementModel.PSL_GetAllCustomers_Result)" />
+          <FunctionImport Name="PSL_GetAllVendors" ReturnType="Collection(LaundryManagementModel.PSL_GetAllVendors_Result)">
+          <Parameter Name="TenantID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_GetAssetType" ReturnType="Collection(LaundryManagementModel.PSL_GetAssetType_Result)" />
+          <FunctionImport Name="PSL_GetAssetTypeCustMapping" ReturnType="Collection(LaundryManagementModel.PSL_GetAssetTypeCustMapping_Result)">
+          <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_GetAssetTypeList" ReturnType="Collection(LaundryManagementModel.PSL_GetAssetTypeList_Result)" />
+          <FunctionImport Name="PSL_GetCustomerforSerialNo" ReturnType="Collection(LaundryManagementModel.PSL_GetCustomerforSerialNo_Result)" />
+          <FunctionImport Name="PSL_getcustomerlist" ReturnType="Collection(LaundryManagementModel.PSL_getcustomerlist_Result)" />
+          <FunctionImport Name="PSL_getcustomersdetails" ReturnType="Collection(LaundryManagementModel.PSL_getcustomersdetails_Result)" />
+          <FunctionImport Name="PSL_GetCustomerSerialNo" ReturnType="Collection(LaundryManagementModel.PSL_GetCustomerSerialNo_Result)">
+          <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_GetSerialNo" ReturnType="Collection(LaundryManagementModel.PSL_GetSerialNo_Result)" />
+          <FunctionImport Name="PSL_GetSerialNumber" ReturnType="Collection(Int64)">
+          <Parameter Name="CustomerID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_GetUser" ReturnType="Collection(LaundryManagementModel.PSL_GetUser_Result)" />
+          <FunctionImport Name="PSL_GetUserDetail" ReturnType="Collection(LaundryManagementModel.PSL_GetUserDetail_Result)" />
+          <FunctionImport Name="PSL_GetVendor" ReturnType="Collection(LaundryManagementModel.PSL_GetVendor_Result)" />
+          <FunctionImport Name="PSL_InsertAssetType">
+            <Parameter Name="assetname" Mode="In" Type="String" />
+            <Parameter Name="assetdisplay" Mode="In" Type="String" />
+            <Parameter Name="assetdesc" Mode="In" Type="String" />
+            <Parameter Name="isactive" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_InsertSerialNo">
+            <Parameter Name="SerialNo" Mode="In" Type="Int64" />
+            <Parameter Name="tagID" Mode="In" Type="String" />
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+            <Parameter Name="servertime" Mode="In" Type="DateTime" />
+            <Parameter Name="chipID" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_InsertUser">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="firstname" Mode="In" Type="String" />
+            <Parameter Name="lastname" Mode="In" Type="String" />
+            <Parameter Name="custID" Mode="In" Type="Guid" />
+            <Parameter Name="isActive" Mode="In" Type="Boolean" />
+            <Parameter Name="transactiontime" Mode="In" Type="DateTime" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_insertVendor">
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="location" Mode="In" Type="String" />
+            <Parameter Name="CustID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_UpdateAssetType">
+            <Parameter Name="assetname" Mode="In" Type="String" />
+            <Parameter Name="assetdisplay" Mode="In" Type="String" />
+            <Parameter Name="assetdesc" Mode="In" Type="String" />
+            <Parameter Name="isactive" Mode="In" Type="Boolean" />
+            <Parameter Name="assetID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_UpdateAssetTypeCustomerMapping">
+            <Parameter Name="id" Mode="In" Type="Int32" />
+            <Parameter Name="AtypeID" Mode="In" Type="Int32" />
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+            <Parameter Name="billingamount" Mode="In" Type="Double" />
+            <Parameter Name="endOflife" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_UpdateCustomer">
+            <Parameter Name="customerID" Mode="In" Type="Guid" />
+            <Parameter Name="Customername" Mode="In" Type="String" />
+            <Parameter Name="compCode" Mode="In" Type="Int32" />
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="phone" Mode="In" Type="String" />
+            <Parameter Name="address" Mode="In" Type="String" />
+            <Parameter Name="isactive" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_UpdateVendor">
+            <Parameter Name="name" Mode="In" Type="String" />
+            <Parameter Name="location" Mode="In" Type="String" />
+            <Parameter Name="venID" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_User">
+            <Parameter Name="username" Mode="In" Type="String" />
+            <Parameter Name="password" Mode="In" Type="String" />
+            <Parameter Name="firstname" Mode="In" Type="String" />
+            <Parameter Name="lastname" Mode="In" Type="String" />
+            <Parameter Name="isActive" Mode="In" Type="Boolean" />
+            <Parameter Name="UserID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="sp_alterdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_creatediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="version" Mode="In" Type="Int32" />
+            <Parameter Name="definition" Mode="In" Type="Binary" />
+          </FunctionImport>
+          <FunctionImport Name="sp_dropdiagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagramdefinition" ReturnType="Collection(LaundryManagementModel.sp_helpdiagramdefinition_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_helpdiagrams" ReturnType="Collection(LaundryManagementModel.sp_helpdiagrams_Result)">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="sp_renamediagram">
+            <Parameter Name="diagramname" Mode="In" Type="String" />
+            <Parameter Name="owner_id" Mode="In" Type="Int32" />
+            <Parameter Name="new_diagramname" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="sp_upgraddiagrams" />
+          <FunctionImport Name="st_insertCustomer">
+            <Parameter Name="CustoName" Mode="In" Type="String" />
+            <Parameter Name="custCode" Mode="In" Type="Int32" />
+            <Parameter Name="email" Mode="In" Type="String" />
+            <Parameter Name="phone" Mode="In" Type="String" />
+            <Parameter Name="address" Mode="In" Type="String" />
+            <Parameter Name="isactive" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_DeleteRoom">
+            <Parameter Name="RoomID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_GetRoomsByCustomer" ReturnType="Collection(LaundryManagementModel.Prc_GetRoomsByCustomer_Result)">
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_InsertRooms">
+            <Parameter Name="RoomNo" Mode="In" Type="String" />
+            <Parameter Name="RoomDesc" Mode="In" Type="String" />
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="Prc_UpdateRoom">
+            <Parameter Name="RoomNo" Mode="In" Type="String" />
+            <Parameter Name="RoomDesc" Mode="In" Type="String" />
+            <Parameter Name="RoomID" Mode="In" Type="Guid" />
+          </FunctionImport>
+          <FunctionImport Name="PSL_UpdateChipID">
+            <Parameter Name="tagID" Mode="In" Type="String" />
+            <Parameter Name="CustomerID" Mode="In" Type="Guid" />
+            <Parameter Name="chipID" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+        <EntityType Name="ErrorActivityDetail">
+          <Key>
+            <PropertyRef Name="ERRActivityDetailID" />
+          </Key>
+          <Property Name="ERRActivityDetailID" Type="Guid" Nullable="false" />
+          <Property Name="ActivityID" Type="Guid" Nullable="false" />
+          <Property Name="TagID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="Activity" Relationship="LaundryManagementModel.FK_ErrorActivityDetails_Activity" FromRole="ErrorActivityDetail" ToRole="Activity" />
+        </EntityType>
+        <Association Name="FK_ErrorActivityDetails_Activity">
+          <End Type="LaundryManagementModel.Activity" Role="Activity" Multiplicity="1" />
+          <End Type="LaundryManagementModel.ErrorActivityDetail" Role="ErrorActivityDetail" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="ErrorActivityDetail">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="RoomMaster">
+          <Key>
+            <PropertyRef Name="RoomID" />
+          </Key>
+          <Property Name="RoomID" Type="Guid" Nullable="false" />
+          <Property Name="RoomNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RoomDesc" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="CustomerID" Type="Guid" />
+          <NavigationProperty Name="Activities" Relationship="LaundryManagementModel.FK_Activity_RoomMaster" FromRole="RoomMaster" ToRole="Activity" />
+          <NavigationProperty Name="CustomerMaster" Relationship="LaundryManagementModel.FK_RoomMaster_CustomerMaster" FromRole="RoomMaster" ToRole="CustomerMaster" />
+        </EntityType>
+        <EntityType Name="sysdiagram">
+          <Key>
+            <PropertyRef Name="diagram_id" />
+          </Key>
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="principal_id" Type="Int32" Nullable="false" />
+          <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="version" Type="Int32" />
+          <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+        </EntityType>
+        <EntityType Name="database_firewall_rules">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="name" />
+            <PropertyRef Name="start_ip_address" />
+            <PropertyRef Name="end_ip_address" />
+            <PropertyRef Name="create_date" />
+            <PropertyRef Name="modify_date" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="start_ip_address" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="end_ip_address" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="modify_date" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="ipv6_database_firewall_rules">
+          <Key>
+            <PropertyRef Name="id" />
+            <PropertyRef Name="name" />
+            <PropertyRef Name="start_ipv6_address" />
+            <PropertyRef Name="end_ipv6_address" />
+            <PropertyRef Name="create_date" />
+            <PropertyRef Name="modify_date" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+          <Property Name="start_ipv6_address" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="end_ipv6_address" Type="String" Nullable="false" MaxLength="45" FixedLength="false" Unicode="false" />
+          <Property Name="create_date" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="modify_date" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <Association Name="FK_Activity_Activity">
+          <End Type="LaundryManagementModel.Activity" Role="Activity" Multiplicity="1" />
+          <End Type="LaundryManagementModel.Activity" Role="Activity1" Multiplicity="0..1" />
+          <ReferentialConstraint>
+            <Principal Role="Activity">
+              <PropertyRef Name="ActivityID" />
+            </Principal>
+            <Dependent Role="Activity1">
+              <PropertyRef Name="ActivityID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Activity_RoomMaster">
+          <End Type="LaundryManagementModel.RoomMaster" Role="RoomMaster" Multiplicity="0..1" />
+          <End Type="LaundryManagementModel.Activity" Role="Activity" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RoomMaster">
+              <PropertyRef Name="RoomID" />
+            </Principal>
+            <Dependent Role="Activity">
+              <PropertyRef Name="RoomID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RoomMaster_CustomerMaster">
+          <End Type="LaundryManagementModel.CustomerMaster" Role="CustomerMaster" Multiplicity="0..1" />
+          <End Type="LaundryManagementModel.RoomMaster" Role="RoomMaster" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CustomerMaster">
+              <PropertyRef Name="CustomerID" />
+            </Principal>
+            <Dependent Role="RoomMaster">
+              <PropertyRef Name="CustomerID" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <ComplexType Name="Prc_EOLLaundry_Result">
+          <Property Type="DateTime" Name="ServerDatetime" Nullable="true" Precision="23" />
+          <Property Type="Guid" Name="AssetID" Nullable="false" />
+          <Property Type="String" Name="AName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ADescription" Nullable="true" MaxLength="200" />
+          <Property Type="Int32" Name="ATypeID" Nullable="true" />
+          <Property Type="String" Name="ATagID" Nullable="true" MaxLength="100" />
+          <Property Type="Int64" Name="SID" Nullable="true" />
+          <Property Type="Int64" Name="ASerialNo" Nullable="true" />
+          <Property Type="Boolean" Name="IsActive" Nullable="true" />
+          <Property Type="Guid" Name="UID" Nullable="false" />
+          <Property Type="DateTime" Name="AStateDateTime" Nullable="true" Precision="23" />
+          <Property Type="String" Name="AState" Nullable="true" MaxLength="10" />
+          <Property Type="DateTime" Name="LastInventoryDateTime" Nullable="true" Precision="23" />
+          <Property Type="Guid" Name="CustomerID" Nullable="false" />
+          <Property Type="DateTime" Name="TransactionDateTime" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="IsRegistered" Nullable="true" />
+          <Property Type="Int32" Name="AssetLife" Nullable="true" />
+          <Property Type="Int32" Name="ExtraUseDays" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetAssetByActivity_Result">
+          <Property Type="Guid" Name="AssetID" Nullable="false" />
+          <Property Type="String" Name="AName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ADescription" Nullable="true" MaxLength="200" />
+          <Property Type="Int32" Name="ATypeID" Nullable="true" />
+          <Property Type="String" Name="ATagID" Nullable="true" MaxLength="100" />
+          <Property Type="Int64" Name="SID" Nullable="true" />
+          <Property Type="Int64" Name="ASerialNo" Nullable="true" />
+          <Property Type="Boolean" Name="IsActive" Nullable="true" />
+          <Property Type="Guid" Name="UID" Nullable="false" />
+          <Property Type="DateTime" Name="AStateDateTime" Nullable="true" Precision="23" />
+          <Property Type="String" Name="AState" Nullable="true" MaxLength="10" />
+          <Property Type="DateTime" Name="LastInventoryDateTime" Nullable="true" Precision="23" />
+          <Property Type="Guid" Name="CustomerID" Nullable="false" />
+          <Property Type="DateTime" Name="TransactionDateTime" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="IsRegistered" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetAssetsForMapping_Result">
+          <Property Type="Guid" Name="AssetID" Nullable="false" />
+          <Property Type="String" Name="AName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ADescription" Nullable="true" MaxLength="200" />
+          <Property Type="Int32" Name="ATypeID" Nullable="true" />
+          <Property Type="String" Name="AssetName" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetAssetTypeByCustomer_Result">
+          <Property Type="Int32" Name="ATypeID" Nullable="false" />
+          <Property Type="String" Name="AssetName" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetDashboardCountData_Result">
+          <Property Type="Int32" Name="CheckInCount" Nullable="true" />
+          <Property Type="Int32" Name="CheckOutCount" Nullable="true" />
+          <Property Type="Int32" Name="PendingLaundryCount" Nullable="true" />
+          <Property Type="Int32" Name="MissingLaundryCount" Nullable="true" />
+          <Property Type="Int32" Name="EOLLaundryCount" Nullable="true" />
+          <Property Type="Int32" Name="AvgCheckINCount" Nullable="true" />
+          <Property Type="Int32" Name="AvgCheckOUTCount" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetDeviceDetailsByCustomer_Result">
+          <Property Type="Guid" Name="DeviceID" Nullable="false" />
+          <Property Type="String" Name="ClientDeviceID" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="DeviceName" Nullable="true" MaxLength="30" />
+          <Property Type="String" Name="CustomerName" Nullable="true" MaxLength="100" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetRegisteredAssets_Result">
+          <Property Type="Guid" Name="AssetID" Nullable="false" />
+          <Property Type="String" Name="AName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ADescription" Nullable="true" MaxLength="200" />
+          <Property Type="Int32" Name="ATypeID" Nullable="true" />
+          <Property Type="String" Name="ATagID" Nullable="true" MaxLength="100" />
+          <Property Type="Int64" Name="SID" Nullable="true" />
+          <Property Type="Int64" Name="ASerialNo" Nullable="true" />
+          <Property Type="Boolean" Name="IsActive" Nullable="true" />
+          <Property Type="String" Name="AssetName" Nullable="true" MaxLength="50" />
+          <Property Type="Boolean" Name="IsRegistered" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetSID_Result">
+          <Property Type="Int64" Name="SID" Nullable="false" />
+          <Property Type="Int64" Name="SerialNumber" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetTagDetails_Result">
+          <Property Type="Guid" Name="AssetID" Nullable="false" />
+          <Property Type="String" Name="AName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ADescription" Nullable="true" MaxLength="200" />
+          <Property Type="Int32" Name="ATypeID" Nullable="true" />
+          <Property Type="String" Name="ATagID" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="AssetName" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="ASerialNo" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetUnkownAssetByActivity_Result">
+          <Property Type="Guid" Name="ERRActivityDetailID" Nullable="false" />
+          <Property Type="Guid" Name="ActivityID" Nullable="false" />
+          <Property Type="String" Name="TagID" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetUserLogin_Result">
+          <Property Type="Guid" Name="UserID" Nullable="false" />
+          <Property Type="String" Name="UserName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Password" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="CustomerName" Nullable="true" MaxLength="100" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetUserLoginWeb_Result">
+          <Property Type="Guid" Name="UserID" Nullable="false" />
+          <Property Type="String" Name="UserName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Password" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="FirstName" Nullable="true" MaxLength="50" />
+          <Property Type="Guid" Name="CustomerID" Nullable="true" />
+          <Property Type="String" Name="CustomerName" Nullable="true" MaxLength="100" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetVendors_Result">
+          <Property Type="Int32" Name="VendorID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Location" Nullable="true" MaxLength="100" />
+        </ComplexType>
+        <ComplexType Name="Prc_InOutReport_Result">
+          <Property Type="DateTime" Name="ServerDatetime" Nullable="true" Precision="23" />
+          <Property Type="Guid" Name="ActivityID" Nullable="false" />
+          <Property Type="String" Name="ActivityType" Nullable="true" MaxLength="50" />
+          <Property Type="DateTime" Name="StartDate" Nullable="true" Precision="23" />
+          <Property Type="DateTime" Name="EndDate" Nullable="false" Precision="23" />
+          <Property Type="DateTime" Name="TransactionDateTime" Nullable="true" Precision="23" />
+          <Property Type="Int32" Name="VendorID" Nullable="true" />
+          <Property Type="Guid" Name="CustomerID" Nullable="true" />
+          <Property Type="Int32" Name="TouchPointID" Nullable="true" />
+          <Property Type="Int32" Name="Count" Nullable="true" />
+          <Property Type="Guid" Name="UID" Nullable="true" />
+          <Property Type="String" Name="Vendor" Nullable="true" MaxLength="100" />
+        </ComplexType>
+        <ComplexType Name="Prc_MissingLaundry_Result">
+          <Property Type="DateTime" Name="ServerDatetime" Nullable="true" Precision="23" />
+          <Property Type="Guid" Name="AssetID" Nullable="false" />
+          <Property Type="String" Name="AName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ADescription" Nullable="true" MaxLength="200" />
+          <Property Type="Int32" Name="ATypeID" Nullable="true" />
+          <Property Type="String" Name="ATagID" Nullable="true" MaxLength="100" />
+          <Property Type="Int64" Name="SID" Nullable="true" />
+          <Property Type="Int64" Name="ASerialNo" Nullable="true" />
+          <Property Type="Boolean" Name="IsActive" Nullable="true" />
+          <Property Type="Guid" Name="UID" Nullable="false" />
+          <Property Type="DateTime" Name="AStateDateTime" Nullable="true" Precision="23" />
+          <Property Type="String" Name="AState" Nullable="true" MaxLength="10" />
+          <Property Type="DateTime" Name="LastInventoryDateTime" Nullable="true" Precision="23" />
+          <Property Type="Guid" Name="CustomerID" Nullable="false" />
+          <Property Type="DateTime" Name="TransactionDateTime" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="IsRegistered" Nullable="true" />
+          <Property Type="Int32" Name="AssetLife" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Prc_MobileLogin_Result">
+          <Property Type="Guid" Name="UserID" Nullable="false" />
+          <Property Type="String" Name="UserName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Password" Nullable="true" MaxLength="50" />
+          <Property Type="Guid" Name="CustomerID" Nullable="true" />
+          <Property Type="Int32" Name="CompanyCode" Nullable="true" />
+          <Property Type="Boolean" Name="ISLogRequired" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="Prc_PendingLaundry_Result">
+          <Property Type="DateTime" Name="ServerDatetime" Nullable="true" Precision="23" />
+          <Property Type="Guid" Name="AssetID" Nullable="false" />
+          <Property Type="String" Name="AName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ADescription" Nullable="true" MaxLength="200" />
+          <Property Type="Int32" Name="ATypeID" Nullable="true" />
+          <Property Type="String" Name="ATagID" Nullable="true" MaxLength="100" />
+          <Property Type="Int64" Name="SID" Nullable="true" />
+          <Property Type="Int64" Name="ASerialNo" Nullable="true" />
+          <Property Type="Boolean" Name="IsActive" Nullable="true" />
+          <Property Type="Guid" Name="UID" Nullable="false" />
+          <Property Type="DateTime" Name="AStateDateTime" Nullable="true" Precision="23" />
+          <Property Type="String" Name="AState" Nullable="true" MaxLength="10" />
+          <Property Type="DateTime" Name="LastInventoryDateTime" Nullable="true" Precision="23" />
+          <Property Type="Guid" Name="CustomerID" Nullable="false" />
+          <Property Type="DateTime" Name="TransactionDateTime" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="IsRegistered" Nullable="true" />
+          <Property Type="Int32" Name="AssetLife" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetAllAssets_Result">
+          <Property Type="Guid" Name="AssetID" Nullable="false" />
+          <Property Type="String" Name="AssetName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="AName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ADescription" Nullable="true" MaxLength="200" />
+          <Property Type="Int32" Name="ATypeID" Nullable="true" />
+          <Property Type="String" Name="ATagID" Nullable="true" MaxLength="100" />
+          <Property Type="Int64" Name="SID" Nullable="true" />
+          <Property Type="Int64" Name="ASerialNo" Nullable="true" />
+          <Property Type="Boolean" Name="IsActive" Nullable="true" />
+          <Property Type="Guid" Name="UID" Nullable="false" />
+          <Property Type="DateTime" Name="AStateDateTime" Nullable="true" Precision="23" />
+          <Property Type="String" Name="AState" Nullable="true" MaxLength="10" />
+          <Property Type="DateTime" Name="LastInventoryDateTime" Nullable="true" Precision="23" />
+          <Property Type="Guid" Name="CustomerID" Nullable="false" />
+          <Property Type="DateTime" Name="TransactionDateTime" Nullable="true" Precision="23" />
+          <Property Type="Boolean" Name="IsRegistered" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetAllAssetsForMobile_Result">
+          <Property Type="Guid" Name="AssetID" Nullable="false" />
+          <Property Type="String" Name="AName" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="ATypeID" Nullable="true" />
+          <Property Type="Int64" Name="ASerialNo" Nullable="true" />
+          <Property Type="Boolean" Name="IsRegistered" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetAllAssetTypes_Result">
+          <Property Type="Int32" Name="ATypeID" Nullable="false" />
+          <Property Type="String" Name="AssetName" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="AssetDisplay" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="AssetDesc" Nullable="true" MaxLength="100" />
+          <Property Type="Boolean" Name="IsActive" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetAllCustomers_Result">
+          <Property Type="Guid" Name="CustomerID" Nullable="false" />
+          <Property Type="String" Name="CustomerName" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="CompanyCode" Nullable="true" />
+          <Property Type="String" Name="ContactNo" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="EmailId" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetAllVendors_Result">
+          <Property Type="Int32" Name="VendorID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Location" Nullable="true" MaxLength="100" />
+          <Property Type="Guid" Name="CustomerID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetAssetType_Result">
+          <Property Type="Int32" Name="Assettype_ID" Nullable="false" />
+          <Property Type="String" Name="Asset_name" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Asset_Display" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Asset_description" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="3" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetAssetTypeCustMapping_Result">
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="Double" Name="Billing_Amount" Nullable="true" />
+          <Property Type="Int32" Name="EndOf_Life" Nullable="true" />
+          <Property Type="Guid" Name="Customer_ID" Nullable="false" />
+          <Property Type="String" Name="Company_Code" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="Assettype_ID" Nullable="false" />
+          <Property Type="String" Name="Asset_Name" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetAssetTypeList_Result">
+          <Property Type="Int32" Name="AssetType_ID" Nullable="false" />
+          <Property Type="String" Name="Asset_Name" Nullable="true" MaxLength="50" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetCustomerforSerialNo_Result">
+          <Property Type="Guid" Name="ID" Nullable="false" />
+          <Property Type="Int32" Name="Customer_Copy" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="PSL_getcustomerlist_Result">
+          <Property Type="Guid" Name="ID" Nullable="false" />
+          <Property Type="String" Name="CustomerName" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="CompanyCode" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="PSL_getcustomersdetails_Result">
+          <Property Type="Guid" Name="Customer_ID" Nullable="false" />
+          <Property Type="String" Name="Customer_Name" Nullable="true" MaxLength="100" />
+          <Property Type="Int32" Name="Company_Code" Nullable="true" />
+          <Property Type="String" Name="Email_ID" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Contact_No" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Address" Nullable="true" MaxLength="200" />
+          <Property Type="Boolean" Name="Isactive" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetCustomerSerialNo_Result">
+          <Property Type="Int64" Name="SID" Nullable="false" />
+          <Property Type="Int64" Name="Serial_Number" Nullable="true" />
+          <Property Type="String" Name="Tag_ID" Nullable="true" MaxLength="100" />
+          <Property Type="Guid" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Company_Code" Nullable="true" MaxLength="100" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetSerialNo_Result">
+          <Property Type="Int64" Name="SID" Nullable="false" />
+          <Property Type="Int64" Name="Serial_Number" Nullable="true" />
+          <Property Type="String" Name="Tag_ID" Nullable="true" MaxLength="100" />
+          <Property Type="Guid" Name="Customer_ID" Nullable="false" />
+          <Property Type="String" Name="Company_Code" Nullable="true" MaxLength="100" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetUser_Result">
+          <Property Type="Guid" Name="User_ID" Nullable="false" />
+          <Property Type="String" Name="First_Name" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Last_Name" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Username" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Password" Nullable="true" MaxLength="50" />
+          <Property Type="Guid" Name="Customer_ID" Nullable="false" />
+          <Property Type="String" Name="Customer_Name" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="3" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetUserDetail_Result">
+          <Property Type="Guid" Name="User_ID" Nullable="false" />
+          <Property Type="String" Name="Username" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Password" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Frist_Name" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Last_Name" Nullable="true" MaxLength="50" />
+          <Property Type="Guid" Name="Customer_ID" Nullable="false" />
+          <Property Type="String" Name="Customer_Name" Nullable="true" MaxLength="100" />
+          <Property Type="DateTime" Name="Date" Nullable="true" Precision="23" />
+          <Property Type="String" Name="Status" Nullable="false" MaxLength="3" />
+        </ComplexType>
+        <ComplexType Name="PSL_GetVendor_Result">
+          <Property Type="Int32" Name="Vendor_ID" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Location" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Customer_Name" Nullable="true" MaxLength="100" />
+          <Property Type="Guid" Name="Customer_ID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagramdefinition_Result">
+          <Property Type="Int32" Name="version" Nullable="true" />
+          <Property Type="Binary" Name="definition" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="sp_helpdiagrams_Result">
+          <Property Type="String" Name="Database" Nullable="true" MaxLength="128" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="128" />
+          <Property Type="Int32" Name="ID" Nullable="false" />
+          <Property Type="String" Name="Owner" Nullable="true" MaxLength="128" />
+          <Property Type="Int32" Name="OwnerID" Nullable="false" />
+        </ComplexType>
+        <ComplexType Name="Prc_GetRoomsByCustomer_Result">
+          <Property Type="Guid" Name="RoomID" Nullable="false" />
+          <Property Type="String" Name="RoomNo" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="RoomDesc" Nullable="true" MaxLength="100" />
+        </ComplexType>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="LaundryManagementModelStoreContainer" CdmEntityContainer="LaundryManagementEntities">
+          <EntitySetMapping Name="Activities">
+            <EntityTypeMapping TypeName="LaundryManagementModel.Activity">
+              <MappingFragment StoreEntitySet="Activity">
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+                <ScalarProperty Name="ActivityType" ColumnName="ActivityType" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
+                <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="TouchPointID" ColumnName="TouchPointID" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ActivityDetails">
+            <EntityTypeMapping TypeName="LaundryManagementModel.ActivityDetail">
+              <MappingFragment StoreEntitySet="ActivityDetails">
+                <ScalarProperty Name="ActivityDetailsID" ColumnName="ActivityDetailsID" />
+                <ScalarProperty Name="AssetID" ColumnName="AssetID" />
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AssetMasters">
+            <EntityTypeMapping TypeName="LaundryManagementModel.AssetMaster">
+              <MappingFragment StoreEntitySet="AssetMaster">
+                <ScalarProperty Name="AssetLife" ColumnName="AssetLife" />
+                <ScalarProperty Name="IsRegistered" ColumnName="IsRegistered" />
+                <ScalarProperty Name="AssetID" ColumnName="AssetID" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ADescription" ColumnName="ADescription" />
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="ATagID" ColumnName="ATagID" />
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="ASerialNo" ColumnName="ASerialNo" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="AStateDateTime" ColumnName="AStateDateTime" />
+                <ScalarProperty Name="AState" ColumnName="AState" />
+                <ScalarProperty Name="LastInventoryDateTime" ColumnName="LastInventoryDateTime" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AssetTypeCustomerMappings">
+            <EntityTypeMapping TypeName="LaundryManagementModel.AssetTypeCustomerMapping">
+              <MappingFragment StoreEntitySet="AssetTypeCustomerMapping">
+                <ScalarProperty Name="EndOfLife" ColumnName="EndOfLife" />
+                <ScalarProperty Name="BillingAmount" ColumnName="BillingAmount" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AssetTypeMasters">
+            <EntityTypeMapping TypeName="LaundryManagementModel.AssetTypeMaster">
+              <MappingFragment StoreEntitySet="AssetTypeMaster">
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="AssetName" ColumnName="AssetName" />
+                <ScalarProperty Name="AssetDisplay" ColumnName="AssetDisplay" />
+                <ScalarProperty Name="AssetDesc" ColumnName="AssetDesc" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomerMasters">
+            <EntityTypeMapping TypeName="LaundryManagementModel.CustomerMaster">
+              <MappingFragment StoreEntitySet="CustomerMaster">
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="MissingDaysCheck" ColumnName="MissingDaysCheck" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+                <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeviceMasters">
+            <EntityTypeMapping TypeName="LaundryManagementModel.DeviceMaster">
+              <MappingFragment StoreEntitySet="DeviceMaster">
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="ClientDeviceID" ColumnName="ClientDeviceID" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SerialNumbers">
+            <EntityTypeMapping TypeName="LaundryManagementModel.SerialNumber">
+              <MappingFragment StoreEntitySet="SerialNumbers">
+                <ScalarProperty Name="ChipID" ColumnName="ChipID" />
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="AssetTypeID" ColumnName="AssetTypeID" />
+                <ScalarProperty Name="SerialNumber1" ColumnName="SerialNumber" />
+                <ScalarProperty Name="TagID" ColumnName="TagID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="ServerDateTime" ColumnName="ServerDateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="LaundryManagementModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Vendors">
+            <EntityTypeMapping TypeName="LaundryManagementModel.Vendor">
+              <MappingFragment StoreEntitySet="Vendor">
+                <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Locations">
+            <EntityTypeMapping TypeName="LaundryManagementModel.Location">
+              <MappingFragment StoreEntitySet="Locations">
+                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
+                <ScalarProperty Name="LocationName" ColumnName="LocationName" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Readers">
+            <EntityTypeMapping TypeName="LaundryManagementModel.Reader">
+              <MappingFragment StoreEntitySet="Readers">
+                <ScalarProperty Name="ReaderId" ColumnName="ReaderId" />
+                <ScalarProperty Name="ReaderIP" ColumnName="ReaderIP" />
+                <ScalarProperty Name="AntennaID" ColumnName="AntennaID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="LastUpdatedDateTime" ColumnName="LastUpdatedDateTime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReadersTransactionLogs">
+            <EntityTypeMapping TypeName="LaundryManagementModel.ReadersTransactionLog">
+              <MappingFragment StoreEntitySet="ReadersTransactionLog">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="TagId" ColumnName="TagId" />
+                <ScalarProperty Name="AssetSerialNo" ColumnName="AssetSerialNo" />
+                <ScalarProperty Name="AssetteType" ColumnName="AssetteType" />
+                <ScalarProperty Name="ReaderIP" ColumnName="ReaderIP" />
+                <ScalarProperty Name="AntennaID" ColumnName="AntennaID" />
+                <ScalarProperty Name="RSSI" ColumnName="RSSI" />
+                <ScalarProperty Name="LocationID" ColumnName="LocationID" />
+                <ScalarProperty Name="TouchPointID" ColumnName="TouchPointID" />
+                <ScalarProperty Name="TouchPointType" ColumnName="TouchPointType" />
+                <ScalarProperty Name="IsProcessed" ColumnName="IsProcessed" />
+                <ScalarProperty Name="ProcessesOn" ColumnName="ProcessesOn" />
+                <ScalarProperty Name="TransDatetime" ColumnName="TransDatetime" />
+                <ScalarProperty Name="ServerDatetime" ColumnName="ServerDatetime" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TouchPoints">
+            <EntityTypeMapping TypeName="LaundryManagementModel.TouchPoint">
+              <MappingFragment StoreEntitySet="TouchPoints">
+                <ScalarProperty Name="TouchPointId" ColumnName="TouchPointId" />
+                <ScalarProperty Name="TouchPointName" ColumnName="TouchPointName" />
+                <ScalarProperty Name="LocationId" ColumnName="LocationId" />
+                <ScalarProperty Name="CreatedOn" ColumnName="CreatedOn" />
+                <ScalarProperty Name="ModifiedOn" ColumnName="ModifiedOn" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="Direction" ColumnName="Direction" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ErrorActivityDetails">
+            <EntityTypeMapping TypeName="LaundryManagementModel.ErrorActivityDetail">
+              <MappingFragment StoreEntitySet="ErrorActivityDetails">
+                <ScalarProperty Name="TagID" ColumnName="TagID" />
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+                <ScalarProperty Name="ERRActivityDetailID" ColumnName="ERRActivityDetailID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RoomMasters">
+            <EntityTypeMapping TypeName="LaundryManagementModel.RoomMaster">
+              <MappingFragment StoreEntitySet="RoomMaster">
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="RoomDesc" ColumnName="RoomDesc" />
+                <ScalarProperty Name="RoomNo" ColumnName="RoomNo" />
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="sysdiagrams">
+            <EntityTypeMapping TypeName="LaundryManagementModel.sysdiagram">
+              <MappingFragment StoreEntitySet="sysdiagrams">
+                <ScalarProperty Name="definition" ColumnName="definition" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="diagram_id" ColumnName="diagram_id" />
+                <ScalarProperty Name="principal_id" ColumnName="principal_id" />
+                <ScalarProperty Name="name" ColumnName="name" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="database_firewall_rules">
+            <EntityTypeMapping TypeName="LaundryManagementModel.database_firewall_rules">
+              <MappingFragment StoreEntitySet="database_firewall_rules">
+                <ScalarProperty Name="modify_date" ColumnName="modify_date" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="end_ip_address" ColumnName="end_ip_address" />
+                <ScalarProperty Name="start_ip_address" ColumnName="start_ip_address" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ipv6_database_firewall_rules">
+            <EntityTypeMapping TypeName="LaundryManagementModel.ipv6_database_firewall_rules">
+              <MappingFragment StoreEntitySet="ipv6_database_firewall_rules">
+                <ScalarProperty Name="modify_date" ColumnName="modify_date" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="end_ipv6_address" ColumnName="end_ipv6_address" />
+                <ScalarProperty Name="start_ipv6_address" ColumnName="start_ipv6_address" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="Prc_DeleteCustomerDevice" FunctionName="LaundryManagementModel.Store.Prc_DeleteCustomerDevice" />
+          <FunctionImportMapping FunctionImportName="Prc_DeleteRegisteredAsset" FunctionName="LaundryManagementModel.Store.Prc_DeleteRegisteredAsset" />
+          <FunctionImportMapping FunctionImportName="Prc_EOLLaundry" FunctionName="LaundryManagementModel.Store.Prc_EOLLaundry">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_EOLLaundry_Result">
+                <ScalarProperty Name="ServerDatetime" ColumnName="ServerDatetime" />
+                <ScalarProperty Name="AssetID" ColumnName="AssetID" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ADescription" ColumnName="ADescription" />
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="ATagID" ColumnName="ATagID" />
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="ASerialNo" ColumnName="ASerialNo" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="AStateDateTime" ColumnName="AStateDateTime" />
+                <ScalarProperty Name="AState" ColumnName="AState" />
+                <ScalarProperty Name="LastInventoryDateTime" ColumnName="LastInventoryDateTime" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
+                <ScalarProperty Name="IsRegistered" ColumnName="IsRegistered" />
+                <ScalarProperty Name="AssetLife" ColumnName="AssetLife" />
+                <ScalarProperty Name="ExtraUseDays" ColumnName="ExtraUseDays" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_GetAssetByActivity" FunctionName="LaundryManagementModel.Store.Prc_GetAssetByActivity">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetAssetByActivity_Result">
+                <ScalarProperty Name="AssetID" ColumnName="AssetID" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ADescription" ColumnName="ADescription" />
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="ATagID" ColumnName="ATagID" />
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="ASerialNo" ColumnName="ASerialNo" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="AStateDateTime" ColumnName="AStateDateTime" />
+                <ScalarProperty Name="AState" ColumnName="AState" />
+                <ScalarProperty Name="LastInventoryDateTime" ColumnName="LastInventoryDateTime" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
+                <ScalarProperty Name="IsRegistered" ColumnName="IsRegistered" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_GetAssetLife" FunctionName="LaundryManagementModel.Store.Prc_GetAssetLife" />
+          <FunctionImportMapping FunctionImportName="Prc_GetAssetsForMapping" FunctionName="LaundryManagementModel.Store.Prc_GetAssetsForMapping">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetAssetsForMapping_Result">
+                <ScalarProperty Name="AssetID" ColumnName="AssetID" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ADescription" ColumnName="ADescription" />
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="AssetName" ColumnName="AssetName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_GetAssetTypeByCustomer" FunctionName="LaundryManagementModel.Store.Prc_GetAssetTypeByCustomer">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetAssetTypeByCustomer_Result">
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="AssetName" ColumnName="AssetName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_GetDashboardCountData" FunctionName="LaundryManagementModel.Store.Prc_GetDashboardCountData">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetDashboardCountData_Result">
+                <ScalarProperty Name="CheckInCount" ColumnName="CheckInCount" />
+                <ScalarProperty Name="CheckOutCount" ColumnName="CheckOutCount" />
+                <ScalarProperty Name="PendingLaundryCount" ColumnName="PendingLaundryCount" />
+                <ScalarProperty Name="MissingLaundryCount" ColumnName="MissingLaundryCount" />
+                <ScalarProperty Name="EOLLaundryCount" ColumnName="EOLLaundryCount" />
+                <ScalarProperty Name="AvgCheckINCount" ColumnName="AvgCheckINCount" />
+                <ScalarProperty Name="AvgCheckOUTCount" ColumnName="AvgCheckOUTCount" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_GetDeviceDetailsByCustomer" FunctionName="LaundryManagementModel.Store.Prc_GetDeviceDetailsByCustomer">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetDeviceDetailsByCustomer_Result">
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="ClientDeviceID" ColumnName="ClientDeviceID" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_GetRegisteredAssets" FunctionName="LaundryManagementModel.Store.Prc_GetRegisteredAssets">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetRegisteredAssets_Result">
+                <ScalarProperty Name="AssetID" ColumnName="AssetID" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ADescription" ColumnName="ADescription" />
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="ATagID" ColumnName="ATagID" />
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="ASerialNo" ColumnName="ASerialNo" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="AssetName" ColumnName="AssetName" />
+                <ScalarProperty Name="IsRegistered" ColumnName="IsRegistered" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_GetSID" FunctionName="LaundryManagementModel.Store.Prc_GetSID">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetSID_Result">
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="SerialNumber" ColumnName="SerialNumber" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_GetTagDetails" FunctionName="LaundryManagementModel.Store.Prc_GetTagDetails">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetTagDetails_Result">
+                <ScalarProperty Name="AssetID" ColumnName="AssetID" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ADescription" ColumnName="ADescription" />
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="ATagID" ColumnName="ATagID" />
+                <ScalarProperty Name="AssetName" ColumnName="AssetName" />
+                <ScalarProperty Name="ASerialNo" ColumnName="ASerialNo" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_GetUnkownAssetByActivity" FunctionName="LaundryManagementModel.Store.Prc_GetUnkownAssetByActivity">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetUnkownAssetByActivity_Result">
+                <ScalarProperty Name="ERRActivityDetailID" ColumnName="ERRActivityDetailID" />
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+                <ScalarProperty Name="TagID" ColumnName="TagID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_GetUserLogin" FunctionName="LaundryManagementModel.Store.Prc_GetUserLogin">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetUserLogin_Result">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_GetUserLoginWeb" FunctionName="LaundryManagementModel.Store.Prc_GetUserLoginWeb">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetUserLoginWeb_Result">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_GetVendors" FunctionName="LaundryManagementModel.Store.Prc_GetVendors">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetVendors_Result">
+                <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_InOutReport" FunctionName="LaundryManagementModel.Store.Prc_InOutReport">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_InOutReport_Result">
+                <ScalarProperty Name="ServerDatetime" ColumnName="ServerDatetime" />
+                <ScalarProperty Name="ActivityID" ColumnName="ActivityID" />
+                <ScalarProperty Name="ActivityType" ColumnName="ActivityType" />
+                <ScalarProperty Name="StartDate" ColumnName="StartDate" />
+                <ScalarProperty Name="EndDate" ColumnName="EndDate" />
+                <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
+                <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="TouchPointID" ColumnName="TouchPointID" />
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="Vendor" ColumnName="Vendor" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_InsertActivity" FunctionName="LaundryManagementModel.Store.Prc_InsertActivity" />
+          <FunctionImportMapping FunctionImportName="Prc_InsertActivityDetails" FunctionName="LaundryManagementModel.Store.Prc_InsertActivityDetails" />
+          <FunctionImportMapping FunctionImportName="Prc_InsertAssetRegistration" FunctionName="LaundryManagementModel.Store.Prc_InsertAssetRegistration" />
+          <FunctionImportMapping FunctionImportName="Prc_InsertCustomerDevice" FunctionName="LaundryManagementModel.Store.Prc_InsertCustomerDevice" />
+          <FunctionImportMapping FunctionImportName="Prc_InsertErrorActivity" FunctionName="LaundryManagementModel.Store.Prc_InsertErrorActivity" />
+          <FunctionImportMapping FunctionImportName="Prc_MapAssets" FunctionName="LaundryManagementModel.Store.Prc_MapAssets" />
+          <FunctionImportMapping FunctionImportName="Prc_MapAssetsToTag" FunctionName="LaundryManagementModel.Store.Prc_MapAssetsToTag" />
+          <FunctionImportMapping FunctionImportName="Prc_MissingLaundry" FunctionName="LaundryManagementModel.Store.Prc_MissingLaundry">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_MissingLaundry_Result">
+                <ScalarProperty Name="ServerDatetime" ColumnName="ServerDatetime" />
+                <ScalarProperty Name="AssetID" ColumnName="AssetID" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ADescription" ColumnName="ADescription" />
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="ATagID" ColumnName="ATagID" />
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="ASerialNo" ColumnName="ASerialNo" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="AStateDateTime" ColumnName="AStateDateTime" />
+                <ScalarProperty Name="AState" ColumnName="AState" />
+                <ScalarProperty Name="LastInventoryDateTime" ColumnName="LastInventoryDateTime" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
+                <ScalarProperty Name="IsRegistered" ColumnName="IsRegistered" />
+                <ScalarProperty Name="AssetLife" ColumnName="AssetLife" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_MobileLogin" FunctionName="LaundryManagementModel.Store.Prc_MobileLogin">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_MobileLogin_Result">
+                <ScalarProperty Name="UserID" ColumnName="UserID" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+                <ScalarProperty Name="ISLogRequired" ColumnName="ISLogRequired" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_PendingLaundry" FunctionName="LaundryManagementModel.Store.Prc_PendingLaundry">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_PendingLaundry_Result">
+                <ScalarProperty Name="ServerDatetime" ColumnName="ServerDatetime" />
+                <ScalarProperty Name="AssetID" ColumnName="AssetID" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ADescription" ColumnName="ADescription" />
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="ATagID" ColumnName="ATagID" />
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="ASerialNo" ColumnName="ASerialNo" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="AStateDateTime" ColumnName="AStateDateTime" />
+                <ScalarProperty Name="AState" ColumnName="AState" />
+                <ScalarProperty Name="LastInventoryDateTime" ColumnName="LastInventoryDateTime" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
+                <ScalarProperty Name="IsRegistered" ColumnName="IsRegistered" />
+                <ScalarProperty Name="AssetLife" ColumnName="AssetLife" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_UpdateCustomerDevice" FunctionName="LaundryManagementModel.Store.Prc_UpdateCustomerDevice" />
+          <FunctionImportMapping FunctionImportName="Prc_UpdateRegisteredAsset" FunctionName="LaundryManagementModel.Store.Prc_UpdateRegisteredAsset" />
+          <FunctionImportMapping FunctionImportName="PSL_AssetRegistrationMobile" FunctionName="LaundryManagementModel.Store.PSL_AssetRegistrationMobile" />
+          <FunctionImportMapping FunctionImportName="PSL_AssetTypeCustomerMapping" FunctionName="LaundryManagementModel.Store.PSL_AssetTypeCustomerMapping" />
+          <FunctionImportMapping FunctionImportName="PSL_customer" FunctionName="LaundryManagementModel.Store.PSL_customer" />
+          <FunctionImportMapping FunctionImportName="PSL_DeleteassetType" FunctionName="LaundryManagementModel.Store.PSL_DeleteassetType" />
+          <FunctionImportMapping FunctionImportName="PSL_DeleteAssetTypeCustMap" FunctionName="LaundryManagementModel.Store.PSL_DeleteAssetTypeCustMap" />
+          <FunctionImportMapping FunctionImportName="PSL_DeleteCustomer" FunctionName="LaundryManagementModel.Store.PSL_DeleteCustomer" />
+          <FunctionImportMapping FunctionImportName="PSL_DeleteUser" FunctionName="LaundryManagementModel.Store.PSL_DeleteUser" />
+          <FunctionImportMapping FunctionImportName="PSL_DeleteVendor" FunctionName="LaundryManagementModel.Store.PSL_DeleteVendor" />
+          <FunctionImportMapping FunctionImportName="PSL_GetAllAssets" FunctionName="LaundryManagementModel.Store.PSL_GetAllAssets">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetAllAssets_Result">
+                <ScalarProperty Name="AssetID" ColumnName="AssetID" />
+                <ScalarProperty Name="AssetName" ColumnName="AssetName" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ADescription" ColumnName="ADescription" />
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="ATagID" ColumnName="ATagID" />
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="ASerialNo" ColumnName="ASerialNo" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="UID" ColumnName="UID" />
+                <ScalarProperty Name="AStateDateTime" ColumnName="AStateDateTime" />
+                <ScalarProperty Name="AState" ColumnName="AState" />
+                <ScalarProperty Name="LastInventoryDateTime" ColumnName="LastInventoryDateTime" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="TransactionDateTime" ColumnName="TransactionDateTime" />
+                <ScalarProperty Name="IsRegistered" ColumnName="IsRegistered" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetAllAssetsForMobile" FunctionName="LaundryManagementModel.Store.PSL_GetAllAssetsForMobile">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetAllAssetsForMobile_Result">
+                <ScalarProperty Name="AssetID" ColumnName="AssetID" />
+                <ScalarProperty Name="AName" ColumnName="AName" />
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="ASerialNo" ColumnName="ASerialNo" />
+                <ScalarProperty Name="IsRegistered" ColumnName="IsRegistered" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetAllAssetTypes" FunctionName="LaundryManagementModel.Store.PSL_GetAllAssetTypes">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetAllAssetTypes_Result">
+                <ScalarProperty Name="ATypeID" ColumnName="ATypeID" />
+                <ScalarProperty Name="AssetName" ColumnName="AssetName" />
+                <ScalarProperty Name="AssetDisplay" ColumnName="AssetDisplay" />
+                <ScalarProperty Name="AssetDesc" ColumnName="AssetDesc" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetAllCustomers" FunctionName="LaundryManagementModel.Store.PSL_GetAllCustomers">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetAllCustomers_Result">
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+                <ScalarProperty Name="ContactNo" ColumnName="ContactNo" />
+                <ScalarProperty Name="EmailId" ColumnName="EmailId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetAllVendors" FunctionName="LaundryManagementModel.Store.PSL_GetAllVendors">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetAllVendors_Result">
+                <ScalarProperty Name="VendorID" ColumnName="VendorID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="CustomerID" ColumnName="CustomerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetAssetType" FunctionName="LaundryManagementModel.Store.PSL_GetAssetType">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetAssetType_Result">
+                <ScalarProperty Name="Assettype_ID" ColumnName="Assettype ID" />
+                <ScalarProperty Name="Asset_name" ColumnName="Asset name" />
+                <ScalarProperty Name="Asset_Display" ColumnName="Asset Display" />
+                <ScalarProperty Name="Asset_description" ColumnName="Asset description" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetAssetTypeCustMapping" FunctionName="LaundryManagementModel.Store.PSL_GetAssetTypeCustMapping">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetAssetTypeCustMapping_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Billing_Amount" ColumnName="Billing Amount" />
+                <ScalarProperty Name="EndOf_Life" ColumnName="EndOf Life" />
+                <ScalarProperty Name="Customer_ID" ColumnName="Customer ID" />
+                <ScalarProperty Name="Company_Code" ColumnName="Company Code" />
+                <ScalarProperty Name="Assettype_ID" ColumnName="Assettype ID" />
+                <ScalarProperty Name="Asset_Name" ColumnName="Asset Name" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetAssetTypeList" FunctionName="LaundryManagementModel.Store.PSL_GetAssetTypeList">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetAssetTypeList_Result">
+                <ScalarProperty Name="AssetType_ID" ColumnName="AssetType ID" />
+                <ScalarProperty Name="Asset_Name" ColumnName="Asset Name" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetCustomerforSerialNo" FunctionName="LaundryManagementModel.Store.PSL_GetCustomerforSerialNo">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetCustomerforSerialNo_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Customer_Copy" ColumnName="Customer Copy" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_getcustomerlist" FunctionName="LaundryManagementModel.Store.PSL_getcustomerlist">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_getcustomerlist_Result">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CustomerName" ColumnName="CustomerName" />
+                <ScalarProperty Name="CompanyCode" ColumnName="CompanyCode" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_getcustomersdetails" FunctionName="LaundryManagementModel.Store.PSL_getcustomersdetails">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_getcustomersdetails_Result">
+                <ScalarProperty Name="Customer_ID" ColumnName="Customer ID" />
+                <ScalarProperty Name="Customer_Name" ColumnName="Customer Name" />
+                <ScalarProperty Name="Company_Code" ColumnName="Company Code" />
+                <ScalarProperty Name="Email_ID" ColumnName="Email ID" />
+                <ScalarProperty Name="Contact_No" ColumnName="Contact No" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Isactive" ColumnName="Isactive" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetCustomerSerialNo" FunctionName="LaundryManagementModel.Store.PSL_GetCustomerSerialNo">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetCustomerSerialNo_Result">
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="Serial_Number" ColumnName="Serial Number" />
+                <ScalarProperty Name="Tag_ID" ColumnName="Tag ID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Company_Code" ColumnName="Company Code" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetSerialNo" FunctionName="LaundryManagementModel.Store.PSL_GetSerialNo">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetSerialNo_Result">
+                <ScalarProperty Name="SID" ColumnName="SID" />
+                <ScalarProperty Name="Serial_Number" ColumnName="Serial Number" />
+                <ScalarProperty Name="Tag_ID" ColumnName="Tag ID" />
+                <ScalarProperty Name="Customer_ID" ColumnName="Customer ID" />
+                <ScalarProperty Name="Company_Code" ColumnName="Company Code" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetSerialNumber" FunctionName="LaundryManagementModel.Store.PSL_GetSerialNumber" />
+          <FunctionImportMapping FunctionImportName="PSL_GetUser" FunctionName="LaundryManagementModel.Store.PSL_GetUser">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetUser_Result">
+                <ScalarProperty Name="User_ID" ColumnName="User ID" />
+                <ScalarProperty Name="First_Name" ColumnName="First Name" />
+                <ScalarProperty Name="Last_Name" ColumnName="Last Name" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Customer_ID" ColumnName="Customer ID" />
+                <ScalarProperty Name="Customer_Name" ColumnName="Customer Name" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetUserDetail" FunctionName="LaundryManagementModel.Store.PSL_GetUserDetail">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetUserDetail_Result">
+                <ScalarProperty Name="User_ID" ColumnName="User ID" />
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="Frist_Name" ColumnName="Frist Name" />
+                <ScalarProperty Name="Last_Name" ColumnName="Last Name" />
+                <ScalarProperty Name="Customer_ID" ColumnName="Customer ID" />
+                <ScalarProperty Name="Customer_Name" ColumnName="Customer Name" />
+                <ScalarProperty Name="Date" ColumnName="Date" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_GetVendor" FunctionName="LaundryManagementModel.Store.PSL_GetVendor">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.PSL_GetVendor_Result">
+                <ScalarProperty Name="Vendor_ID" ColumnName="Vendor ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="Customer_Name" ColumnName="Customer Name" />
+                <ScalarProperty Name="Customer_ID" ColumnName="Customer ID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="PSL_InsertAssetType" FunctionName="LaundryManagementModel.Store.PSL_InsertAssetType" />
+          <FunctionImportMapping FunctionImportName="PSL_InsertSerialNo" FunctionName="LaundryManagementModel.Store.PSL_InsertSerialNo" />
+          <FunctionImportMapping FunctionImportName="PSL_InsertUser" FunctionName="LaundryManagementModel.Store.PSL_InsertUser" />
+          <FunctionImportMapping FunctionImportName="PSL_insertVendor" FunctionName="LaundryManagementModel.Store.PSL_insertVendor" />
+          <FunctionImportMapping FunctionImportName="PSL_UpdateAssetType" FunctionName="LaundryManagementModel.Store.PSL_UpdateAssetType" />
+          <FunctionImportMapping FunctionImportName="PSL_UpdateAssetTypeCustomerMapping" FunctionName="LaundryManagementModel.Store.PSL_UpdateAssetTypeCustomerMapping" />
+          <FunctionImportMapping FunctionImportName="PSL_UpdateCustomer" FunctionName="LaundryManagementModel.Store.PSL_UpdateCustomer" />
+          <FunctionImportMapping FunctionImportName="PSL_UpdateVendor" FunctionName="LaundryManagementModel.Store.PSL_UpdateVendor" />
+          <FunctionImportMapping FunctionImportName="PSL_User" FunctionName="LaundryManagementModel.Store.PSL_User" />
+          <FunctionImportMapping FunctionImportName="sp_alterdiagram" FunctionName="LaundryManagementModel.Store.sp_alterdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_creatediagram" FunctionName="LaundryManagementModel.Store.sp_creatediagram" />
+          <FunctionImportMapping FunctionImportName="sp_dropdiagram" FunctionName="LaundryManagementModel.Store.sp_dropdiagram" />
+          <FunctionImportMapping FunctionImportName="sp_helpdiagramdefinition" FunctionName="LaundryManagementModel.Store.sp_helpdiagramdefinition">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.sp_helpdiagramdefinition_Result">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="definition" ColumnName="definition" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_helpdiagrams" FunctionName="LaundryManagementModel.Store.sp_helpdiagrams">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.sp_helpdiagrams_Result">
+                <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Owner" ColumnName="Owner" />
+                <ScalarProperty Name="OwnerID" ColumnName="OwnerID" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="sp_renamediagram" FunctionName="LaundryManagementModel.Store.sp_renamediagram" />
+          <FunctionImportMapping FunctionImportName="sp_upgraddiagrams" FunctionName="LaundryManagementModel.Store.sp_upgraddiagrams" />
+          <FunctionImportMapping FunctionImportName="st_insertCustomer" FunctionName="LaundryManagementModel.Store.st_insertCustomer" />
+          <FunctionImportMapping FunctionImportName="Prc_DeleteRoom" FunctionName="LaundryManagementModel.Store.Prc_DeleteRoom" />
+          <FunctionImportMapping FunctionImportName="Prc_GetRoomsByCustomer" FunctionName="LaundryManagementModel.Store.Prc_GetRoomsByCustomer">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="LaundryManagementModel.Prc_GetRoomsByCustomer_Result">
+                <ScalarProperty Name="RoomID" ColumnName="RoomID" />
+                <ScalarProperty Name="RoomNo" ColumnName="RoomNo" />
+                <ScalarProperty Name="RoomDesc" ColumnName="RoomDesc" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="Prc_InsertRooms" FunctionName="LaundryManagementModel.Store.Prc_InsertRooms" />
+          <FunctionImportMapping FunctionImportName="Prc_UpdateRoom" FunctionName="LaundryManagementModel.Store.Prc_UpdateRoom" />
+          <FunctionImportMapping FunctionImportName="PSL_UpdateChipID" FunctionName="LaundryManagementModel.Store.PSL_UpdateChipID" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

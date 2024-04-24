@@ -1,0 +1,456 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="LaundryManagementModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="Activity">
+    <Key>
+      <PropertyRef Name="ActivityID" />
+    </Key>
+    <Property Name="ActivityID" Type="Int32" Nullable="false" />
+    <Property Name="ActivityType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="StartDate" Type="DateTime" Precision="3" />
+    <Property Name="EndDate" Type="DateTime" Precision="3" />
+    <Property Name="TransactionDateTime" Type="DateTime" Precision="3" />
+    <Property Name="VendorID" Type="Int32" />
+    <Property Name="CustomerID" Type="Guid" />
+    <Property Name="TouchPointID" Type="Int32" />
+    <Property Name="Count" Type="Int32" />
+    <Property Name="UID" Type="Guid" />
+    <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_Activity_CustomerMaster" FromRole="Activity" ToRole="CustomerMaster" />
+    <NavigationProperty Name="User" Relationship="Self.FK_Activity_Users" FromRole="Activity" ToRole="Users" />
+    <NavigationProperty Name="Vendor" Relationship="Self.FK_Activity_Vendor" FromRole="Activity" ToRole="Vendor" />
+    <NavigationProperty Name="ActivityDetails" Relationship="Self.FK_ActivityDetails_Activity" FromRole="Activity" ToRole="ActivityDetails" />
+  </EntityType>
+  <EntityType Name="ActivityDetail">
+    <Key>
+      <PropertyRef Name="ActivityDetailsID" />
+    </Key>
+    <Property Name="ActivityDetailsID" Type="Guid" Nullable="false" />
+    <Property Name="ActivityID" Type="Int32" Nullable="false" />
+    <Property Name="AssetID" Type="Guid" Nullable="false" />
+    <NavigationProperty Name="Activity" Relationship="Self.FK_ActivityDetails_Activity" FromRole="ActivityDetails" ToRole="Activity" />
+    <NavigationProperty Name="AssetMaster" Relationship="Self.FK_ActivityDetails_AssetMaster" FromRole="ActivityDetails" ToRole="AssetMaster" />
+  </EntityType>
+  <EntityType Name="AssetMaster">
+    <Key>
+      <PropertyRef Name="AssetID" />
+    </Key>
+    <Property Name="AssetID" Type="Guid" Nullable="false" />
+    <Property Name="AName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="ADescription" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
+    <Property Name="ATypeID" Type="Int32" />
+    <Property Name="ATagID" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="SID" Type="Int64" />
+    <Property Name="ASerialNo" Type="Int64" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="UID" Type="Guid" Nullable="false" />
+    <Property Name="AStateDateTime" Type="DateTime" Precision="3" />
+    <Property Name="AState" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+    <Property Name="LastInventoryDateTime" Type="DateTime" Precision="3" />
+    <Property Name="CustomerID" Type="Guid" Nullable="false" />
+    <Property Name="TransactionDateTime" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="ActivityDetails" Relationship="Self.FK_ActivityDetails_AssetMaster" FromRole="AssetMaster" ToRole="ActivityDetails" />
+    <NavigationProperty Name="AssetTypeMaster" Relationship="Self.FK_AssetMaster_AssetTypeMaster" FromRole="AssetMaster" ToRole="AssetTypeMaster" />
+    <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_AssetMaster_CustomerMaster" FromRole="AssetMaster" ToRole="CustomerMaster" />
+    <NavigationProperty Name="SerialNumber" Relationship="Self.FK_AssetMaster_SerialNumbers" FromRole="AssetMaster" ToRole="SerialNumbers" />
+  </EntityType>
+  <EntityType Name="AssetTypeCustomerMapping">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Int32" Nullable="false" />
+    <Property Name="ATypeID" Type="Int32" Nullable="false" />
+    <Property Name="CustomerID" Type="Guid" Nullable="false" />
+    <NavigationProperty Name="AssetTypeMaster" Relationship="Self.FK_AssetTypeCustomerMapping_AssetTypeMaster" FromRole="AssetTypeCustomerMapping" ToRole="AssetTypeMaster" />
+    <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_AssetTypeCustomerMapping_CustomerMaster" FromRole="AssetTypeCustomerMapping" ToRole="CustomerMaster" />
+  </EntityType>
+  <EntityType Name="AssetTypeMaster">
+    <Key>
+      <PropertyRef Name="ATypeID" />
+    </Key>
+    <Property Name="ATypeID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="AssetName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="AssetDisplay" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="AssetDesc" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" />
+    <NavigationProperty Name="AssetMasters" Relationship="Self.FK_AssetMaster_AssetTypeMaster" FromRole="AssetTypeMaster" ToRole="AssetMaster" />
+    <NavigationProperty Name="AssetTypeCustomerMappings" Relationship="Self.FK_AssetTypeCustomerMapping_AssetTypeMaster" FromRole="AssetTypeMaster" ToRole="AssetTypeCustomerMapping" />
+  </EntityType>
+  <EntityType Name="CustomerMaster">
+    <Key>
+      <PropertyRef Name="CustomerID" />
+    </Key>
+    <Property Name="CustomerID" Type="Guid" Nullable="false" />
+    <Property Name="CustomerName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="CompanyCode" Type="Int32" />
+    <Property Name="ContactNo" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="EmailId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <NavigationProperty Name="Activities" Relationship="Self.FK_Activity_CustomerMaster" FromRole="CustomerMaster" ToRole="Activity" />
+    <NavigationProperty Name="AssetMasters" Relationship="Self.FK_AssetMaster_CustomerMaster" FromRole="CustomerMaster" ToRole="AssetMaster" />
+    <NavigationProperty Name="AssetTypeCustomerMappings" Relationship="Self.FK_AssetTypeCustomerMapping_CustomerMaster" FromRole="CustomerMaster" ToRole="AssetTypeCustomerMapping" />
+    <NavigationProperty Name="DeviceMasters" Relationship="Self.FK_DeviceMaster_CustomerMaster" FromRole="CustomerMaster" ToRole="DeviceMaster" />
+    <NavigationProperty Name="SerialNumbers" Relationship="Self.FK_SerialNumbers_CustomerMaster" FromRole="CustomerMaster" ToRole="SerialNumbers" />
+    <NavigationProperty Name="Users" Relationship="Self.FK_Users_CustomerMaster" FromRole="CustomerMaster" ToRole="Users" />
+    <NavigationProperty Name="Vendors" Relationship="Self.FK_Vendor_CustomerMaster" FromRole="CustomerMaster" ToRole="Vendor" />
+  </EntityType>
+  <EntityType Name="DeviceMaster">
+    <Key>
+      <PropertyRef Name="DeviceID" />
+    </Key>
+    <Property Name="DeviceID" Type="Guid" Nullable="false" />
+    <Property Name="DeviceName" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+    <Property Name="CustomerID" Type="Guid" Nullable="false" />
+    <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_DeviceMaster_CustomerMaster" FromRole="DeviceMaster" ToRole="CustomerMaster" />
+    <Property Name="ClientDeviceID" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="SerialNumber">
+    <Key>
+      <PropertyRef Name="SID" />
+    </Key>
+    <Property Name="SID" Type="Int64" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="AssetTypeID" Type="Int32" />
+    <Property Name="SerialNumber1" Type="Int64" />
+    <Property Name="TagID" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="CustomerID" Type="Guid" />
+    <Property Name="ServerDateTime" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="AssetMasters" Relationship="Self.FK_AssetMaster_SerialNumbers" FromRole="SerialNumbers" ToRole="AssetMaster" />
+    <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_SerialNumbers_CustomerMaster" FromRole="SerialNumbers" ToRole="CustomerMaster" />
+  </EntityType>
+  <EntityType Name="sysdiagram">
+    <Key>
+      <PropertyRef Name="diagram_id" />
+    </Key>
+    <Property Name="name" Type="String" MaxLength="128" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="principal_id" Type="Int32" Nullable="false" />
+    <Property Name="diagram_id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="version" Type="Int32" />
+    <Property Name="definition" Type="Binary" MaxLength="Max" FixedLength="false" />
+  </EntityType>
+  <EntityType Name="User">
+    <Key>
+      <PropertyRef Name="UserID" />
+    </Key>
+    <Property Name="UserID" Type="Guid" Nullable="false" />
+    <Property Name="UserName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Password" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="FirstName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="LastName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="CustomerID" Type="Guid" />
+    <Property Name="IsActive" Type="Boolean" />
+    <Property Name="TransactionDateTime" Type="DateTime" Precision="3" />
+    <NavigationProperty Name="Activities" Relationship="Self.FK_Activity_Users" FromRole="Users" ToRole="Activity" />
+    <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_Users_CustomerMaster" FromRole="Users" ToRole="CustomerMaster" />
+  </EntityType>
+  <EntityType Name="Vendor">
+    <Key>
+      <PropertyRef Name="VendorID" />
+    </Key>
+    <Property Name="VendorID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="Location" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+    <Property Name="CustomerID" Type="Guid" Nullable="false" />
+    <NavigationProperty Name="Activities" Relationship="Self.FK_Activity_Vendor" FromRole="Vendor" ToRole="Activity" />
+    <NavigationProperty Name="CustomerMaster" Relationship="Self.FK_Vendor_CustomerMaster" FromRole="Vendor" ToRole="CustomerMaster" />
+  </EntityType>
+  <EntityType Name="Location">
+    <Key>
+      <PropertyRef Name="LocationId" />
+      <PropertyRef Name="LocationName" />
+      <PropertyRef Name="CreatedOn" />
+      <PropertyRef Name="IsActive" />
+    </Key>
+    <Property Name="LocationId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="LocationName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Reader">
+    <Key>
+      <PropertyRef Name="ReaderId" />
+      <PropertyRef Name="ReaderIP" />
+      <PropertyRef Name="AntennaID" />
+      <PropertyRef Name="IsActive" />
+    </Key>
+    <Property Name="ReaderId" Type="Int16" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="ReaderIP" Type="String" MaxLength="15" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="AntennaID" Type="Int16" Nullable="false" />
+    <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="LastUpdatedDateTime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="ReadersTransactionLog">
+    <Key>
+      <PropertyRef Name="ID" />
+    </Key>
+    <Property Name="ID" Type="Guid" Nullable="false" />
+    <Property Name="TagId" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="AssetSerialNo" Type="Int64" />
+    <Property Name="AssetteType" Type="Int32" />
+    <Property Name="ReaderIP" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+    <Property Name="AntennaID" Type="Int16" />
+    <Property Name="RSSI" Type="Int16" />
+    <Property Name="LocationID" Type="Int16" />
+    <Property Name="TouchPointID" Type="Int16" />
+    <Property Name="TouchPointType" Type="String" MaxLength="25" FixedLength="false" Unicode="true" />
+    <Property Name="IsProcessed" Type="Boolean" />
+    <Property Name="ProcessesOn" Type="DateTime" Precision="3" />
+    <Property Name="TransDatetime" Type="DateTime" Precision="3" />
+    <Property Name="ServerDatetime" Type="DateTime" Precision="3" />
+  </EntityType>
+  <EntityType Name="TouchPoint">
+    <Key>
+      <PropertyRef Name="TouchPointId" />
+      <PropertyRef Name="TouchPointName" />
+      <PropertyRef Name="LocationId" />
+      <PropertyRef Name="CreatedOn" />
+      <PropertyRef Name="IsActive" />
+    </Key>
+    <Property Name="TouchPointId" Type="Int16" Nullable="false" />
+    <Property Name="TouchPointName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+    <Property Name="LocationId" Type="Int16" Nullable="false" />
+    <Property Name="CreatedOn" Type="DateTime" Nullable="false" Precision="3" />
+    <Property Name="ModifiedOn" Type="DateTime" Precision="3" />
+    <Property Name="IsActive" Type="Boolean" Nullable="false" />
+    <Property Name="Direction" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+  </EntityType>
+  <Association Name="FK_Activity_CustomerMaster">
+    <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="0..1" />
+    <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CustomerMaster">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Activity">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Activity_Users">
+    <End Role="Users" Type="Self.User" Multiplicity="0..1" />
+    <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Users">
+        <PropertyRef Name="UserID" />
+      </Principal>
+      <Dependent Role="Activity">
+        <PropertyRef Name="UID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Activity_Vendor">
+    <End Role="Vendor" Type="Self.Vendor" Multiplicity="0..1" />
+    <End Role="Activity" Type="Self.Activity" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Vendor">
+        <PropertyRef Name="VendorID" />
+      </Principal>
+      <Dependent Role="Activity">
+        <PropertyRef Name="VendorID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ActivityDetails_Activity">
+    <End Role="Activity" Type="Self.Activity" Multiplicity="1" />
+    <End Role="ActivityDetails" Type="Self.ActivityDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Activity">
+        <PropertyRef Name="ActivityID" />
+      </Principal>
+      <Dependent Role="ActivityDetails">
+        <PropertyRef Name="ActivityID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_ActivityDetails_AssetMaster">
+    <End Role="AssetMaster" Type="Self.AssetMaster" Multiplicity="1" />
+    <End Role="ActivityDetails" Type="Self.ActivityDetail" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AssetMaster">
+        <PropertyRef Name="AssetID" />
+      </Principal>
+      <Dependent Role="ActivityDetails">
+        <PropertyRef Name="AssetID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AssetMaster_AssetTypeMaster">
+    <End Role="AssetTypeMaster" Type="Self.AssetTypeMaster" Multiplicity="0..1" />
+    <End Role="AssetMaster" Type="Self.AssetMaster" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AssetTypeMaster">
+        <PropertyRef Name="ATypeID" />
+      </Principal>
+      <Dependent Role="AssetMaster">
+        <PropertyRef Name="ATypeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AssetMaster_CustomerMaster">
+    <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="1" />
+    <End Role="AssetMaster" Type="Self.AssetMaster" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CustomerMaster">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="AssetMaster">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AssetMaster_SerialNumbers">
+    <End Role="SerialNumbers" Type="Self.SerialNumber" Multiplicity="0..1" />
+    <End Role="AssetMaster" Type="Self.AssetMaster" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="SerialNumbers">
+        <PropertyRef Name="SID" />
+      </Principal>
+      <Dependent Role="AssetMaster">
+        <PropertyRef Name="SID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AssetTypeCustomerMapping_AssetTypeMaster">
+    <End Role="AssetTypeMaster" Type="Self.AssetTypeMaster" Multiplicity="1" />
+    <End Role="AssetTypeCustomerMapping" Type="Self.AssetTypeCustomerMapping" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="AssetTypeMaster">
+        <PropertyRef Name="ATypeID" />
+      </Principal>
+      <Dependent Role="AssetTypeCustomerMapping">
+        <PropertyRef Name="ATypeID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_AssetTypeCustomerMapping_CustomerMaster">
+    <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="1" />
+    <End Role="AssetTypeCustomerMapping" Type="Self.AssetTypeCustomerMapping" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CustomerMaster">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="AssetTypeCustomerMapping">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_DeviceMaster_CustomerMaster">
+    <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="1" />
+    <End Role="DeviceMaster" Type="Self.DeviceMaster" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CustomerMaster">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="DeviceMaster">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_SerialNumbers_CustomerMaster">
+    <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="0..1" />
+    <End Role="SerialNumbers" Type="Self.SerialNumber" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CustomerMaster">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="SerialNumbers">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Users_CustomerMaster">
+    <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="0..1" />
+    <End Role="Users" Type="Self.User" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CustomerMaster">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Users">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Vendor_CustomerMaster">
+    <End Role="CustomerMaster" Type="Self.CustomerMaster" Multiplicity="1" />
+    <End Role="Vendor" Type="Self.Vendor" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="CustomerMaster">
+        <PropertyRef Name="CustomerID" />
+      </Principal>
+      <Dependent Role="Vendor">
+        <PropertyRef Name="CustomerID" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="LaundryManagementEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="Activities" EntityType="Self.Activity" />
+    <EntitySet Name="ActivityDetails" EntityType="Self.ActivityDetail" />
+    <EntitySet Name="AssetMasters" EntityType="Self.AssetMaster" />
+    <EntitySet Name="AssetTypeCustomerMappings" EntityType="Self.AssetTypeCustomerMapping" />
+    <EntitySet Name="AssetTypeMasters" EntityType="Self.AssetTypeMaster" />
+    <EntitySet Name="CustomerMasters" EntityType="Self.CustomerMaster" />
+    <EntitySet Name="DeviceMasters" EntityType="Self.DeviceMaster" />
+    <EntitySet Name="SerialNumbers" EntityType="Self.SerialNumber" />
+    <EntitySet Name="sysdiagrams" EntityType="Self.sysdiagram" />
+    <EntitySet Name="Users" EntityType="Self.User" />
+    <EntitySet Name="Vendors" EntityType="Self.Vendor" />
+    <EntitySet Name="Locations" EntityType="Self.Location" />
+    <EntitySet Name="Readers" EntityType="Self.Reader" />
+    <EntitySet Name="ReadersTransactionLogs" EntityType="Self.ReadersTransactionLog" />
+    <EntitySet Name="TouchPoints" EntityType="Self.TouchPoint" />
+    <AssociationSet Name="FK_Activity_CustomerMaster" Association="Self.FK_Activity_CustomerMaster">
+      <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+      <End Role="Activity" EntitySet="Activities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Activity_Users" Association="Self.FK_Activity_Users">
+      <End Role="Users" EntitySet="Users" />
+      <End Role="Activity" EntitySet="Activities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Activity_Vendor" Association="Self.FK_Activity_Vendor">
+      <End Role="Vendor" EntitySet="Vendors" />
+      <End Role="Activity" EntitySet="Activities" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ActivityDetails_Activity" Association="Self.FK_ActivityDetails_Activity">
+      <End Role="Activity" EntitySet="Activities" />
+      <End Role="ActivityDetails" EntitySet="ActivityDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_ActivityDetails_AssetMaster" Association="Self.FK_ActivityDetails_AssetMaster">
+      <End Role="AssetMaster" EntitySet="AssetMasters" />
+      <End Role="ActivityDetails" EntitySet="ActivityDetails" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AssetMaster_AssetTypeMaster" Association="Self.FK_AssetMaster_AssetTypeMaster">
+      <End Role="AssetTypeMaster" EntitySet="AssetTypeMasters" />
+      <End Role="AssetMaster" EntitySet="AssetMasters" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AssetMaster_CustomerMaster" Association="Self.FK_AssetMaster_CustomerMaster">
+      <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+      <End Role="AssetMaster" EntitySet="AssetMasters" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AssetMaster_SerialNumbers" Association="Self.FK_AssetMaster_SerialNumbers">
+      <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+      <End Role="AssetMaster" EntitySet="AssetMasters" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AssetTypeCustomerMapping_AssetTypeMaster" Association="Self.FK_AssetTypeCustomerMapping_AssetTypeMaster">
+      <End Role="AssetTypeMaster" EntitySet="AssetTypeMasters" />
+      <End Role="AssetTypeCustomerMapping" EntitySet="AssetTypeCustomerMappings" />
+    </AssociationSet>
+    <AssociationSet Name="FK_AssetTypeCustomerMapping_CustomerMaster" Association="Self.FK_AssetTypeCustomerMapping_CustomerMaster">
+      <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+      <End Role="AssetTypeCustomerMapping" EntitySet="AssetTypeCustomerMappings" />
+    </AssociationSet>
+    <AssociationSet Name="FK_DeviceMaster_CustomerMaster" Association="Self.FK_DeviceMaster_CustomerMaster">
+      <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+      <End Role="DeviceMaster" EntitySet="DeviceMasters" />
+    </AssociationSet>
+    <AssociationSet Name="FK_SerialNumbers_CustomerMaster" Association="Self.FK_SerialNumbers_CustomerMaster">
+      <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+      <End Role="SerialNumbers" EntitySet="SerialNumbers" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Users_CustomerMaster" Association="Self.FK_Users_CustomerMaster">
+      <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+      <End Role="Users" EntitySet="Users" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Vendor_CustomerMaster" Association="Self.FK_Vendor_CustomerMaster">
+      <End Role="CustomerMaster" EntitySet="CustomerMasters" />
+      <End Role="Vendor" EntitySet="Vendors" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>

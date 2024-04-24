@@ -1,0 +1,22 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace PSL.Laundry.CentralService.Models
+{
+    public class ActivityModel
+    {
+        public Nullable<System.Guid> UID { get; set; }
+        public Nullable<System.Guid> CustomerID { get; set; }
+        public string ActivityType { get; set; }
+        public Nullable<int> VendorID { get; set; }
+        public Nullable<System.Guid> RoomID { get; set; }
+        public Nullable<int> Count { get; set; }
+        public Nullable<System.DateTime> StartDate { get; set; }
+        public Nullable<System.DateTime> EndDate { get; set; }
+        public List<string> Data { get; set; }
+    }
+
+
+}

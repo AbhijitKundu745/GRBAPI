@@ -1,0 +1,290 @@
+﻿using log4net;
+using PSL.Laundry.CentralService.DataAccessLayer;
+using PSL.Laundry.CentralService.DBContext;
+using PSL.Laundry.CentralService.IDataAccessLayer;
+using PSL.Laundry.CentralService.Logger;
+using PSL.Laundry.CentralService.Models;
+using System;
+using System.Collections.Generic;
+using System.Web.Http;
+
+namespace PSL.Laundry.CentralService.Controllers
+{
+    [RoutePrefix("PDA")]
+    public class PDAController : ApiController
+    {
+        #region properties
+        private readonly ILogger<PDAController> Log;
+        private readonly IPDADAL pdaDAO;
+        #endregion
+
+        public PDAController(ILogger<PDAController> logger, IPDADAL pdaDAO)
+        {
+            this.Log = logger;
+            this.pdaDAO = pdaDAO;
+        }
+
+        [HttpGet, Route("GetAllCustomers")]
+        public IHttpActionResult GetAllCustomers()
+        {
+            ResponseData responseData = new ResponseData();
+            List<CustomerMaster> customerDetails = null;
+            try
+            {
+                customerDetails = pdaDAO.GetAllCustomers();
+                responseData.status = true;
+                responseData.data = customerDetails;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+
+        [HttpGet, Route("GetAllVendors")]
+        public IHttpActionResult GetAllVendors(Guid tenantID)
+        {
+            ResponseData responseData = new ResponseData();
+            List<Vendor> locations = null;
+            try
+            {
+                locations = pdaDAO.GetAllVendors(tenantID);
+                responseData.status = true;
+                responseData.data = locations;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+
+        [HttpGet, Route("GetAllAssetTypes")]
+        public IHttpActionResult GetAllAssetTypes(Guid tenantID)
+        {
+            ResponseData responseData = new ResponseData();
+            List<AssetTypeMaster> assettypes = null;
+            try
+            {
+                assettypes = pdaDAO.GetAllAssetType(tenantID);
+                responseData.status = true;
+                responseData.data = assettypes;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+
+
+        [HttpGet, Route("GetAllAssets")]
+        public IHttpActionResult GetAllAssets(Guid tenantID)
+        {
+            ResponseData responseData = new ResponseData();
+            List<AssetMaster> assets = null;
+            try
+            {
+                assets = pdaDAO.GetAllAssets(tenantID);
+                responseData.status = true;
+                responseData.data = assets;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+
+        [HttpGet, Route("GetAllAssetsMobile")]
+        public IHttpActionResult GetAllAssetsMobile(Guid tenantID)
+        {
+            ResponseData responseData = new ResponseData();
+            List<AssetMasterResponse> assets = null;
+            try
+            {
+                assets = pdaDAO.GetAllAssetsforMobile(tenantID);
+                responseData.status = true;
+                responseData.data = assets;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+
+
+
+
+        [HttpPost, Route("Login")]
+        public IHttpActionResult Login(User user)
+        {
+            ResponseObjectData responseData = new ResponseObjectData();
+            User userdetails;
+            try
+            {
+                userdetails = pdaDAO.GetUserData(user);
+                responseData.status = true;
+                responseData.data = userdetails;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+
+        [HttpPost, Route("MobileLogin")]
+        public IHttpActionResult MobileLogin(LoginModel login)
+        {
+            ResponseObjectData responseData = new ResponseObjectData();
+            LoginResponse userdetails;
+            try
+            {
+                userdetails = pdaDAO.MobileLogin(login);
+                responseData.status = true;
+                responseData.data = userdetails;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+
+        [HttpPost, Route("Transaction")]
+        public IHttpActionResult Transaction(Activity activity)
+        {
+            ResponseObjectData responseData = new ResponseObjectData();
+            bool result; 
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                result = pdaDAO.createActivity(activity);
+                responseData.status = true;
+                responseData.data = result;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+
+        [HttpPost, Route("TransactionMobile")]
+        public IHttpActionResult TransactionMobile(ActivityModel activity)
+        {
+            ResponseObjectData responseData = new ResponseObjectData();
+            bool result;
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return BadRequest(ModelState);
+                }
+
+                result = pdaDAO.CreateActivityMobile(activity);
+                responseData.status = true;
+                responseData.data = result;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+
+        
+
+        [HttpPost, Route("RegisterAsset")]
+        public IHttpActionResult RegisterAsset(RegisterModel registerModel)
+        {
+            ResponseObjectData responseData = new ResponseObjectData();
+            bool register;
+            try
+            {
+                register = pdaDAO.registerAsset(registerModel);
+                responseData.status = true;
+				if (register)
+				{
+                responseData.data = "Registered Succesfully";
+
+				}
+				else
+				{
+                    responseData.data = "Please Try Again later";
+                }
+            }
+            catch (Exception ex) 
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+
+        [HttpPost, Route("RegisterAssetMobile")]
+        public IHttpActionResult RegisterAssetMobile(RegisterModelMobile registerModel)
+        {
+            ResponseObjectData responseData = new ResponseObjectData();
+            bool register;
+            try
+            {
+                register = pdaDAO.RegisterAssetMobile(registerModel);
+                responseData.status = true;
+                if (register)
+                {
+                    responseData.data = "Registered Succesfully";
+
+                }
+                else
+                {
+                    responseData.data = "Please Try Again later";
+                }
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+    }
+}

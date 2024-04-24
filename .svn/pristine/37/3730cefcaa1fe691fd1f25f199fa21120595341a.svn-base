@@ -1,0 +1,10 @@
+2020-09-15 09:08:15,293 [1] ERROR PSL.OTS.CentralService.Global.AppSettings - Error in loadAppSettings
+System.Exception: Error at loading mailSettingscould not send mail because of invalid parameters..please check parameters
+   at PSL.OTS.CentralService.Global.AppSettings.EmailSettings.LoadEmailSettings() in D:\Vinod\Projects\Goa\PIP\API\OTSService\OTSService\PSL.OTS.CentralService\Global\AppSettings.cs:line 121
+   at PSL.OTS.CentralService.Global.AppSettings.loadAppSettings() in D:\Vinod\Projects\Goa\PIP\API\OTSService\OTSService\PSL.OTS.CentralService\Global\AppSettings.cs:line 26
+2020-09-15 09:10:31,546 [1] ERROR PSL.OTS.CentralService.Global.AppSettings - Error in loadAppSettings
+System.Exception: Error at loading mailSettingscould not send mail because of invalid parameters..please check parameters
+   at PSL.OTS.CentralService.Global.AppSettings.EmailSettings.LoadEmailSettings() in D:\Vinod\Projects\Goa\PIP\API\OTSService\OTSService\PSL.OTS.CentralService\Global\AppSettings.cs:line 121
+   at PSL.OTS.CentralService.Global.AppSettings.loadAppSettings() in D:\Vinod\Projects\Goa\PIP\API\OTSService\OTSService\PSL.OTS.CentralService\Global\AppSettings.cs:line 26
+2020-09-15 10:10:05,278 [6] ERROR TransactionApprovalController - TransactionApproval Post= >Invalid requested object
+   at PSL.OTS.CentralService.Controllers.TransactionApprovalController.Post(ApprovalTransaction transactionInput) in D:\Vinod\Projects\Goa\PIP\API\OTSService\OTSService\PSL.OTS.CentralService\Controllers\TransactionApprovalController.cs:line 142

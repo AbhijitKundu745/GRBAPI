@@ -1,0 +1,10 @@
+2021-11-10 15:02:53,320 [8] ERROR PDAController - System.InvalidOperationException: Saving or accepting changes failed because more than one entity of type 'PSL.Laundry.CentralService.DBContext.ActivityDetail' have the same primary key value. Ensure that explicitly set primary key values are unique. Ensure that database-generated primary keys are configured correctly in the database and in the Entity Framework model. Use the Entity Designer for Database First/Model First configuration. Use the 'HasDatabaseGeneratedOption" fluent API or 'DatabaseGeneratedAttribute' for Code First configuration.
+   at System.Data.Entity.Core.Objects.ObjectStateManager.FixupKey(EntityEntry entry)
+   at System.Data.Entity.Core.Objects.EntityEntry.AcceptChanges()
+   at System.Data.Entity.Core.Objects.EntityEntry.ChangeObjectState(EntityState requestedState)
+   at System.Data.Entity.Core.Objects.EntityEntry.ChangeState(EntityState state)
+   at System.Data.Entity.Internal.StateEntryAdapter.ChangeState(EntityState state)
+   at System.Data.Entity.Internal.InternalEntityEntry.set_State(EntityState value)
+   at System.Data.Entity.Infrastructure.DbEntityEntry`1.set_State(EntityState value)
+   at PSL.Laundry.CentralService.DataAccessLayer.PDADAL.CreateActivityMobile(ActivityModel activityModel) in D:\Code\Testing\LaundryAPI\LaundryService\LaundryService\PSL.Laundry.CentralService\DataAccessLayer\PDADAL.cs:line 330
+   at PSL.Laundry.CentralService.Controllers.PDAController.TransactionMobile(ActivityModel activity) in D:\Code\Testing\LaundryAPI\LaundryService\LaundryService\PSL.Laundry.CentralService\Controllers\PDAController.cs:line 216

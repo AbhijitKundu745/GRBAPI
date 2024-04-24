@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5b7f1d7635384aadbe10e89a88ccb6f7" Name="Diagram1">
+        <EntityTypeShape EntityType="LaundryManagementModel.Activity" Width="1.5" PointX="5.25" PointY="20.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.ActivityDetail" Width="1.5" PointX="7.5" PointY="18.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.AssetMaster" Width="1.5" PointX="5.25" PointY="15" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.AssetTypeCustomerMapping" Width="1.5" PointX="3" PointY="13.25" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.AssetTypeMaster" Width="1.5" PointX="0.75" PointY="9" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.CustomerMaster" Width="1.5" PointX="0.75" PointY="12.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.DeviceMaster" Width="1.5" PointX="3" PointY="20.625" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.SerialNumber" Width="1.5" PointX="3" PointY="23.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.User" Width="1.5" PointX="3" PointY="26.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.Vendor" Width="1.5" PointX="2.5" PointY="30.375" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.Location" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.Reader" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.ReadersTransactionLog" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="LaundryManagementModel.TouchPoint" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <AssociationConnector Association="LaundryManagementModel.FK_Activity_CustomerMaster" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_Activity_Users" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_Activity_Vendor" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_ActivityDetails_Activity" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_ActivityDetails_AssetMaster" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_AssetMaster_AssetTypeMaster" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_AssetMaster_CustomerMaster" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_AssetMaster_SerialNumbers" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_AssetTypeCustomerMapping_AssetTypeMaster" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_AssetTypeCustomerMapping_CustomerMaster" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_DeviceMaster_CustomerMaster" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_SerialNumbers_CustomerMaster" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_Users_CustomerMaster" ManuallyRouted="false" />
+        <AssociationConnector Association="LaundryManagementModel.FK_Vendor_CustomerMaster" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="LaundryManagementModel.ErrorActivityDetail" Width="1.5" PointX="7.5" PointY="21.75" />
+        <AssociationConnector Association="LaundryManagementModel.FK_ErrorActivityDetails_Activity" />
+        <EntityTypeShape EntityType="LaundryManagementModel.RoomMaster" Width="1.5" PointX="3" PointY="16.5" />
+        <EntityTypeShape EntityType="LaundryManagementModel.database_firewall_rules" Width="1.5" PointX="7.375" PointY="0.75" />
+        <EntityTypeShape EntityType="LaundryManagementModel.ipv6_database_firewall_rules" Width="1.5" PointX="7.375" PointY="3.75" />
+        <AssociationConnector Association="LaundryManagementModel.FK_Activity_Activity" />
+        <AssociationConnector Association="LaundryManagementModel.FK_Activity_RoomMaster" />
+        <AssociationConnector Association="LaundryManagementModel.FK_RoomMaster_CustomerMaster" />
+        <EntityTypeShape EntityType="LaundryManagementModel.sysdiagram1" Width="1.5" PointX="5.375" PointY="7.75" />
+        <EntityTypeShape EntityType="LaundryManagementModel.AssetsIgnoreList" Width="1.5" PointX="7.375" PointY="6.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

@@ -1,0 +1,6 @@
+namespace PSL.Laundry.CentralService.Areas.HelpPage.ModelDescriptions
+{
+    public class SimpleTypeModelDescription : ModelDescription
+    {
+    }
+}

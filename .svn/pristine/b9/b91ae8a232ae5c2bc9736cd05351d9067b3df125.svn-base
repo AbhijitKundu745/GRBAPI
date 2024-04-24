@@ -1,0 +1,95 @@
+﻿using System;
+
+namespace PSL.Laundry.CentralService.Models
+{
+    public class TripDetailsInfo
+    {
+        public Guid? TripID { get; set; }
+        public DateTime? TripDateTime { get; set; } = DateTime.Now;
+        public int? TripNumber { get; set; } = 0;
+        public int? PermitNumber { get; set; } = 0;
+        public int? PrintSrNo { get; set; } = 0;
+        public string TruckID { get; set; } = string.Empty;
+        public string TruckRegNo { get; set; } = string.Empty;
+        public bool? IsWeighbridgeRequired { get; set; } = false;
+        public bool? IsTripStartPoint { get; set; } = false;
+        public bool? IsTripCompletionPoint { get; set; } = false;
+        public Int16? WeighbridgeID { get; set; } = 0;
+        public int? Weight { get; set; } = 0;
+        public DateTime? WeighingDateTime { get; set; } = DateTime.Now;
+        public int? TareWeight { get; set; } = 0;
+        public Int16? LastLocationID { get; set; } = 0;
+        public Int16? LocationID { get; set; } = 0;
+        public Int16? DestinationLocationID { get; set; } = 0;
+        public int? RouteID { get; set; } = 0;
+        public byte? LocationOrder { get; set; } = 0;
+        public Int16? MachineID { get; set; } = 0;
+        public Int16? MaterialID { get; set; } = 0;
+        public Int16? ItemID { get; set; } = 0;
+        public Int16? ProductID { get; set; } = 0;
+        public Int16? OperationID { get; set; } = 0;
+        public Int16? ActivityID { get; set; } = 0;
+        public string LotNumber { get; set; } = string.Empty;
+        public string UserID { get; set; } = string.Empty;
+        public bool? IsSystemGeneratedRecord { get; set; } = false;
+        public DateTime? PrintDateTime { get; set; }=DateTime.Now;
+        public string ContractorSuffix { get; set; } = string.Empty;
+        public bool? IsERPEntry { get; set; } = false;
+        public string TransactionNumber { get; set; } = string.Empty;
+        public string TouchPointType { get; set; } = string.Empty;
+        public bool? InvalidLocation { get; set; } = false;
+        public Int16? TouchPointID { get; set; } = 0;
+        public string TagTransactionNumber { get; set; } = string.Empty;
+        public Int16? BargeID { get; set; } = 0;
+        public string VesselCode { get; set; } = string.Empty;
+        public string BargeTransactionNumber { get; set; } = string.Empty;
+        public string SAPDeliveryRequestNumber { get; set; } = string.Empty;
+        public string STONumber { get; set; } = string.Empty;
+        public Int16? STOLineNumber { get; set; } = 0;
+        public bool? IsPGI { get; set; } = false;
+        public bool? IsGRN { get; set; } = false;
+        public bool? IsSSIG { get; set; } = false;
+        public string SAPDestinationBatch { get; set; } = string.Empty;
+        public string BargeTripNumber { get; set; } = string.Empty;
+        public bool? IsPreviousTripClosed { get; set; } = false;
+        public string BargeCode { get; set; } = string.Empty;
+        public string TGSN { get; set; } = string.Empty;
+        public Int16? ShortTripStackID { get; set; } = 0;
+        public Int16? ShortTripBatchID { get; set; } = 0;
+        public Int16? WorkCenterID { get; set; } = 0;
+        public Int16? SourceSLocID { get; set; } = 0;
+        public Int16? DestinationSLocID { get; set; } = 0;
+        public Int16? PlantID { get; set; } = 0;
+        public string BundurName { get; set; } = string.Empty;
+        public string JettyName { get; set; } = string.Empty;
+        public string ShiftCode { get; set; } = string.Empty;
+        public string ComputerIP { get; set; } = string.Empty;
+        public string ComputerMac { get; set; } = string.Empty;
+        public string ReaderIP { get; set; } = string.Empty;
+        public bool? IsLogicalTouchPoint { get; set; } = false;
+        public string logicalTagID { get; set; } = string.Empty;
+        public string DriverID { get; set; } = string.Empty;
+        public string SecurityGateName { get; set; } = string.Empty;
+        public bool? IsSecuritySource { get; set; } = false;
+        public bool? IsTruckLoaded { get; set; } = false;
+        public decimal? TruckCapacity { get; set; } = 0;
+        public decimal? ExpectedQty { get; set; } = 0;
+        public string PermitNo { get; set; } = string.Empty;
+        public string GateEntryNo { get; set; } = string.Empty;
+        public string Remarks { get; set; } = string.Empty;
+        public string SerialNo { get; set; } = string.Empty;
+        public string DocumentNo { get; set; } = string.Empty;
+        public string DeliveryNo { get; set; } = string.Empty;
+        public string BillingDocNo { get; set; } = string.Empty;
+        public string GateOutFlag { get; set; } = string.Empty;
+        public string PersonName { get; set; } = string.Empty;
+        public string GuestType { get; set; } = string.Empty;
+        public string CompanyName { get; set; } = string.Empty;
+        public string MobileNumber { get; set; } = string.Empty;
+        public string WhomToMeet { get; set; } = string.Empty;
+        public int? TransactionTypeID { get; set; } = 0;
+        public int? TaskTypeID { get; set; } = 0;
+        public int? TruckTypeID { get; set; } = 0;
+        public bool? IsMobileLoading { get; set; } = false;
+    }
+}

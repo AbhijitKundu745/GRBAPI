@@ -1,0 +1,494 @@
+﻿using Dapper;
+using PSL.Laundry.CentralService.DBContext;
+using PSL.Laundry.CentralService.Global;
+using PSL.Laundry.CentralService.IDataAccessLayer;
+using PSL.Laundry.CentralService.Models;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.Entity;
+using System.Data.Entity.Infrastructure;
+using System.Data.SqlClient;
+using System.Linq;
+
+namespace PSL.Laundry.CentralService.DataAccessLayer
+{
+    public class PDADAL : IPDADAL
+    {
+        private LaundryManagementEntities db = new LaundryManagementEntities();
+        TimeZoneInfo INDIAN_ZONE = TimeZoneInfo.FindSystemTimeZoneById("India Standard Time");
+
+        public List<CustomerMaster> GetAllCustomers()
+        {
+            List<CustomerMaster> castDetails = null;
+            using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+            {
+                db.Open();
+                castDetails = db.Query<CustomerMaster>(AppSettings.SQLQueryCommand.SP_Get_CustomerDetails, commandTimeout: 60, commandType: CommandType.StoredProcedure).ToList();
+            }
+            return castDetails;
+        }
+
+        public List<Vendor> GetAllVendors(Guid tenantID)
+        {
+            List<Vendor> locations = null;
+            using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+            {
+                db.Open();
+                var _params = new DynamicParameters();
+                _params.Add("@TenantID", tenantID);
+                locations = db
+                    .Query<Vendor>(AppSettings.SQLQueryCommand.SP_Get_AllVendors, _params, commandType: CommandType.StoredProcedure).ToList();
+            }
+            return locations;
+        }
+
+        public List<AssetTypeMaster> GetAllAssetType(Guid tenantID)
+        {
+            List<AssetTypeMaster> locations = null;
+            using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+            {
+                db.Open();
+                var _params = new DynamicParameters();
+                _params.Add("@TenantID", tenantID);
+                locations = db
+                    .Query<AssetTypeMaster>(AppSettings.SQLQueryCommand.SP_Get_AllAssetTypes, _params, commandType: CommandType.StoredProcedure).ToList();
+            }
+            return locations;
+        }
+
+
+
+        public List<AssetMaster> GetAllAssets(Guid tenantID)
+        {
+            List<AssetMaster> locations = null;
+            using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+            {
+                db.Open();
+                var _params = new DynamicParameters();
+                _params.Add("@TenantID", tenantID);
+                locations = db
+                    .Query<AssetMaster>(AppSettings.SQLQueryCommand.SP_Get_AllAssets, _params, commandType: CommandType.StoredProcedure).ToList();
+            }
+            return locations;
+        }
+
+
+        public User GetUserData(User usr)
+        {
+            User detail = null;
+            using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+            {
+                db.Open();
+                // string password = Psl.Chase.Utils.CryptorEngine.Encrypt(usr.Password.ToString().Trim(), true);
+                var _params = new DynamicParameters();
+                _params.Add("@userName", usr.UserName);
+                _params.Add("@password", usr.Password);
+                _params.Add("@ComapnyId", usr.CustomerID);
+                detail = db.Query<User>(AppSettings.SQLQueryCommand.Login, _params, commandType: CommandType.StoredProcedure).FirstOrDefault();
+                //password = string.Empty;
+            }
+            return detail;
+        }
+
+        public bool createActivity(Activity activity)
+        {
+            try
+            {
+                activity.TransactionDateTime = DateTime.Now;
+                Guid obj = Guid.NewGuid();
+                activity.ActivityID = obj;
+            
+                db.Activities.Add(activity);
+                db.SaveChanges();
+                foreach (var activityDetails in activity.ActivityDetails)
+                {
+                    var asset = db.AssetMasters.First(r => r.AssetID == activityDetails.AssetID);
+                    if (activity.ActivityType == "IN")
+                    {
+                        asset.AState = "IN";
+                        asset.AStateDateTime = DateTime.Now;
+                    }
+                    else if (activity.ActivityType == "OUT")
+                    {
+                        asset.AState = "OUT";
+                        asset.AStateDateTime = DateTime.Now;
+                    }
+                    else if (activity.ActivityType == "INV")
+                    {
+                        asset.LastInventoryDateTime = DateTime.Now;
+                    }
+                    db.Entry(asset).State = EntityState.Modified;
+                    db.Entry(activityDetails).State = EntityState.Modified;
+                }
+                db.SaveChanges();
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                if (ActivityExists(activity.ActivityID))
+                {
+                    return false;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+
+        public bool registerAsset(RegisterModel registerModel)
+        {
+            try
+            {
+                var asset = db.AssetMasters.Where(r => r.AssetID == registerModel.AssetID && r.CustomerID == registerModel.CustomerID && r.ASerialNo.ToString() == "").FirstOrDefault();
+                if (asset != null)
+                {
+                    asset.ASerialNo = registerModel.ASerialNo;
+                    asset.SID = registerModel.SID;
+                    asset.UID = registerModel.UID.Value;
+                    asset.ATagID = registerModel.ATagID;
+                    db.Entry(asset).State = EntityState.Modified;
+                    var serialNo = db.SerialNumbers.First(r => r.SerialNumber1 == registerModel.ASerialNo && r.CustomerID == registerModel.CustomerID);
+                    serialNo.AssetTypeID = asset.ATypeID;
+                    db.Entry(serialNo).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
+        }
+
+        public bool RegisterAssetMobile(RegisterModelMobile registerModel)
+        {
+            try
+            {
+                var asset = db.AssetMasters.Where(r => r.AssetID == registerModel.AssetID && r.CustomerID == registerModel.CustomerID && r.ASerialNo.ToString() == "").FirstOrDefault();
+                if (asset != null)
+                {
+                    var serialNo = db.SerialNumbers.First(r => r.SerialNumber1 == registerModel.ASerialNo && r.CustomerID == registerModel.CustomerID);
+                    asset.ASerialNo = registerModel.ASerialNo;
+                    asset.SID = serialNo.SID;
+                    asset.UID = registerModel.UID.Value;
+                    asset.ATagID = registerModel.ATagID;
+                    asset.IsRegistered = true;
+                    db.Entry(asset).State = EntityState.Modified;
+                    serialNo.AssetTypeID = asset.ATypeID;
+                    serialNo.TagID = registerModel.ATagID;
+                    db.Entry(serialNo).State = EntityState.Modified;
+                    db.SaveChanges();
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+
+            }
+            catch (DbUpdateException)
+            {
+                throw;
+            }
+        }
+
+        private bool ActivityExists(Guid id)
+        {
+            return db.Activities.Count(e => e.ActivityID == id) > 0;
+        }
+
+        public LoginResponse MobileLogin(LoginModel login)
+        {
+
+            var loginResponse = new LoginResponse();
+            using (System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(AppSettings.ConnectionString))
+            {
+
+
+                using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand())
+                {
+                    cmd.CommandText = AppSettings.SQLQueryCommand.MobileLogin;
+                    cmd.Parameters.AddWithValue("@userName", login.UserName);
+                    cmd.Parameters.AddWithValue("@password", login.Password);
+                    cmd.Parameters.AddWithValue("@ClientDeviceId", login.ClientDeviceID);
+                    cmd.Connection = conn;
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    conn.Open();
+
+                    System.Data.SqlClient.SqlDataAdapter adapter = new System.Data.SqlClient.SqlDataAdapter(cmd);
+
+                    DataSet ds = new DataSet();
+                    adapter.Fill(ds);
+                    DataTable tableA = ds.Tables[0];
+                    DataTable tableB = ds.Tables[1];
+                    DataTable tablec = ds.Tables[2];
+                    loginResponse = ds.Tables[0].AsEnumerable()
+   .Select(dataRow => new LoginResponse
+   {
+       UserName = dataRow.Field<string>("UserName"),
+       Password = dataRow.Field<string>("Password"),
+       CompanyCode = dataRow.Field<int>("CompanyCode"),
+       CustomerID = dataRow.Field<Guid>("CustomerID"),
+       UserID = dataRow.Field<Guid>("UserID"),
+       ISLogRequired = dataRow.Field<bool>("ISLogRequired")
+   }).First();
+
+                    loginResponse.Vendor = ds.Tables[1].AsEnumerable()
+.Select(dataRow => new VendorLogin
+{
+    VendorID = dataRow.Field<int>("VendorID"),
+    Name = dataRow.Field<string>("Name")
+
+}).ToList();
+
+                    loginResponse.AssetType = ds.Tables[2].AsEnumerable()
+.Select(dataRow => new AssetTypeLogin
+{
+    ATypeID = dataRow.Field<int>("ATypeID"),
+    AssetName = dataRow.Field<string>("AssetName")
+}).ToList();
+
+                    loginResponse.Room = ds.Tables[3].AsEnumerable()
+.Select(dataRow => new RoomMasterLogin
+{
+   RoomID = dataRow.Field<Guid>("RoomID"),
+   RoomName = dataRow.Field<string>("RoomNo")
+
+}).ToList();
+
+                    conn.Close();
+                }
+            }
+            return loginResponse;
+
+
+        }
+
+
+        public List<AssetMasterResponse> GetAllAssetsforMobile(Guid tenantID)
+        {
+            List<AssetMasterResponse> locations = null;
+            using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+            {
+                db.Open();
+                var _params = new DynamicParameters();
+                _params.Add("@TenantID", tenantID);
+                locations = db
+                    .Query<AssetMasterResponse>(AppSettings.SQLQueryCommand.SP_Get_AllAssets_Mobile, _params, commandType: CommandType.StoredProcedure).ToList();
+            }
+            return locations;
+        }
+
+        public bool CreateActivityMobile(ActivityModel activityModel)
+        {
+            Guid obj = Guid.NewGuid();
+            var activity = new Activity()
+            {
+                ActivityID = obj,
+                UID = activityModel.UID,
+                CustomerID = activityModel.CustomerID,
+                ActivityType = activityModel.ActivityType,
+                RoomID=activityModel.RoomID,
+                VendorID = activityModel.VendorID,
+                Count = activityModel.Count,
+                StartDate = activityModel.StartDate,
+                EndDate = activityModel.EndDate.Value,
+            };
+            try
+            {
+
+                activity.TransactionDateTime = DateTime.Now;
+                foreach (var tag in activityModel.Data)
+                {
+                    var asset = db.AssetMasters.FirstOrDefault(r => r.ATagID == tag);
+                    if (asset != null)
+                    {
+                        var activityDetail = new ActivityDetail()
+                        {
+                            AssetID = asset.AssetID,
+                            ActivityID = activity.ActivityID
+                        };
+                        activity.ActivityDetails.Add(activityDetail);
+                    }
+                    else
+                    {
+                        Guid eRRActivityDetailID = Guid.NewGuid();
+                        var errorActivityDetail = new ErrorActivityDetail()
+                        {
+                            ERRActivityDetailID = eRRActivityDetailID,
+                            ActivityID = activity.ActivityID,
+                            TagID = tag
+                        };
+                        activity.ErrorActivityDetails.Add(errorActivityDetail);
+                    }
+                }
+                foreach (var activityDetails in activity.ActivityDetails)
+                {
+                    Guid obj2 = Guid.NewGuid();
+                    activityDetails.ActivityDetailsID = obj2;
+                    var asset = db.AssetMasters.First(r => r.AssetID == activityDetails.AssetID);
+                    if (activityModel.ActivityType == "IN")
+                    {
+                        asset.AState = "IN";
+                        asset.AStateDateTime = DateTime.Now;
+                    }
+                    else if (activityModel.ActivityType == "OUT")
+                    {
+                        asset.AState = "OUT";
+                        asset.AStateDateTime = DateTime.Now;
+                        asset.AssetLife = asset.AssetLife + 1;
+                    }
+                    else if (activityModel.ActivityType == "INV")
+                    {
+                        DateTime indianTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, INDIAN_ZONE);
+                        asset.LastInventoryDateTime = indianTime.ToUniversalTime();
+                    }
+                    db.Entry(asset).State = EntityState.Modified;
+                }
+                db.Activities.Add(activity);
+                db.SaveChanges();
+                return true;
+            }
+            catch (DbUpdateException)
+            {
+                if (ActivityExists(activity.ActivityID))
+                {
+                    return false;
+                }
+                else
+                {
+                    throw;
+                }
+            }
+        }
+
+        //public List<TaskMaster> GetTaskMaster(DateTime? ModifiedDateTime)
+        //{
+        //    List<TaskMaster> tasks = null;
+        //    using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        db.Open();
+        //        var _params = new DynamicParameters();
+        //        _params.Add("@ModifiedDateTime", ModifiedDateTime);
+        //        tasks = db.Query<TaskMaster>(AppSettings.SQLQueryCommand.SP_Get_GETTasks, _params, commandTimeout: 60, commandType: CommandType.StoredProcedure).ToList();
+        //    }
+        //    return tasks;
+        //}
+
+        //public List<TransactionType> GetTansactionTypes(DateTime? ModifiedDateTime)
+        //{
+        //    List<TransactionType> transactionTypes = null;
+        //    using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        db.Open();
+        //        var _params = new DynamicParameters();
+        //        _params.Add("@ModifiedDateTime", ModifiedDateTime);
+        //        transactionTypes = db.Query<TransactionType>(AppSettings.SQLQueryCommand.SP_GET_TansactionTypes, _params, commandTimeout: 60, commandType: CommandType.StoredProcedure).ToList();
+        //    }
+        //    return transactionTypes;
+        //}
+
+        //public List<PDAUser> GetUsers(DateTime? ModifiedDateTime)
+        //{
+        //    List<PDAUser> users = null;
+        //    using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        db.Open();
+        //        var _params = new DynamicParameters();
+        //        _params.Add("@ModifiedDateTime", ModifiedDateTime);
+        //        users = db.Query<PDAUser>(AppSettings.SQLQueryCommand.SP_GET_PDAUsers, _params, commandTimeout: 60, commandType: CommandType.StoredProcedure).ToList();
+        //    }
+        //    return users;
+        //}
+
+        //public List<PDASourcePlant> GetSourcePlants(DateTime? ModifiedDateTime)
+        //{
+        //    List<PDASourcePlant> plants = null;
+        //    using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        db.Open();
+        //        var _params = new DynamicParameters();
+        //        _params.Add("@ModifiedDateTime", ModifiedDateTime);
+        //        plants = db.Query<PDASourcePlant>(AppSettings.SQLQueryCommand.SP_GET_PDASourcePlants, _params, commandTimeout: 60, commandType: CommandType.StoredProcedure).ToList();
+        //    }
+        //    return plants;
+        //}
+
+        //public List<TouchPoint> GetTouchPoints(DateTime? ModifiedDateTime)
+        //{
+        //    List<TouchPoint> touchPoints = null;
+        //    using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        db.Open();
+        //        var _params = new DynamicParameters();
+        //        _params.Add("@ModifiedDateTime", ModifiedDateTime);
+        //        touchPoints = db.Query<TouchPoint>(AppSettings.SQLQueryCommand.SP_GET_TouchPoints, _params, commandTimeout: 60, commandType: CommandType.StoredProcedure).ToList();
+        //    }
+        //    return touchPoints;
+        //}
+
+        //public List<Location> GetLocations(DateTime? ModifiedDateTime)
+        //{
+        //    List<Location> locations = null;
+        //    using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        db.Open();
+        //        var _params = new DynamicParameters();
+        //        _params.Add("@ModifiedDateTime", ModifiedDateTime);
+        //        locations = db.Query<Location>(AppSettings.SQLQueryCommand.SP_GET_Locations, _params, commandTimeout: 60, commandType: CommandType.StoredProcedure).ToList();
+        //    }
+        //    return locations;
+        //}
+
+        //public TripDetailsInfo GetLastTripByTruckId(string truckId)
+        //{
+        //    TripDetailsInfo tripDetail = null;
+        //    using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        db.Open();
+        //        var _params = new DynamicParameters();
+        //        _params.Add("@TruckId", truckId);
+        //        tripDetail = db
+        //            .Query<TripDetailsInfo>(AppSettings.SQLQueryCommand.SP_GET_LastTripDetailsbyTruckID, _params, commandType: CommandType.StoredProcedure)
+        //            .FirstOrDefault();
+        //    }
+        //    return tripDetail;
+        //}
+
+        //public int InsertTripDetail(PDATripDetail tripdetail)
+        //{
+        //    int retVal = 0;
+        //    using (IDbConnection conn = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        conn.Open();
+        //        var _params = new DynamicParameters();
+        //        _params.Add("@TripID", tripdetail.TripId);
+        //        _params.Add("@TouchPointType", tripdetail.TouchPointType);
+        //        _params.Add("@TruckID", tripdetail.TruckID);
+        //        _params.Add("@TaskTypeID", tripdetail.TaskTypeID);
+        //        _params.Add("@STONumber", tripdetail.STONumber);
+        //        _params.Add("@RouteID", tripdetail.RouteID);
+        //        _params.Add("@LotNumber", tripdetail.LotNumber);
+        //        _params.Add("@VesselCode", tripdetail.VesselCode);
+        //        _params.Add("@BundurName", tripdetail.BundurName);
+        //        _params.Add("@PermitNo", tripdetail.PermitNo);
+        //        _params.Add("@PrintSrNo", tripdetail.printSrNo);
+        //        _params.Add("@UserName", tripdetail.UserID);
+        //        _params.Add("@ValidatePrevTrip", tripdetail.ValidatePrevTrip);
+        //        _params.Add("@ReturnVal", dbType: DbType.Int32, direction: ParameterDirection.Output);
+        //        conn.Execute(AppSettings.SQLQueryCommand.SP_Insert_PDA_TripDetails, _params, commandTimeout: 60, commandType: CommandType.StoredProcedure);
+        //        retVal = _params.Get<int>("@ReturnVal");
+        //    }
+        //    return retVal;
+        //}
+    }
+}
