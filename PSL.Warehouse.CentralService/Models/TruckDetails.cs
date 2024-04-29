@@ -8,6 +8,7 @@ namespace PSL.Warehouse.CentralService.Models
     public class TruckDetails
     {
         public string TruckNumber { get; set; }
+        public string DRN { get; set; }
     }
     public class TruckIDDetails
     {

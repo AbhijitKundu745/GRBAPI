@@ -224,6 +224,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                             WmsPalletBinInfo wmsPalletBin = new WmsPalletBinInfo();
                             WmsPalletBinInfoL0 wmsPalletBinInfoL0 = new WmsPalletBinInfoL0();
                             WmsPalletBinInfoL1 wmsPalletBinInfoL1 = new WmsPalletBinInfoL1();
+                            WmsPalletBinInfoI0 wmsPalletBinInfoI0 = new WmsPalletBinInfoI0();
                             //_params.Add("@PalletID", transactionDetails.PalletID);
                             _params.Add("@TransID", transactionDetails.TransID);
                             _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
@@ -253,7 +254,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                 if (transactionDetails.WorkorderType == "U0" || transactionDetails.WorkorderType == "U1")
                                 {
                                     wmsPalletBin = GetPalletBinMappedInfo(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.TagID);
-                                    wmsPalletBin.warehouseId = "1";
+                                    wmsPalletBin.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
                                     wmsPalletBin.palletSensorId = transactionDetails.PalletTagID;
                                     string jsonData = JsonConvert.SerializeObject(wmsPalletBin);
                                     var _wmsParams = new DynamicParameters();
@@ -276,7 +277,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                 else if (transactionDetails.WorkorderType == "L1")
                                 {
                                     wmsPalletBinInfoL1 = GetPalletBinMappedInfoL1(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.TagID);
-                                    wmsPalletBinInfoL1.warehouseId = "1";
+                                    wmsPalletBinInfoL1.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
                                     wmsPalletBinInfoL1.palletSensorId = transactionDetails.PalletTagID;
                                     string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL1);
                                     var query = "SELECT ProcessInfo1 FROM WorkOrder WHERE WONumber = @WorkOrderNumber";
@@ -287,6 +288,18 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                     _wmsParams.Add("@ProcessType", "Pallet_Movement_L1");
                                     db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
                                     //PutPalletBinMappedInfoL1(wmsPalletBinInfoL1);
+                                }
+                                else if (transactionDetails.WorkorderType == "I0")
+                                {
+                                    wmsPalletBinInfoI0 = GetPalletBinMappedInfoI0(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.TagID);
+                                    wmsPalletBinInfoI0.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+                                    wmsPalletBinInfoI0.palletSensorId = transactionDetails.PalletTagID;
+                                    string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoI0);
+                                    var _wmsParams = new DynamicParameters();
+                                    _wmsParams.Add("@DRN", "Internal Movement");
+                                    _wmsParams.Add("@JSONData", jsonData);
+                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_I0");
+                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
                                 }
                             }
                         }
@@ -993,6 +1006,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                         _params.Add("@ParentAssetType", activityModel.ParentAssetType);
                         _params.Add("@TruckNumber", activityModel.TruckNumber);
                         _params.Add("@ProcessType", activityModel.ProcessType);
+                        _params.Add("@DRN", activityModel.DRN);
                         _params.Add("@isUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
 
                         workorderCreationItemDetails.TruckNumber = activityModel.TruckNumber;
@@ -1153,13 +1167,14 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                     InsertWorkorderItemDetailsU0(workorderCreationItemDetails);
                                 }
                                 wmsPalletData = GetPalletInfo(activityModel.TruckNumber, activityModel.ParentTagID);
+                                wmsPalletData.receivingNo = activityModel.DRN;
                                 wmsPalletData.items = itemsList;
-                                wmsPalletData.warehouseId = "1";
+                                wmsPalletData.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
                                 string jsonRec = JsonConvert.SerializeObject(wmsPalletData);
                                 responsedata.wmsData = jsonRec;
                                 //PutPalletInfo(wmsPalletData);
                                 var _wmsParams = new DynamicParameters();
-                                _wmsParams.Add("@DRN", wmsPalletData.receivingNo);
+                                _wmsParams.Add("@DRN", activityModel.DRN);
                                 _wmsParams.Add("@JSONData", jsonRec);
                                 _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Receiving");
                                 conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
@@ -1168,13 +1183,14 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                             else if (activityModel.ProcessType == "OUT")
                             {
                                 wmsPalletDataDis = GetPalletInfoDispatch(activityModel.TruckNumber, activityModel.ParentTagID);
+                                wmsPalletDataDis.dispatchNo = activityModel.DRN;
                                 wmsPalletDataDis.items = itemsList;
-                                wmsPalletDataDis.warehouseId = "1";
+                                wmsPalletDataDis.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
                                 wmsPalletDataDis.comment = "Verified and Loaded on Truck";
                                 string jsonDis = JsonConvert.SerializeObject(wmsPalletDataDis);
                                 responsedata.wmsData = jsonDis;
                                 var _wmsParams = new DynamicParameters();
-                                _wmsParams.Add("@DRN", wmsPalletDataDis.dispatchNo);
+                                _wmsParams.Add("@DRN", activityModel.DRN);
                                 _wmsParams.Add("@JSONData", jsonDis);
                                 _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Dispatch");
                                 conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
@@ -1204,14 +1220,15 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
             }
             return responsedata;
         }
-        public List<ItemDescriptionDetails> GetSTOLineItemsByTruckID(TruckDetails truckNumber)
+        public List<ItemDescriptionDetails> GetSTOLineItemsByTruckID(TruckDetails truckDetails)
         {
             List<ItemDescriptionDetails> data = null;
             using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
             {
                 db.Open();
                 var _params = new DynamicParameters();
-                _params.Add("@TruckNumber", truckNumber.TruckNumber);
+                _params.Add("@TruckNumber", truckDetails.TruckNumber);
+                _params.Add("@DRN", truckDetails.DRN);
                 data = db.Query<ItemDescriptionDetails>(AppSettings.SQLQueryCommand.SP_GetSTOLineItemsByTruckID, _params, commandType: CommandType.StoredProcedure).ToList();
             }
             return data;
@@ -1249,6 +1266,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                         _params.Add("@ParentAssetType", activityItems.ParentAssetType);
                         _params.Add("@TruckNumber", activityItems.TruckNumber);
                         _params.Add("@ProcessType", activityItems.ProcessType);
+                        _params.Add("@DRN", activityItems.DRN);
                         _params.Add("@isUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
                         conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivity, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
                         workorderCreationItemDetails.TruckNumber = activityItems.TruckNumber;
@@ -1308,12 +1326,13 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                     InsertWorkorderItemDetailsU0(workorderCreationItemDetails);
                                 }
                                 wmsPalletData = GetPalletInfo(activityItems.TruckNumber, activityItems.ParentTagID);
+                                wmsPalletData.receivingNo = activityItems.DRN;
                                 wmsPalletData.items = itemsList;
-                                wmsPalletData.warehouseId = "1";
+                                wmsPalletData.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
                                 string jsonRec = JsonConvert.SerializeObject(wmsPalletData);
                                 responseData.wmsData = jsonRec;
                                 var _wmsParams = new DynamicParameters();
-                                _wmsParams.Add("@DRN", wmsPalletData.receivingNo);
+                                _wmsParams.Add("@DRN", activityItems.DRN);
                                 _wmsParams.Add("@JSONData", jsonRec);
                                 _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Receiving");
                                 conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
@@ -1323,13 +1342,14 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                             else if (activityItems.ProcessType == "OUT")
                             {
                                 wmsPalletDataDis = GetPalletInfoDispatch(activityItems.TruckNumber, activityItems.ParentTagID);
+                                wmsPalletDataDis.dispatchNo = activityItems.DRN;
                                 wmsPalletDataDis.items = itemsList;
-                                wmsPalletDataDis.warehouseId = "1";
+                                wmsPalletDataDis.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
                                 wmsPalletDataDis.comment = "Verified and Loaded on Truck";
                                 string jsonDis = JsonConvert.SerializeObject(wmsPalletDataDis);
                                 responseData.wmsData = jsonDis;
                                 var _wmsParams = new DynamicParameters();
-                                _wmsParams.Add("@DRN", wmsPalletDataDis.dispatchNo);
+                                _wmsParams.Add("@DRN", activityItems.DRN);
                                 _wmsParams.Add("@JSONData", jsonDis);
                                 _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Dispatch");
                                 conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
@@ -1707,6 +1727,38 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
             return retval;
         }
         //L1 Creation
+        //public bool InsertWorkorderDetailsL1(WorkorderCreationDetails workorderCreation)
+        //{
+        //    bool retval = false;
+        //    List<PalletDetails> details = new List<PalletDetails>();
+        //    using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        db.Open();
+        //        Guid obj = Guid.NewGuid();
+
+        //        if (workorderCreation.TruckNumber != null)
+        //        {
+        //            var _params = new DynamicParameters();
+        //            _params.Add("@WorkorderID", obj);
+        //            _params.Add("@TruckID", workorderCreation.TruckNumber);
+        //            details = db.Query<PalletDetails>(AppSettings.SQLQueryCommand.SP_CreateWorkOrderL1, _params, commandType: CommandType.StoredProcedure).ToList();
+
+        //            foreach (PalletDetails i in details)
+        //            {
+        //                var _paramsPalletDetails = new DynamicParameters();
+        //                _paramsPalletDetails.Add("@WorkorderID", obj);
+        //                _paramsPalletDetails.Add("@PalletName", i.PalletName);
+        //                _paramsPalletDetails.Add("@PalletTagID", i.PalletTagID);
+        //                _paramsPalletDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //                db.Execute(AppSettings.SQLQueryCommand.SP_CreateWorkOrderDetailsL1, _paramsPalletDetails, commandType: CommandType.StoredProcedure);
+
+        //                retval = _paramsPalletDetails.Get<bool>("@Status");
+        //            }
+                        
+        //        }
+        //    }
+        //    return retval;
+        //}
         public bool InsertWorkorderDetailsL1(WorkorderCreationDetails workorderCreation)
         {
             bool retval = false;
@@ -1721,20 +1773,59 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                     var _params = new DynamicParameters();
                     _params.Add("@WorkorderID", obj);
                     _params.Add("@TruckID", workorderCreation.TruckNumber);
-                    details = db.Query<PalletDetails>(AppSettings.SQLQueryCommand.SP_CreateWorkOrderL1, _params, commandType: CommandType.StoredProcedure).ToList();
+                    db.Execute(AppSettings.SQLQueryCommand.SP_CreateWorkOrderL1, _params, commandType: CommandType.StoredProcedure);
+                    string query = "SELECT DRN FROM ActivityHeader WHERE TruckID = @TruckID AND IsProcessed = 0";
+                    string dispatchNo = db.Query<string>(query, new { TruckID = workorderCreation.TruckNumber }).FirstOrDefault();
+                    string[] DRNValues;
+                  
+                    if (dispatchNo.Contains(','))
+                     {
+                        DRNValues = dispatchNo.Split(',');
+                        if (DRNValues.Length > 1)
+                        {
+                            foreach(string drn in DRNValues)
+                            {
+                                string query1 = "SELECT WD.PalletName AS PalletName, WD.PalletTagID AS PalletTagID FROM WorkOrder W, WorkOrderDetails WD WHERE WD.WorkOrderID = W.WorkOrderID AND W.WorkOrderType = 'L0' AND WD.Status = 'Completed' AND W.ProcessInfo1 = @DRN";
+                                 details = db.Query<PalletDetails>(query1, new { DRN = drn }).ToList();
+                                
+                                foreach (PalletDetails i in details)
+                                {
+                                    var _paramsPalletDetails = new DynamicParameters();
+                                    _paramsPalletDetails.Add("@WorkorderID", obj);
+                                    _paramsPalletDetails.Add("@PalletName", i.PalletName);
+                                    _paramsPalletDetails.Add("@PalletTagID", i.PalletTagID);
+                                    _paramsPalletDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+                                    db.Execute(AppSettings.SQLQueryCommand.SP_CreateWorkOrderDetailsL1, _paramsPalletDetails, commandType: CommandType.StoredProcedure);
 
-                    foreach (PalletDetails i in details)
-                    {
-                        var _paramsPalletDetails = new DynamicParameters();
-                        _paramsPalletDetails.Add("@WorkorderID", obj);
-                        _paramsPalletDetails.Add("@PalletName", i.PalletName);
-                        _paramsPalletDetails.Add("@PalletTagID", i.PalletTagID);
-                        _paramsPalletDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
-                        db.Execute(AppSettings.SQLQueryCommand.SP_CreateWorkOrderDetailsL1, _paramsPalletDetails, commandType: CommandType.StoredProcedure);
-
-                        retval = _paramsPalletDetails.Get<bool>("@Status");
+                                    retval = _paramsPalletDetails.Get<bool>("@Status");
+                                    
+                                }
+                               
+                                db.Execute("UPDATE WorkOrder SET IsActive = 0, WorkOrderStatus = 'C' WHERE WorkOrderType = 'L0' AND ProcessInfo1 = @DRN AND IsActive = 1 AND WorkOrderStatus = 'A'", new { DRN = drn });
+                            }
+                           
+                        }
                     }
-                        
+                    else
+                    {
+                        string query2 = "SELECT WD.PalletName AS PalletName, WD.PalletTagID AS PalletTagID FROM WorkOrder W, WorkOrderDetails WD WHERE WD.WorkOrderID = W.WorkOrderID AND W.WorkOrderType = 'L0' AND WD.Status = 'Completed' AND W.ProcessInfo1 = @DRN";
+                        details = db.Query<PalletDetails>(query2, new { DRN = dispatchNo }).ToList();
+
+                        foreach (PalletDetails i in details)
+                        {
+                            var _paramsPalletDetails = new DynamicParameters();
+                            _paramsPalletDetails.Add("@WorkorderID", obj);
+                            _paramsPalletDetails.Add("@PalletName", i.PalletName);
+                            _paramsPalletDetails.Add("@PalletTagID", i.PalletTagID);
+                            _paramsPalletDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+                            db.Execute(AppSettings.SQLQueryCommand.SP_CreateWorkOrderDetailsL1, _paramsPalletDetails, commandType: CommandType.StoredProcedure);
+
+                            retval = _paramsPalletDetails.Get<bool>("@Status");
+
+                        }
+                        db.Execute("UPDATE WorkOrder SET IsActive = 0, WorkOrderStatus = 'C' WHERE WorkOrderType = 'L0' AND ProcessInfo1 = @DRN AND IsActive = 1 AND WorkOrderStatus = 'A'", new { DRN = dispatchNo });
+                    }
+
                 }
             }
             return retval;
@@ -1840,6 +1931,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                             WmsPalletBinInfo wmsPalletBin = new WmsPalletBinInfo();
                             WmsPalletBinInfoL0 wmsPalletBinInfoL0 = new WmsPalletBinInfoL0();
                             WmsPalletBinInfoL1 wmsPalletBinInfoL1 = new WmsPalletBinInfoL1();
+                            WmsPalletBinInfoI0 wmsPalletBinInfoI0 = new WmsPalletBinInfoI0();
                             _params.Add("@TransID", transactionDetails.TransID);
                             _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
                             _params.Add("@PalletTagID", transactionDetails.PalletTagID);
@@ -1869,7 +1961,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                 if (transactionDetails.WorkorderType == "U0" || transactionDetails.WorkorderType == "U1")
                                 {
                                     wmsPalletBin = GetPalletBinMappedInfo(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.ActualDestinationTagID);
-                                    wmsPalletBin.warehouseId = "1";
+                                    wmsPalletBin.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
                                     wmsPalletBin.palletSensorId = transactionDetails.PalletTagID;
                                     string jsonData = JsonConvert.SerializeObject(wmsPalletBin);
                                     var _wmsParams = new DynamicParameters();
@@ -1893,7 +1985,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                 else if (transactionDetails.WorkorderType == "L1")
                                 {
                                     wmsPalletBinInfoL1 = GetPalletBinMappedInfoL1(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.ActualDestinationTagID);
-                                    wmsPalletBinInfoL1.warehouseId = "1";
+                                    wmsPalletBinInfoL1.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
                                     wmsPalletBinInfoL1.palletSensorId = transactionDetails.PalletTagID;
                                     string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL1);
                                     var query = "SELECT ProcessInfo1 FROM WorkOrder WHERE WONumber = @WorkOrderNumber";
@@ -1904,6 +1996,18 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                     _wmsParams.Add("@ProcessType", "Pallet_Movement_L1");
                                     db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
                                     //PutPalletBinMappedInfoL1(wmsPalletBinInfoL1);
+                                } 
+                                else if (transactionDetails.WorkorderType == "I0")
+                                {
+                                    wmsPalletBinInfoI0 = GetPalletBinMappedInfoI0(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.ActualDestinationTagID);
+                                    wmsPalletBinInfoI0.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+                                    wmsPalletBinInfoI0.palletSensorId = transactionDetails.PalletTagID;
+                                    string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoI0);
+                                    var _wmsParams = new DynamicParameters();
+                                    _wmsParams.Add("@DRN", "Internal Movement");
+                                    _wmsParams.Add("@JSONData", jsonData);
+                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_I0");
+                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
                                 }
                             }
                         }
@@ -2539,13 +2643,13 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                     SqlDataReader reader = command.ExecuteReader();
 
                     // Read first result set
-                    while (reader.Read())
-                    {
-                        palletData.receivingNo = reader.GetString(0);
-                    }
+                    ////while (reader.Read())
+                    ////{
+                    ////    palletData.receivingNo = reader.GetString(0);
+                    ////}
 
-                    // Move to the next result set
-                    reader.NextResult();
+                    ////// Move to the next result set
+                    ////reader.NextResult();
 
                     // Read second result set
                     while (reader.Read())
@@ -2596,13 +2700,13 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                     SqlDataReader reader = command.ExecuteReader();
 
                     // Read first result set
-                    while (reader.Read())
-                    {
-                        palletData.dispatchNo = reader.GetString(0);
-                    }
+                    //while (reader.Read())
+                    //{
+                    //    palletData.dispatchNo = reader.GetString(0);
+                    //}
 
-                    // Move to the next result set
-                    reader.NextResult();
+                    //// Move to the next result set
+                    //reader.NextResult();
 
                     // Read second result set
                     while (reader.Read())
@@ -2783,6 +2887,62 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
             using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
             {
                 SqlCommand command = new SqlCommand(AppSettings.SQLQueryCommand.SP_GetPalletBinMappedInfo, connection);
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add("@SubTagID", SqlDbType.VarChar).Value = SubTagID;
+                command.Parameters.Add("@PalletTagID", SqlDbType.VarChar).Value = PalletTagID;
+                command.Parameters.Add("@WorkorderNumber", SqlDbType.VarChar).Value = WorkorderNumber;
+                command.Parameters.Add("@WorkorderType", SqlDbType.VarChar).Value = WorkorderType;
+
+                try
+                {
+
+                    connection.Open();
+
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+
+                    while (reader.Read())
+                    {
+                        palletBinData.toBinName = reader.GetString(0);
+                    }
+
+
+                    reader.NextResult();
+
+
+                    while (reader.Read())
+                    {
+                        palletBinData.palletName = reader.GetString(0);
+                    }
+
+                    reader.NextResult();
+
+                    while (reader.Read())
+                    {
+                        palletBinData.fromBinName = reader.GetString(0);
+                    }
+
+                    reader.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            }
+
+
+            return palletBinData;
+        }
+        private WmsPalletBinInfoI0 GetPalletBinMappedInfoI0(string PalletTagID, string WorkorderNumber, string WorkorderType, string SubTagID)
+        {
+            WmsPalletBinInfoI0 palletBinData = new WmsPalletBinInfoI0();
+
+            // Create SqlConnection and SqlCommand objects
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
+            {
+                SqlCommand command = new SqlCommand(AppSettings.SQLQueryCommand.SP_GetPalletBinMappedInfoI0, connection);
                 command.CommandType = CommandType.StoredProcedure;
 
                 command.Parameters.Add("@SubTagID", SqlDbType.VarChar).Value = SubTagID;

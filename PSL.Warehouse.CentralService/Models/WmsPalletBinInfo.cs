@@ -42,4 +42,12 @@ namespace PSL.Warehouse.CentralService.Models
         public string expirationDate { get; set; }
         public int qty { get; set; }
     }
+    public class WmsPalletBinInfoI0
+    {
+        public string warehouseId { get; set; }
+        public string fromBinName { get; set; }
+        public string toBinName { get; set; }
+        public string palletName { get; set; }
+        public string palletSensorId { get; set; }
+    }
 }

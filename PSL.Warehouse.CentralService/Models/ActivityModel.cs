@@ -19,6 +19,7 @@ namespace PSL.Warehouse.CentralService.Models
         public string ParentAssetType { get; set; }
         public string TruckNumber { get; set; }
         public string ProcessType { get; set; }
+        public string DRN { get; set; }
         public List<ActivityDetailsModel> data { get; set; }
     }
     public class ActivityModelItems
@@ -35,6 +36,7 @@ namespace PSL.Warehouse.CentralService.Models
         public string ParentAssetType { get; set; }
         public string TruckNumber { get; set; }
         public string ProcessType { get; set; }
+        public string DRN { get; set; }
         public List<ActivityDetailsModelItems> data { get; set; }
     }
 

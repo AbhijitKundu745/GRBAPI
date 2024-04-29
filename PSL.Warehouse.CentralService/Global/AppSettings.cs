@@ -270,6 +270,7 @@ namespace PSL.Warehouse.CentralService.Global
             public static string SP_GetPalletBinMappedInfoL0 { get; private set; }
             public static string SP_GetPalletBinMappedItemsL0 { get; private set; }
             public static string SP_UploadCurrentBin { get; private set; }
+            public static string SP_GetPalletBinMappedInfoI0 { get; private set; }
 
 
             public static string SP_CreateWorkOrderU0 { get; private set; }
@@ -359,7 +360,8 @@ namespace PSL.Warehouse.CentralService.Global
                     SP_InsertReaderTranslogitemsForService = ConfigurationManager.AppSettings["SP_InsertReaderTranslogitemsForService"].ToString().Trim();
                     SP_GetWorkorderListForPDA = ConfigurationManager.AppSettings["SP_GetWorkorderListForPDA"].ToString().Trim();
                     SP_UploadCurrentBin = ConfigurationManager.AppSettings["SP_UploadCurrentBin"].ToString().Trim();
-                    
+                    SP_GetPalletBinMappedInfoI0 = ConfigurationManager.AppSettings["SP_GRB_GetPalletBinMappedInfoI0"].ToString().Trim();
+
 
 
                     SP_CreateWorkOrderU0 = ConfigurationManager.AppSettings["SP_CreateWorkOrderU0"].ToString().Trim();
