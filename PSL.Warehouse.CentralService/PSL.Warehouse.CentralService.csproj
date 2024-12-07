@@ -445,13 +445,17 @@
     <Compile Include="Models\AssetMasterResponse.cs" />
     <Compile Include="Models\AssetModel.cs" />
     <Compile Include="Models\Authorization.cs" />
+    <Compile Include="Models\Barcode.cs" />
     <Compile Include="Models\BinDetails.cs" />
     <Compile Include="Models\CastDetail.cs" />
     <Compile Include="Models\Configuration.cs" />
     <Compile Include="Models\ContainersDetails.cs" />
     <Compile Include="Models\CurrentPalletRequest.cs" />
     <Compile Include="Models\DashboardData.cs" />
+    <Compile Include="Models\DigitizerModel.cs" />
+    <Compile Include="Models\Dispatch.cs" />
     <Compile Include="Models\ItemsDetails.cs" />
+    <Compile Include="Models\ItemsQRActivityDetails.cs" />
     <Compile Include="Models\Location.cs" />
     <Compile Include="Models\LocationDetails.cs" />
     <Compile Include="Models\LoginModel.cs" />
@@ -462,6 +466,7 @@
     <Compile Include="Models\NewModels.cs" />
     <Compile Include="Models\NotificationConfiguration.cs" />
     <Compile Include="Models\OrderDetails.cs" />
+    <Compile Include="Models\PalletBinTransModel.cs" />
     <Compile Include="Models\PalletItemDetails.cs" />
     <Compile Include="Models\PalletName.cs" />
     <Compile Include="Models\PalletsDetails.cs" />
@@ -470,6 +475,7 @@
     <Compile Include="Models\PDATripDetail.cs" />
     <Compile Include="Models\PDAUser.cs" />
     <Compile Include="Models\PDAWorkorderList.cs" />
+    <Compile Include="Models\PlantModel.cs" />
     <Compile Include="Models\PreviousTripDetail.cs" />
     <Compile Include="Models\AssetInfo.cs" />
     <Compile Include="Models\ReaderStartRequset.cs" />
@@ -483,6 +489,7 @@
     <Compile Include="Models\RoomMasterModel.cs" />
     <Compile Include="Models\RootObject.cs" />
     <Compile Include="Models\SerialNo.cs" />
+    <Compile Include="Models\SKUDetails.cs" />
     <Compile Include="Models\StatusResponse.cs" />
     <Compile Include="Models\SubTagData.cs" />
     <Compile Include="Models\Tagdata.cs" />
@@ -497,6 +504,7 @@
     <Compile Include="Models\UserLogin.cs" />
     <Compile Include="Models\UserModel.cs" />
     <Compile Include="Models\Vendor.cs" />
+    <Compile Include="Models\WarehouseDetails.cs" />
     <Compile Include="Models\WmsPalletBinInfo.cs" />
     <Compile Include="Models\WMSPalletData.cs" />
     <Compile Include="Models\WorkorderCreationDetails.cs" />

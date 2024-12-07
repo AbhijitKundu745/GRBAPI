@@ -72,7 +72,7 @@ namespace PSL.Warehouse.CentralService.IDataAccessLayer
         bool StartReader(ReaderStartRequset startRequset);
         List<PartialWorkOrderResponse> GetPartialWorkorderList(DeviceData deviceData);
         List<PickListItemDetails> GetPartialWorkorderItemDetails(PartialWorkorderListRequest listRequest);
-        bool InsertPartialWorkorderDetails(PartialTransactionDetails transactionDetails);
+        Response InsertPartialWorkorderDetails(PartialTransactionDetails transactionDetails);
         List<PartialItemDetails> GetItemDetailsByBinName(BinDetailsRequest binDetails);
         bool dispatchWorkOrder(WorkorderCreationDetailsL0 workorderCreationL0);
         bool InsertWorkorderDetailsL1(WorkorderCreationDetails workorderCreation);
@@ -82,6 +82,27 @@ namespace PSL.Warehouse.CentralService.IDataAccessLayer
         bool CloseWorkorderU0(CloseWorkorderRequest request);
         bool UploadCurrentBin(CurrentBinRequest currentBin);
         bool internalWorkOrder(WorkorderCreationDetailsI0 workorderCreation);
+        bool ItemMovementTransaction(ActivityModelInternal activityInternal);
+        bool InsertItemQRData(ItemsQRActivityModel itemsQRActivity);
+        List<BarcodeResponse> GetAllBarcodesForTransaction(Barcode barcode);
+        List<QRTranscationDetails> GetItemsQRActivityDetails(int locationId);
+        List<LocationDetails> GetQRLocationName();
+        bool InsertPalletBinTransaction(PalletBinTransModel transModel);
+        bool InsertDigitizerItemQRData(DigitizerModel digitizerModel);
+
+        //Response InsertTransactionDetails(TransactionDetails transactionDetails);
+        ActivityResponseData InsertTransactionForQRManual(ActivityModelItems activityItems);
+        TruckResponseDetails GetDCDetailsForPDA(DCDetails dcTagID);
+        List<SKUResponse> GetSKUDetailsForPDA(SKUDetails sKUDetails);
+        IEnumerable<object> GetDCNumbersForPlant(DeviceData deviceID);
+        PlantActivityResponse PlantTransactionForScannedItems(ScannedItemModel activity);
+        PlantActivityResponse PlantTransactionForWithoutScannedItems(ManualItemModel activityItems);
+        PlantActivityResponse PlantTransactionForQRManualItems(ManualItemModel activityItems);
+        List<SKUData> GetAllSKUsPDA();
+        bool GetSOLineItemsLoading(DCDetails dcTagID);
+        List<WarehouseDetails> GetWarehouseDetails();
+
+
 
 
         //List<WorkorderStatusResponse> GetReaderStatus(string ClientDeviceID);

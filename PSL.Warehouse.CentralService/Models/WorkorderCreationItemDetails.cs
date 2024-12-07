@@ -22,6 +22,7 @@ namespace PSL.Warehouse.CentralService.Models
         public string fromBayName { get; set; }
         public string fromBinName { get; set; }
         public string toBinName { get; set; }
+        public int warehouseId { get; set; }
     }
     public class WorkorderCreationItemDetailsL0
     {
@@ -37,6 +38,7 @@ namespace PSL.Warehouse.CentralService.Models
         public string palletName { get; set; }
         public double qty { get; set; }
         public bool isFull { get; set; }
+        public int warehouseId { get; set; }
     }
     public class WorkorderCreationItemDetailsI0
     {

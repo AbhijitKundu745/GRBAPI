@@ -5,9 +5,13 @@ using System.Web;
 
 namespace PSL.Warehouse.CentralService.Models
 {
-    public class DeviceData
+    public class Barcode
     {
+        public string ItemDescription { get; set; }
         public string ClientDeviceID { get; set; }
-        public int WarehouseID { get; set; }
+    }
+    public class BarcodeResponse
+    {
+        public string ItemDescription { get; set; }
     }
 }

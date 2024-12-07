@@ -16,6 +16,8 @@ namespace PSL.Warehouse.CentralService.Models
         public string PalletName { get; set; }
         public string LocationTagID { get; set; }
         public string LocationCategoryID { get; set; }
+        public string DCNo { get; set; }
+        public int WarehouseID { get; set; }
         public List<PartialItemDetails> ItemDetails { get; set; }
     }
 }

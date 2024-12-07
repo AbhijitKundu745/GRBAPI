@@ -9,6 +9,7 @@ namespace PSL.Warehouse.CentralService.Models
     {
         //public string WorkorderID { get; set; }
         public string TruckNumber { get; set; }
+        public int WarehouseID { get; set; }
         //public List<WorkorderCreationItemDetails> WorkorderDetails { get; set; }
     }
     public class WorkorderCreationDetailsU1

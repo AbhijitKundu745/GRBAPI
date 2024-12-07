@@ -5,9 +5,9 @@ using System.Web;
 
 namespace PSL.Warehouse.CentralService.Models
 {
-    public class DeviceData
+    public class WarehouseDetails
     {
-        public string ClientDeviceID { get; set; }
+        public string WarehouseName { get; set; }
         public int WarehouseID { get; set; }
     }
 }

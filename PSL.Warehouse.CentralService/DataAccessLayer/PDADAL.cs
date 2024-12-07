@@ -23,6 +23,7 @@ using System.Threading.Tasks;
 using System.Configuration;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
+using Psl.Chase.Utils;
 
 namespace PSL.Laundry.CentralService.DataAccessLayer
 {
@@ -33,7 +34,9 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
         private string PreviousPalletTagID = "GRB020PSL0823SKU0232";
 
 
-      
+        private string INSERT_SOLineItems = "INSERT INTO SalesOrderLineItems (ID,SOID,SalesDocumentItem,OrderQty,ItemCode,ItemDescription,LoadedQty,RecordStatus,IsActive,IsProcessed,ModifiedDateTime,ServerDateTime)" +
+                                                "VALUES(@ID,@SOID_ITEMS,@SalesDocumentItem,@OrderQty,@ItemCode,@ItemDescription,@LoadedQty,@RecordStatus,@IsActive,@IsProcessed,@ModifiedDateTime,@ServerDateTime)";
+
 
 
         public List<AssetInfo> GetAssetInfo(UserData user)
@@ -171,6 +174,199 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
 
         /*Warehouse Code*/
         #region Reader
+        //public bool InsertTransactionDetails(TransactionDetails transactionDetails)
+        //{
+        //    bool retval = false;
+
+
+        //    using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        db.Open();
+        //        var _params = new DynamicParameters();
+
+        //        if (transactionDetails.TransID != null && transactionDetails.SubTagDetails != null && transactionDetails.SubTagDetails.Count > 0)
+        //        {
+        //            _params.Add("@TransID", transactionDetails.TransID);
+        //            _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
+        //            _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+        //            _params.Add("@CategoryID", transactionDetails.CategoryID);
+        //            _params.Add("@AntennaID", transactionDetails.AntennaID);
+        //            _params.Add("@ListItemStatus", transactionDetails.ListItemStatus);
+        //            _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+        //            _params.Add("@WorkorderType", transactionDetails.WorkorderType);
+        //            _params.Add("@Count", transactionDetails.Count);
+        //            _params.Add("@RSSI", transactionDetails.RSSI);
+        //            _params.Add("@TouchPointType", transactionDetails.TouchPointType);
+        //            _params.Add("@TransDatetime", transactionDetails.TransDatetime);
+        //            _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //            db.Execute(AppSettings.SQLQueryCommand.SP_InsertReaderTransLog, _params, commandType: CommandType.StoredProcedure);
+        //            retval = _params.Get<bool>("@Status");
+        //            //if (retval)
+        //            //{
+        //            //    _params = new DynamicParameters();
+        //            //    foreach (SubTagData i in transactionDetails.SubTagDetails)
+        //            //    {
+        //            //        _params.Add("@ClientDeviceID", transactionDetails.DeviceID);
+        //            //        _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+        //            //        _params.Add("@TagID", i.TagID);
+        //            //        _params.Add("@RSSI", i.RSSI);
+        //            //        _params.Add("@Count", i.Count);
+        //            //        _params.Add("@CategoryID", i.CategoryID);
+        //            //        _params.Add("@TagType", i.TagType);
+        //            //        _params.Add("@TransDatetime", i.TransDatetime);
+        //            //        _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //            //        db.Execute(AppSettings.SQLQueryCommand.SP_InsertReaderTranslogitems, _params, commandType: CommandType.StoredProcedure);
+        //            //        retval = _params.Get<bool>("@Status");
+        //            //    }
+
+        //            //}
+        //            if (transactionDetails.SubTagDetails != null && transactionDetails.SubTagDetails.Count != 0)
+        //            {
+        //                foreach (SubTagData i in transactionDetails.SubTagDetails)
+        //                {
+        //                    WmsPalletBinInfo wmsPalletBin = new WmsPalletBinInfo();
+        //                    WmsPalletBinInfoL0 wmsPalletBinInfoL0 = new WmsPalletBinInfoL0();
+        //                    WmsPalletBinInfoL1 wmsPalletBinInfoL1 = new WmsPalletBinInfoL1();
+        //                    List<WmsPalletBinInfoInternalDetails> wmsPalletBinInfoI0List = new List<WmsPalletBinInfoInternalDetails>();
+        //                    WmsPalletBinInfoInternalDetails wmsPalletBinInfoI0 = new WmsPalletBinInfoInternalDetails();
+        //                    WmsPalletBinInfoInternal wmsPalletBinInfoInternal = new WmsPalletBinInfoInternal();
+        //                    //_params.Add("@PalletID", transactionDetails.PalletID);
+        //                    _params.Add("@TransID", transactionDetails.TransID);
+        //                    _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
+        //                    _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+        //                    _params.Add("@CategoryID", transactionDetails.CategoryID);
+        //                    _params.Add("@AntennaID", transactionDetails.AntennaID);
+        //                    _params.Add("@ListItemStatus", transactionDetails.ListItemStatus);
+        //                    _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+        //                    _params.Add("@WorkorderType", transactionDetails.WorkorderType);
+        //                    _params.Add("@Count", transactionDetails.Count);
+        //                    _params.Add("@RSSI", transactionDetails.RSSI);
+        //                    _params.Add("@TouchPointType", transactionDetails.TouchPointType);
+        //                    _params.Add("@TransDatetime", transactionDetails.TransDatetime);
+        //                    _params.Add("@SubTransID", transactionDetails.TransID);
+        //                    _params.Add("@SubTagID", i.TagID);
+        //                    _params.Add("@SubRSSI", i.RSSI);
+        //                    _params.Add("@SubCount", i.Count);
+        //                    _params.Add("@SubCategoryID", i.CategoryID);
+        //                    _params.Add("@TagType", i.TagType);
+        //                    _params.Add("@SubTransDatetime", i.TransDatetime);
+        //                    _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertReaderTranslogitems, _params, commandType: CommandType.StoredProcedure);
+        //                    retval = _params.Get<bool>("@Status");
+
+        //                    if (retval)
+        //                    {
+        //                        if (transactionDetails.WorkorderType == "U0" || transactionDetails.WorkorderType == "U1")
+        //                        {
+        //                            wmsPalletBin = GetPalletBinMappedInfo(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.TagID);
+        //                            wmsPalletBin.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                            wmsPalletBin.palletSensorId = transactionDetails.PalletTagID;
+        //                            string jsonData = JsonConvert.SerializeObject(wmsPalletBin);
+        //                            var _wmsParams = new DynamicParameters();
+        //                            _wmsParams.Add("@ID", transactionDetails.TransID);
+        //                            _wmsParams.Add("@DRN", wmsPalletBin.receivingNo);
+        //                            _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonData));
+        //                            _wmsParams.Add("@ProcessType", "Pallet_Movement_U0U1");
+        //                            db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                            //PutPalletBinMappedInfo(wmsPalletBin);
+        //                        }
+        //                        else if (transactionDetails.WorkorderType == "L0")
+        //                        {
+        //                            wmsPalletBinInfoL0 = GetPalletBinMappedInfoL0(transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, transactionDetails.PalletTagID, i.TagID);
+        //                            string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL0);
+        //                            var _wmsParams = new DynamicParameters();
+        //                            _wmsParams.Add("@ID", transactionDetails.TransID);
+        //                            _wmsParams.Add("@DRN", wmsPalletBinInfoL0.dispatchNo);
+        //                            _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonData));
+        //                            _wmsParams.Add("@ProcessType", "Pallet_Movement_L0");
+        //                            db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                            //PutPalletBinMappedInfoL0(wmsPalletBinInfoL0);
+        //                        }
+        //                        else if (transactionDetails.WorkorderType == "L1")
+        //                        {
+        //                            wmsPalletBinInfoL1 = GetPalletBinMappedInfoL1(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.TagID);
+        //                            wmsPalletBinInfoL1.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                            wmsPalletBinInfoL1.palletSensorId = transactionDetails.PalletTagID;
+        //                            string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL1);
+        //                            var query = "SELECT ProcessInfo1 FROM WorkOrder WHERE WONumber = @WorkOrderNumber";
+        //                            var dispatchNo = db.Query<string>(query, new { WorkorderNumber = transactionDetails.WorkorderNumber }).FirstOrDefault();
+        //                            var _wmsParams = new DynamicParameters();
+        //                            _wmsParams.Add("@ID", transactionDetails.TransID);
+        //                            _wmsParams.Add("@DRN", dispatchNo);
+        //                            _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonData));
+        //                            _wmsParams.Add("@ProcessType", "Pallet_Movement_L1");
+        //                            db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                            //PutPalletBinMappedInfoL1(wmsPalletBinInfoL1);
+        //                        }
+        //                        else if (transactionDetails.WorkorderType == "I0")
+        //                        {
+
+        //                            wmsPalletBinInfoI0 = GetPalletBinMappedInfoI0(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.TagID);
+        //                            wmsPalletBinInfoI0.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                            wmsPalletBinInfoI0List.Add(wmsPalletBinInfoI0);
+        //                            wmsPalletBinInfoInternal.data = wmsPalletBinInfoI0List;
+        //                            string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoInternal);
+        //                            var _wmsParams = new DynamicParameters();
+        //                            _wmsParams.Add("@ID", transactionDetails.TransID);
+        //                            _wmsParams.Add("@DRN", "Internal Movement");
+        //                            _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonData));
+        //                            _wmsParams.Add("@ProcessType", "Pallet_Movement_I0");
+        //                            db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            else
+        //            {
+        //                //Should never be here..
+        //            }
+
+        //        }
+        //        else if (transactionDetails.TransID != null && transactionDetails.SubTagDetails != null && transactionDetails.SubTagDetails.Count == 0)
+        //        {
+        //            //Posting Parent if Subitems count is zero
+        //            _params.Add("@TransID", transactionDetails.TransID);
+        //            _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
+        //            _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+        //            _params.Add("@CategoryID", transactionDetails.CategoryID);
+        //            _params.Add("@AntennaID", transactionDetails.AntennaID);
+        //            _params.Add("@ListItemStatus", transactionDetails.ListItemStatus);
+        //            _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+        //            _params.Add("@WorkorderType", transactionDetails.WorkorderType);
+        //            _params.Add("@Count", transactionDetails.Count);
+        //            _params.Add("@RSSI", transactionDetails.RSSI);
+        //            _params.Add("@TouchPointType", transactionDetails.TouchPointType);
+        //            _params.Add("@TransDatetime", transactionDetails.TransDatetime);
+        //            _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //            db.Execute(AppSettings.SQLQueryCommand.SP_InsertReaderTransLog, _params, commandType: CommandType.StoredProcedure);
+        //            retval = _params.Get<bool>("@Status");
+
+        //            //retval = true;
+        //        }
+        //        else if (transactionDetails.TransID != null && transactionDetails.SubTagDetails == null)
+        //        {
+        //            //Posting Parent if Subitems come as null...
+        //            _params.Add("@TransID", transactionDetails.TransID);
+        //            _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
+        //            _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+        //            _params.Add("@CategoryID", transactionDetails.CategoryID);
+        //            _params.Add("@AntennaID", transactionDetails.AntennaID);
+        //            _params.Add("@ListItemStatus", transactionDetails.ListItemStatus);
+        //            _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+        //            _params.Add("@WorkorderType", transactionDetails.WorkorderType);
+        //            _params.Add("@Count", transactionDetails.Count);
+        //            _params.Add("@RSSI", transactionDetails.RSSI);
+        //            _params.Add("@TouchPointType", transactionDetails.TouchPointType);
+        //            _params.Add("@TransDatetime", transactionDetails.TransDatetime);
+        //            _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //            db.Execute(AppSettings.SQLQueryCommand.SP_InsertReaderTransLog, _params, commandType: CommandType.StoredProcedure);
+        //            retval = _params.Get<bool>("@Status");
+
+        //            //retval = true;
+        //        }
+        //    }
+        //    return retval;
+        //}
         public bool InsertTransactionDetails(TransactionDetails transactionDetails)
         {
             bool retval = false;
@@ -224,7 +420,9 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                             WmsPalletBinInfo wmsPalletBin = new WmsPalletBinInfo();
                             WmsPalletBinInfoL0 wmsPalletBinInfoL0 = new WmsPalletBinInfoL0();
                             WmsPalletBinInfoL1 wmsPalletBinInfoL1 = new WmsPalletBinInfoL1();
-                            WmsPalletBinInfoI0 wmsPalletBinInfoI0 = new WmsPalletBinInfoI0();
+                            List<WmsPalletBinInfoInternalDetails> wmsPalletBinInfoI0List = new List<WmsPalletBinInfoInternalDetails>();
+                            WmsPalletBinInfoInternalDetails wmsPalletBinInfoI0 = new WmsPalletBinInfoInternalDetails();
+                            WmsPalletBinInfoInternal wmsPalletBinInfoInternal = new WmsPalletBinInfoInternal();
                             //_params.Add("@PalletID", transactionDetails.PalletID);
                             _params.Add("@TransID", transactionDetails.TransID);
                             _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
@@ -258,21 +456,56 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                     wmsPalletBin.palletSensorId = transactionDetails.PalletTagID;
                                     string jsonData = JsonConvert.SerializeObject(wmsPalletBin);
                                     var _wmsParams = new DynamicParameters();
-                                    _wmsParams.Add("@DRN", wmsPalletBin.receivingNo);
-                                    _wmsParams.Add("@JSONData", jsonData);
-                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_U0U1");
-                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
-                                    //PutPalletBinMappedInfo(wmsPalletBin);
-                                } else if(transactionDetails.WorkorderType == "L0")
+                                    _wmsParams.Add("@ID", transactionDetails.TransID);
+                                    _wmsParams.Add("@Type", "Pallet_Movement_U0U1");
+                                    _wmsParams.Add("@receivingNo", wmsPalletBin.receivingNo);
+                                    _wmsParams.Add("@dispatchNo", null);
+                                    _wmsParams.Add("@warehouseId", wmsPalletBin.warehouseId);
+                                    _wmsParams.Add("@palletName", wmsPalletBin.palletName);
+                                    _wmsParams.Add("@palletSensorId", wmsPalletBin.palletSensorId);
+                                    _wmsParams.Add("@binName", null);
+                                    _wmsParams.Add("@fromBinName", wmsPalletBin.fromBinName);
+                                    _wmsParams.Add("@fromPalletName", null);
+                                    _wmsParams.Add("@toPalletName", null);
+                                    _wmsParams.Add("@toBinName", wmsPalletBin.toBinName);
+                                    _wmsParams.Add("@comment", null);
+                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                                }
+                                else if (transactionDetails.WorkorderType == "L0")
                                 {
-                                    wmsPalletBinInfoL0 = GetPalletBinMappedInfoL0(transactionDetails.WorkorderNumber, transactionDetails.WorkorderType,transactionDetails.PalletTagID, i.TagID);
+                                    wmsPalletBinInfoL0 = GetPalletBinMappedInfoL0(transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, transactionDetails.PalletTagID, i.TagID);
                                     string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL0);
                                     var _wmsParams = new DynamicParameters();
-                                    _wmsParams.Add("@DRN", wmsPalletBinInfoL0.dispatchNo);
-                                    _wmsParams.Add("@JSONData", jsonData);
-                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_L0");
-                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
-                                    //PutPalletBinMappedInfoL0(wmsPalletBinInfoL0);
+                                    _wmsParams.Add("@ID", transactionDetails.TransID);
+                                    _wmsParams.Add("@Type", "Pallet_Movement_L0");
+                                    _wmsParams.Add("@receivingNo", null);
+                                    _wmsParams.Add("@dispatchNo", wmsPalletBinInfoL0.dispatchNo);
+                                    _wmsParams.Add("@warehouseId", null);
+                                    _wmsParams.Add("@palletName", null);
+                                    _wmsParams.Add("@palletSensorId", transactionDetails.PalletTagID);
+                                    _wmsParams.Add("@binName", null);
+                                    _wmsParams.Add("@fromBinName", null);
+                                    _wmsParams.Add("@fromPalletName", null);
+                                    _wmsParams.Add("@toPalletName", wmsPalletBinInfoL0.toPalletName);
+                                    _wmsParams.Add("@toBinName", wmsPalletBinInfoL0.toBinName);
+                                    _wmsParams.Add("@comment", null);
+                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                                    foreach (var wmsData in wmsPalletBinInfoL0.items)
+                                    {
+                                        var _wmsParamsDetails = new DynamicParameters();
+                                        _wmsParamsDetails.Add("@ParentID", transactionDetails.TransID);
+                                        _wmsParamsDetails.Add("@Type", "Pallet_Movement_L0");
+                                        _wmsParamsDetails.Add("@fromBinName", wmsData.fromBinName);
+                                        _wmsParamsDetails.Add("@fromPalletName", wmsData.fromPalletName);
+                                        _wmsParamsDetails.Add("@stockBinId", wmsData.stockBinId);
+                                        _wmsParamsDetails.Add("@serialNumber", null);
+                                        _wmsParamsDetails.Add("@skuCode", wmsData.skuCode);
+                                        _wmsParamsDetails.Add("@batchNumber", wmsData.batchNumber);
+                                        _wmsParamsDetails.Add("@batchDateTime", null);
+                                        _wmsParamsDetails.Add("@status", null);
+                                        _wmsParamsDetails.Add("@qty", wmsData.qty);
+                                        db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataChild, _wmsParamsDetails, commandType: CommandType.StoredProcedure);
+                                    }
                                 }
                                 else if (transactionDetails.WorkorderType == "L1")
                                 {
@@ -283,23 +516,44 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                     var query = "SELECT ProcessInfo1 FROM WorkOrder WHERE WONumber = @WorkOrderNumber";
                                     var dispatchNo = db.Query<string>(query, new { WorkorderNumber = transactionDetails.WorkorderNumber }).FirstOrDefault();
                                     var _wmsParams = new DynamicParameters();
-                                    _wmsParams.Add("@DRN", dispatchNo);
-                                    _wmsParams.Add("@JSONData", jsonData);
-                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_L1");
-                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
-                                    //PutPalletBinMappedInfoL1(wmsPalletBinInfoL1);
+                                    _wmsParams.Add("@ID", transactionDetails.TransID);
+                                    _wmsParams.Add("@Type", "Pallet_Movement_L1");
+                                    _wmsParams.Add("@receivingNo", null);
+                                    _wmsParams.Add("@dispatchNo", dispatchNo);
+                                    _wmsParams.Add("@warehouseId", wmsPalletBinInfoL1.warehouseId);
+                                    _wmsParams.Add("@palletName", wmsPalletBinInfoL1.palletName);
+                                    _wmsParams.Add("@palletSensorId", wmsPalletBinInfoL1.palletSensorId);
+                                    _wmsParams.Add("@binName", null);
+                                    _wmsParams.Add("@fromBinName", wmsPalletBinInfoL1.fromBinName);
+                                    _wmsParams.Add("@fromPalletName", null);
+                                    _wmsParams.Add("@toPalletName", null);
+                                    _wmsParams.Add("@toBinName", wmsPalletBinInfoL1.toBinName);
+                                    _wmsParams.Add("@comment", null);
+                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
                                 }
                                 else if (transactionDetails.WorkorderType == "I0")
                                 {
+
                                     wmsPalletBinInfoI0 = GetPalletBinMappedInfoI0(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.TagID);
                                     wmsPalletBinInfoI0.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
-                                    wmsPalletBinInfoI0.palletSensorId = transactionDetails.PalletTagID;
-                                    string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoI0);
+                                    wmsPalletBinInfoI0List.Add(wmsPalletBinInfoI0);
+                                    wmsPalletBinInfoInternal.data = wmsPalletBinInfoI0List;
+                                    string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoInternal);
                                     var _wmsParams = new DynamicParameters();
-                                    _wmsParams.Add("@DRN", "Internal Movement");
-                                    _wmsParams.Add("@JSONData", jsonData);
-                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_I0");
-                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+                                    _wmsParams.Add("@ID", transactionDetails.TransID);
+                                    _wmsParams.Add("@Type", "Pallet_Movement_I0");
+                                    _wmsParams.Add("@receivingNo", null);
+                                    _wmsParams.Add("@dispatchNo", null);
+                                    _wmsParams.Add("@warehouseId", wmsPalletBinInfoI0.warehouseId);
+                                    _wmsParams.Add("@palletName", null);
+                                    _wmsParams.Add("@palletSensorId", null);
+                                    _wmsParams.Add("@binName", null);
+                                    _wmsParams.Add("@fromBinName", wmsPalletBinInfoI0.fromBinName);
+                                    _wmsParams.Add("@fromPalletName", wmsPalletBinInfoI0.fromPalletName);
+                                    _wmsParams.Add("@toPalletName", wmsPalletBinInfoI0.toPalletName);
+                                    _wmsParams.Add("@toBinName", wmsPalletBinInfoI0.toBinName);
+                                    _wmsParams.Add("@comment", null);
+                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
                                 }
                             }
                         }
@@ -355,7 +609,165 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
             }
             return retval;
         }
+        #region ReaderWithBinMaster
+        //public Response InsertTransactionDetails(TransactionDetails transactionDetails)
+        //{
+        //    Response responseData = new Response();
+        //    bool retval = false;
+        //    bool retval1 = false;
+        //    string message = string.Empty;
+        //    WmsPalletBinInfo wmsPalletBin = new WmsPalletBinInfo();
+        //    WmsPalletBinInfoL0 wmsPalletBinInfoL0 = new WmsPalletBinInfoL0();
+        //    WmsPalletBinInfoL1 wmsPalletBinInfoL1 = new WmsPalletBinInfoL1();
+        //    List<WmsPalletBinInfoInternalDetails> wmsPalletBinInfoI0List = new List<WmsPalletBinInfoInternalDetails>();
+        //    WmsPalletBinInfoInternalDetails wmsPalletBinInfoI0 = new WmsPalletBinInfoInternalDetails();
+        //    WmsPalletBinInfoInternal wmsPalletBinInfoInternal = new WmsPalletBinInfoInternal();
 
+
+        //    using (SqlConnection db = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        db.Open();
+        //        using (SqlTransaction transaction = db.BeginTransaction())
+        //        {
+        //            try
+        //            {
+        //                var _params = new DynamicParameters();
+
+        //                if (transactionDetails.TransID != null && transactionDetails.SubTagDetails != null && transactionDetails.SubTagDetails.Count > 0)
+        //                {
+        //                    _params.Add("@TransID", transactionDetails.TransID);
+        //                    _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
+        //                    _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+        //                    _params.Add("@CategoryID", transactionDetails.CategoryID);
+        //                    _params.Add("@AntennaID", transactionDetails.AntennaID);
+        //                    _params.Add("@ListItemStatus", transactionDetails.ListItemStatus);
+        //                    _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+        //                    _params.Add("@WorkorderType", transactionDetails.WorkorderType);
+        //                    _params.Add("@Count", transactionDetails.Count);
+        //                    _params.Add("@RSSI", transactionDetails.RSSI);
+        //                    _params.Add("@TouchPointType", transactionDetails.TouchPointType);
+        //                    _params.Add("@TransDatetime", transactionDetails.TransDatetime);
+        //                    _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertReaderTransLog, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+        //                    retval = _params.Get<bool>("@Status");
+
+        //                    if (transactionDetails.SubTagDetails != null && transactionDetails.SubTagDetails.Count != 0)
+        //                    {
+        //                        foreach (SubTagData i in transactionDetails.SubTagDetails)
+        //                        {
+
+        //                            //_params.Add("@PalletID", transactionDetails.PalletID);
+        //                            _params.Add("@TransID", transactionDetails.TransID);
+        //                            _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
+        //                            _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+        //                            _params.Add("@CategoryID", transactionDetails.CategoryID);
+        //                            _params.Add("@AntennaID", transactionDetails.AntennaID);
+        //                            _params.Add("@ListItemStatus", transactionDetails.ListItemStatus);
+        //                            _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+        //                            _params.Add("@WorkorderType", transactionDetails.WorkorderType);
+        //                            _params.Add("@Count", transactionDetails.Count);
+        //                            _params.Add("@RSSI", transactionDetails.RSSI);
+        //                            _params.Add("@TouchPointType", transactionDetails.TouchPointType);
+        //                            _params.Add("@TransDatetime", transactionDetails.TransDatetime);
+        //                            _params.Add("@SubTransID", transactionDetails.TransID);
+        //                            _params.Add("@SubTagID", i.TagID);
+        //                            _params.Add("@SubRSSI", i.RSSI);
+        //                            _params.Add("@SubCount", i.Count);
+        //                            _params.Add("@SubCategoryID", i.CategoryID);
+        //                            _params.Add("@TagType", i.TagType);
+        //                            _params.Add("@SubTransDatetime", i.TransDatetime);
+        //                            _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //                            _params.Add("@Message", dbType: DbType.String, size: 500, direction: ParameterDirection.Output);
+        //                            db.Execute(AppSettings.SQLQueryCommand.SP_InsertReaderTranslogitems, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+        //                            retval1 = _params.Get<bool>("@Status");
+        //                            message = _params.Get<string>("@Message");
+
+
+        //                            if (retval && retval1)
+        //                            {
+        //                                transaction.Commit();
+        //                                if (transactionDetails.WorkorderType == "U0" || transactionDetails.WorkorderType == "U1")
+        //                                {
+        //                                    wmsPalletBin = GetPalletBinMappedInfo(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.TagID);
+        //                                    wmsPalletBin.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                                    wmsPalletBin.palletSensorId = transactionDetails.PalletTagID;
+        //                                    string jsonData = JsonConvert.SerializeObject(wmsPalletBin);
+        //                                    var _wmsParams = new DynamicParameters();
+        //                                    _wmsParams.Add("@DRN", wmsPalletBin.receivingNo);
+        //                                    _wmsParams.Add("@JSONData", jsonData);
+        //                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_U0U1");
+        //                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                                    //PutPalletBinMappedInfo(wmsPalletBin);
+        //                                }
+        //                                else if (transactionDetails.WorkorderType == "L0")
+        //                                {
+        //                                    wmsPalletBinInfoL0 = GetPalletBinMappedInfoL0(transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, transactionDetails.PalletTagID, i.TagID);
+        //                                    string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL0);
+        //                                    var _wmsParams = new DynamicParameters();
+        //                                    _wmsParams.Add("@DRN", wmsPalletBinInfoL0.dispatchNo);
+        //                                    _wmsParams.Add("@JSONData", jsonData);
+        //                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_L0");
+        //                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                                    //PutPalletBinMappedInfoL0(wmsPalletBinInfoL0);
+        //                                }
+        //                                else if (transactionDetails.WorkorderType == "L1")
+        //                                {
+        //                                    wmsPalletBinInfoL1 = GetPalletBinMappedInfoL1(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.TagID);
+        //                                    wmsPalletBinInfoL1.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                                    wmsPalletBinInfoL1.palletSensorId = transactionDetails.PalletTagID;
+        //                                    string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL1);
+        //                                    var query = "SELECT ProcessInfo1 FROM WorkOrder WHERE WONumber = @WorkOrderNumber";
+        //                                    var dispatchNo = db.Query<string>(query, new { WorkorderNumber = transactionDetails.WorkorderNumber }).FirstOrDefault();
+        //                                    var _wmsParams = new DynamicParameters();
+        //                                    _wmsParams.Add("@DRN", dispatchNo);
+        //                                    _wmsParams.Add("@JSONData", jsonData);
+        //                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_L1");
+        //                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                                    //PutPalletBinMappedInfoL1(wmsPalletBinInfoL1);
+        //                                }
+        //                                else if (transactionDetails.WorkorderType == "I0")
+        //                                {
+
+        //                                    wmsPalletBinInfoI0 = GetPalletBinMappedInfoI0(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.TagID);
+        //                                    wmsPalletBinInfoI0.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                                    wmsPalletBinInfoI0List.Add(wmsPalletBinInfoI0);
+        //                                    wmsPalletBinInfoInternal.data = wmsPalletBinInfoI0List;
+        //                                    string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoInternal);
+        //                                    var _wmsParams = new DynamicParameters();
+        //                                    _wmsParams.Add("@DRN", "Internal Movement");
+        //                                    _wmsParams.Add("@JSONData", jsonData);
+        //                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_I0");
+        //                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                                }
+        //                                responseData.status = retval1;
+        //                                responseData.message = message;
+        //                            }
+        //                            else
+        //                            {
+        //                                transaction.Rollback();
+        //                                responseData.status = retval1;
+        //                                responseData.message = message;
+        //                            }
+        //                        }
+        //                    }
+        //                    else
+        //                    {
+        //                        //Should never be here..
+        //                    }
+
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                transaction.Rollback();
+        //                responseData.status = false;
+        //                responseData.message = ex.Message;
+        //            }
+        //        }
+        //    }
+        //    return responseData;
+        //}
+        #endregion
         public bool InsertTagLoggerDetails(TagDetailsRequest transactionDetails)
         {
             bool retval = false;
@@ -842,7 +1254,6 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
             }
             return locations;
         }
-
         //public List<AssetMasterResponse> GetAllAssetsforMobile(UserData user) //Master Response_GRB
         //{
         //    List<AssetMasterResponse> locations = new List<AssetMasterResponse>();
@@ -876,7 +1287,6 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
         //    }
         //        return locations;
         //}
-
         public TruckResponseDetails GetTruckDetailsForPDA(TruckIDDetails truckIDDetails)
         {
             TruckResponseDetails data = null;
@@ -885,94 +1295,286 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                 db.Open();
                 var _params = new DynamicParameters();
                 _params.Add("@TruckTagID", truckIDDetails.TruckTagID);
+                _params.Add("@WarehouseID", truckIDDetails.WarehouseID);
                 data = db.Query<TruckResponseDetails>(AppSettings.SQLQueryCommand.SP_GetTruckDetailsForPDA, _params, commandType: CommandType.StoredProcedure).FirstOrDefault();
             }
             return data;
         }
-
-        //public bool CreateActivityMobile(ActivityModel activityModel)
+        //public ActivityResponseData CreateActivityMobile(ActivityModel activityModel) //Mapping_GRB
         //{
-        //    Guid obj = Guid.NewGuid();
-        //    var activity = new Activity()
-        //    {
-        //        ActivityID = obj,
-        //        UID = activityModel.UID,
-        //        CustomerID = activityModel.CustomerID,
-        //        ActivityType = activityModel.ActivityType,
-        //        RoomID=activityModel.RoomID,
-        //        VendorID = activityModel.VendorID,
-        //        Count = activityModel.Count,
-        //        StartDate = activityModel.StartDate,
-        //        EndDate = activityModel.EndDate.Value,
-        //    };
-        //    try
-        //    {
+        //    ActivityResponseData responsedata = new ActivityResponseData();
+        //    WMSPalletData wmsPalletData = new WMSPalletData();
+        //    WMSPalletDataDispatch wmsPalletDataDis = new WMSPalletDataDispatch();
+        //    List<WmsItems> itemsList = new List<WmsItems>();
 
-        //        activity.TransactionDateTime = DateTime.Now;
-        //        foreach (var tag in activityModel.Data)
-        //        {
-        //            var asset = db.AssetMasters.FirstOrDefault(r => r.ATagID == tag);
-        //            if (asset != null)
-        //            {
-        //                var activityDetail = new ActivityDetail()
-        //                {
-        //                    AssetID = asset.AssetID,
-        //                    ActivityID = activity.ActivityID
-        //                };
-        //                activity.ActivityDetails.Add(activityDetail);
-        //            }
-        //            else
-        //            {
-        //                Guid eRRActivityDetailID = Guid.NewGuid();
-        //                var errorActivityDetail = new ErrorActivityDetail()
-        //                {
-        //                    ERRActivityDetailID = eRRActivityDetailID,
-        //                    ActivityID = activity.ActivityID,
-        //                    TagID = tag
-        //                };
-        //                activity.ErrorActivityDetails.Add(errorActivityDetail);
-        //            }
-        //        }
-        //        foreach (var activityDetails in activity.ActivityDetails)
-        //        {
-        //            Guid obj2 = Guid.NewGuid();
-        //            activityDetails.ActivityDetailsID = obj2;
-        //            var asset = db.AssetMasters.First(r => r.AssetID == activityDetails.AssetID);
-        //            if (activityModel.ActivityType == "IN")
-        //            {
-        //                asset.AState = "IN";
-        //                asset.AStateDateTime = DateTime.Now;
-        //            }
-        //            else if (activityModel.ActivityType == "OUT")
-        //            {
-        //                asset.AState = "OUT";
-        //                asset.AStateDateTime = DateTime.Now;
-        //                asset.AssetLife = asset.AssetLife + 1;
-        //            }
-        //            else if (activityModel.ActivityType == "INV")
-        //            {
-        //                DateTime indianTime = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, INDIAN_ZONE);
-        //                asset.LastInventoryDateTime = indianTime.ToUniversalTime();
-        //            }
-        //            db.Entry(asset).State = EntityState.Modified;
-        //        }
-        //        db.Activities.Add(activity);
-        //        db.SaveChanges();
-        //        return true;
-        //    }
-        //    catch (DbUpdateException)
+        //    //bool retVal = false;
+        //    Guid activityID = Guid.NewGuid();
+
+        //    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
         //    {
-        //        if (ActivityExists(activity.ActivityID))
+        //        DateTime TransactionDateTime = DateTime.Now;
+        //        conn.Open();
+        //        WorkorderCreationItemDetails workorderCreationItemDetails = new WorkorderCreationItemDetails();
+        //        using (SqlTransaction transaction = conn.BeginTransaction())
         //        {
-        //            return false;
-        //        }
-        //        else
-        //        {
-        //            throw;
+        //            try
+        //            {
+        //                var _params = new DynamicParameters();
+        //                _params.Add("@ActivityID", activityID);
+        //                _params.Add("@ClientDeviceID", activityModel.ClientDeviceID);
+        //                _params.Add("@ActivityType", activityModel.ActivityType);
+        //                _params.Add("@StartDate", activityModel.StartDate);
+        //                _params.Add("@EndDate", activityModel.EndDate);
+        //                //_params.Add("@TransactionDateTime", TransactionDateTime);
+        //                _params.Add("@CustomerID", activityModel.CustomerID);
+        //                _params.Add("@TouchPointID", activityModel.TouchpointID);
+        //                _params.Add("@Count", activityModel.Count);
+        //                _params.Add("@ParentTagID", activityModel.ParentTagID);
+        //                _params.Add("@ParentAssetType", activityModel.ParentAssetType);
+        //                _params.Add("@TruckNumber", activityModel.TruckNumber);
+        //                _params.Add("@ProcessType", activityModel.ProcessType);
+        //                _params.Add("@DRN", activityModel.DRN);
+        //                _params.Add("@isUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+
+        //                workorderCreationItemDetails.TruckNumber = activityModel.TruckNumber;
+        //                workorderCreationItemDetails.PalletTagID = activityModel.ParentTagID;
+        //                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivity, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+        //                responsedata.isUnique = _params.Get<bool>("@isUnique");
+        //                if (responsedata.isUnique)
+        //                {
+        //                    foreach (var activityDetailsModel in activityModel.data)
+        //                    {
+        //                        WmsItems items = new WmsItems();
+        //                        WmsQRInfo qrInfo = new WmsQRInfo();
+        //                        var _paramsActivityDetails = new DynamicParameters();
+        //                        _paramsActivityDetails.Add("@ItemDescription", activityDetailsModel.ItemDescription);
+
+        //                        string[] parts;
+        //                        if (activityDetailsModel.ItemDescription.Contains(','))
+        //                        {
+        //                            parts = activityDetailsModel.ItemDescription.Split(',');
+        //                            if (parts.Length > 1)
+        //                            {
+        //                                string itemName = parts[1].TrimStart('0');
+        //                                string itemSerialNo = parts[0].TrimStart('0');
+        //                                string batchID = parts[3].TrimStart('0');
+        //                                string batchDateTime = parts[2];
+        //                                _paramsActivityDetails.Add("@ItemName", itemName);
+        //                                items.skuCode = itemName;
+        //                                qrInfo.skuCode = itemName;
+
+        //                                _paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+        //                                items.serialNumber = itemSerialNo;
+        //                                qrInfo.serialNumber = itemSerialNo;
+
+
+        //                                _paramsActivityDetails.Add("@BatchID", batchID);
+        //                                items.batchNumber = batchID;
+        //                                qrInfo.batchNumber = batchID;
+
+        //                                DateTime date;
+        //                                if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                                           
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                                           
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+                                            
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+                                            
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                _paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            parts = activityDetailsModel.ItemDescription.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        //                            if (parts.Length > 1)
+        //                            {
+        //                                string itemName = parts[1].TrimStart('0');
+        //                                string itemSerialNo = parts[0].TrimStart('0');
+        //                                string batchID = parts[3].TrimStart('0');
+        //                                string batchDateTime = parts[2];
+        //                                _paramsActivityDetails.Add("@ItemName", itemName);
+        //                                items.skuCode = itemName;
+        //                                qrInfo.skuCode = itemName;
+
+        //                                _paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+        //                                items.serialNumber = itemSerialNo;
+        //                                qrInfo.serialNumber = itemSerialNo;
+
+        //                                _paramsActivityDetails.Add("@BatchID", batchID);
+        //                                items.batchNumber = batchID;
+        //                                qrInfo.batchNumber = batchID;
+
+        //                                DateTime date;
+        //                                if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                                        
+        //                                }
+        //                                // If parsing in "yyyy-MM-dd HH:mm:ss" format fails, try "yyyy-MM-dd" format
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+                                            
+        //                                }
+        //                                // If parsing in "yyyy-MM-dd" format fails, try "MMM-yyyy" format
+        //                                else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+                                           
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+                                          
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                _paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
+        //                            }
+        //                        }
+
+        //                        items.qrInfo = qrInfo;
+        //                        items.qty = 1.0;
+
+        //                        _paramsActivityDetails.Add("@ActivityID", activityID);
+        //                        _paramsActivityDetails.Add("@TransactionDateTime", TransactionDateTime);
+        //                        _paramsActivityDetails.Add("@ProcessType", activityModel.ProcessType);
+        //                        _paramsActivityDetails.Add("@DRN", activityModel.DRN);
+        //                        _paramsActivityDetails.Add("@isItemUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+
+        //                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivityDetails, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+        //                        responsedata.isItemUnique = _paramsActivityDetails.Get<bool>("@isItemUnique");
+
+        //                        //WMS Data Posting
+
+        //                        if (responsedata.isItemUnique)
+        //                        {
+        //                            if (items.skuCode != null)
+        //                            {
+        //                                itemsList.Add(items);
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            var duplicateItemDescription = activityDetailsModel.ItemDescription;
+        //                            if (duplicateItemDescription != null)
+        //                            {
+        //                                responsedata.message = $"Item '{duplicateItemDescription}' is already mapped.";
+        //                            }
+        //                            break;
+        //                        }
+        //                    }
+        //                }
+                       
+
+        //                if (responsedata.isUnique && responsedata.isItemUnique)
+        //                {
+        //                    transaction.Commit();
+                            
+        //                    if (activityModel.ProcessType == "IN")
+        //                    {
+        //                        if (workorderCreationItemDetails != null)
+        //                        {
+        //                            InsertWorkorderItemDetailsU0(workorderCreationItemDetails);
+        //                        }
+        //                        wmsPalletData = GetPalletInfo(activityModel.TruckNumber, activityModel.ParentTagID);
+        //                        wmsPalletData.receivingNo = activityModel.DRN;
+        //                        wmsPalletData.items = itemsList;
+        //                        wmsPalletData.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                        string jsonRec = JsonConvert.SerializeObject(wmsPalletData);
+        //                        responsedata.wmsData = jsonRec;
+        //                        //PutPalletInfo(wmsPalletData);
+        //                        var _wmsParams = new DynamicParameters();
+        //                        _wmsParams.Add("@ID", activityID);
+        //                        _wmsParams.Add("@DRN", activityModel.DRN);
+        //                        _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonRec));
+        //                        _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Receiving");
+        //                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+                               
+        //                    }
+        //                    else if (activityModel.ProcessType == "OUT")
+        //                    {
+        //                        wmsPalletDataDis = GetPalletInfoDispatch(activityModel.DRN, activityModel.ParentTagID);
+        //                        wmsPalletDataDis.dispatchNo = activityModel.DRN;
+        //                        wmsPalletDataDis.items = itemsList;
+        //                        wmsPalletDataDis.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                        wmsPalletDataDis.comment = "Verified and Loaded on Truck";
+        //                        string jsonDis = JsonConvert.SerializeObject(wmsPalletDataDis);
+        //                        responsedata.wmsData = jsonDis;
+        //                        var _wmsParams = new DynamicParameters();
+        //                        _wmsParams.Add("@ID", activityID);
+        //                        _wmsParams.Add("@DRN", activityModel.DRN);
+        //                        _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonDis));
+        //                        _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Dispatch");
+        //                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                        //PutPalletInfoDispatch(wmsPalletDataDis);
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                        // If any condition is not met, rollback the transaction
+        //                        transaction.Rollback();
+        //                        if (!responsedata.isUnique)
+        //                        {
+        //                            responsedata.message = "The pallet has been already mapped.";
+        //                        }
+                               
+        //                }
+        //                responsedata.status = true;
+
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                responsedata.status = false;
+        //                responsedata.message = ex.Message;
+
+        //            }
         //        }
         //    }
+        //    return responsedata;
         //}
-
         public ActivityResponseData CreateActivityMobile(ActivityModel activityModel) //Mapping_GRB
         {
             ActivityResponseData responsedata = new ActivityResponseData();
@@ -998,7 +1600,6 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                         _params.Add("@ActivityType", activityModel.ActivityType);
                         _params.Add("@StartDate", activityModel.StartDate);
                         _params.Add("@EndDate", activityModel.EndDate);
-                        //_params.Add("@TransactionDateTime", TransactionDateTime);
                         _params.Add("@CustomerID", activityModel.CustomerID);
                         _params.Add("@TouchPointID", activityModel.TouchpointID);
                         _params.Add("@Count", activityModel.Count);
@@ -1007,6 +1608,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                         _params.Add("@TruckNumber", activityModel.TruckNumber);
                         _params.Add("@ProcessType", activityModel.ProcessType);
                         _params.Add("@DRN", activityModel.DRN);
+                        _params.Add("@WarehouseID", activityModel.WarehouseID);
                         _params.Add("@isUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
 
                         workorderCreationItemDetails.TruckNumber = activityModel.TruckNumber;
@@ -1049,25 +1651,37 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                         if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
                                         {
                                             items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
-                                           
+
                                         }
                                         else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
                                             DateTimeStyles.None, out date))
                                         {
                                             items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
-                                           
+
                                         }
                                         else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
                                             DateTimeStyles.None, out date))
                                         {
                                             items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
-                                            
+
                                         }
                                         else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
                                             DateTimeStyles.None, out date))
                                         {
                                             items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
-                                            
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
                                         }
                                         _paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
                                     }
@@ -1097,27 +1711,39 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                         if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
                                         {
                                             items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
-                                        
+
                                         }
                                         // If parsing in "yyyy-MM-dd HH:mm:ss" format fails, try "yyyy-MM-dd" format
                                         else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
                                             DateTimeStyles.None, out date))
                                         {
                                             items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
-                                            
+
                                         }
                                         // If parsing in "yyyy-MM-dd" format fails, try "MMM-yyyy" format
                                         else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
                                             DateTimeStyles.None, out date))
                                         {
                                             items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
-                                           
+
                                         }
                                         else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
                                             DateTimeStyles.None, out date))
                                         {
                                             items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
-                                          
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
                                         }
                                         _paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
                                     }
@@ -1125,9 +1751,13 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
 
                                 items.qrInfo = qrInfo;
                                 items.qty = 1.0;
+                                items.status = activityDetailsModel.ItemStatus;
 
                                 _paramsActivityDetails.Add("@ActivityID", activityID);
                                 _paramsActivityDetails.Add("@TransactionDateTime", TransactionDateTime);
+                                _paramsActivityDetails.Add("@ProcessType", activityModel.ProcessType);
+                                _paramsActivityDetails.Add("@DRN", activityModel.DRN);
+                                _paramsActivityDetails.Add("@WarehouseID", activityModel.WarehouseID);
                                 _paramsActivityDetails.Add("@isItemUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
 
                                 conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivityDetails, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
@@ -1154,12 +1784,12 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                 }
                             }
                         }
-                       
+
 
                         if (responsedata.isUnique && responsedata.isItemUnique)
                         {
                             transaction.Commit();
-                            
+
                             if (activityModel.ProcessType == "IN")
                             {
                                 if (workorderCreationItemDetails != null)
@@ -1169,43 +1799,95 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                 wmsPalletData = GetPalletInfo(activityModel.TruckNumber, activityModel.ParentTagID);
                                 wmsPalletData.receivingNo = activityModel.DRN;
                                 wmsPalletData.items = itemsList;
-                                wmsPalletData.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+                                wmsPalletData.warehouseId = activityModel.WarehouseID.ToString();
                                 string jsonRec = JsonConvert.SerializeObject(wmsPalletData);
                                 responsedata.wmsData = jsonRec;
-                                //PutPalletInfo(wmsPalletData);
                                 var _wmsParams = new DynamicParameters();
-                                _wmsParams.Add("@DRN", activityModel.DRN);
-                                _wmsParams.Add("@JSONData", jsonRec);
-                                _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Receiving");
-                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
-                               
+                                _wmsParams.Add("@ID", activityID);
+                                _wmsParams.Add("@Type", "ASSET_PALLET_MAPPING_RECEIVING");
+                                _wmsParams.Add("@receivingNo", wmsPalletData.receivingNo);
+                                _wmsParams.Add("@dispatchNo", null);
+                                _wmsParams.Add("@warehouseId", wmsPalletData.warehouseId);
+                                _wmsParams.Add("@palletName", wmsPalletData.palletName);
+                                _wmsParams.Add("@palletSensorId", activityModel.ParentTagID);
+                                _wmsParams.Add("@binName", wmsPalletData.binName);
+                                _wmsParams.Add("@fromBinName", null);
+                                _wmsParams.Add("@fromPalletName", null);
+                                _wmsParams.Add("@toPalletName", null);
+                                _wmsParams.Add("@toBinName", null);
+                                _wmsParams.Add("@comment", null);
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                                foreach (var wmsData in wmsPalletData.items)
+                                {
+                                    var _wmsParamsDetails = new DynamicParameters();
+                                    _wmsParamsDetails.Add("@ParentID", activityID);
+                                    _wmsParamsDetails.Add("@Type", "ASSET_PALLET_MAPPING_RECEIVING");
+                                    _wmsParamsDetails.Add("@fromBinName", null);
+                                    _wmsParamsDetails.Add("@fromPalletName", null);
+                                    _wmsParamsDetails.Add("@stockBinId", null);
+                                    _wmsParamsDetails.Add("@serialNumber", wmsData.serialNumber);
+                                    _wmsParamsDetails.Add("@skuCode", wmsData.skuCode);
+                                    _wmsParamsDetails.Add("@batchNumber", wmsData.batchNumber);
+                                    _wmsParamsDetails.Add("@batchDateTime", wmsData.batchDateTime);
+                                    _wmsParamsDetails.Add("@status", wmsData.status);
+                                    _wmsParamsDetails.Add("@qty", wmsData.qty);
+                                    conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataChild, _wmsParamsDetails, commandType: CommandType.StoredProcedure);
+                                }
+                                
+
                             }
                             else if (activityModel.ProcessType == "OUT")
                             {
-                                wmsPalletDataDis = GetPalletInfoDispatch(activityModel.TruckNumber, activityModel.ParentTagID);
+                                wmsPalletDataDis = GetPalletInfoDispatch(activityModel.DRN, activityModel.ParentTagID);
                                 wmsPalletDataDis.dispatchNo = activityModel.DRN;
                                 wmsPalletDataDis.items = itemsList;
-                                wmsPalletDataDis.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+                                wmsPalletDataDis.warehouseId = activityModel.WarehouseID.ToString();
                                 wmsPalletDataDis.comment = "Verified and Loaded on Truck";
                                 string jsonDis = JsonConvert.SerializeObject(wmsPalletDataDis);
                                 responsedata.wmsData = jsonDis;
                                 var _wmsParams = new DynamicParameters();
-                                _wmsParams.Add("@DRN", activityModel.DRN);
-                                _wmsParams.Add("@JSONData", jsonDis);
-                                _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Dispatch");
-                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
-                                //PutPalletInfoDispatch(wmsPalletDataDis);
+                                _wmsParams.Add("@ID", activityID);
+                                _wmsParams.Add("@Type", "ASSET_PALLET_MAPPING_DISPATCH");
+                                _wmsParams.Add("@receivingNo", null);
+                                _wmsParams.Add("@dispatchNo", wmsPalletDataDis.dispatchNo);
+                                _wmsParams.Add("@warehouseId", wmsPalletDataDis.warehouseId);
+                                _wmsParams.Add("@palletName", wmsPalletDataDis.palletName);
+                                _wmsParams.Add("@palletSensorId", activityModel.ParentTagID);
+                                _wmsParams.Add("@binName", wmsPalletDataDis.binName);
+                                _wmsParams.Add("@fromBinName", null);
+                                _wmsParams.Add("@fromPalletName", null);
+                                _wmsParams.Add("@toPalletName", null);
+                                _wmsParams.Add("@toBinName", null);
+                                _wmsParams.Add("@comment", wmsPalletDataDis.comment);
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                                foreach (var wmsData in wmsPalletDataDis.items)
+                                {
+                                    var _wmsParamsDetails = new DynamicParameters();
+                                    _wmsParamsDetails.Add("@ParentID", activityID);
+                                    _wmsParamsDetails.Add("@Type", "ASSET_PALLET_MAPPING_DISPATCH");
+                                    _wmsParamsDetails.Add("@fromBinName", null);
+                                    _wmsParamsDetails.Add("@fromPalletName", null);
+                                    _wmsParamsDetails.Add("@stockBinId", null);
+                                    _wmsParamsDetails.Add("@serialNumber", wmsData.serialNumber);
+                                    _wmsParamsDetails.Add("@skuCode", wmsData.skuCode);
+                                    _wmsParamsDetails.Add("@batchNumber", wmsData.batchNumber);
+                                    _wmsParamsDetails.Add("@batchDateTime", wmsData.batchDateTime);
+                                    _wmsParamsDetails.Add("@status", null);
+                                    _wmsParamsDetails.Add("@qty", wmsData.qty);
+                                    conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataChild, _wmsParamsDetails, commandType: CommandType.StoredProcedure);
+                                }
+                           
                             }
                         }
                         else
                         {
-                                // If any condition is not met, rollback the transaction
-                                transaction.Rollback();
-                                if (!responsedata.isUnique)
-                                {
-                                    responsedata.message = "The pallet has been already mapped.";
-                                }
-                               
+                            // If any condition is not met, rollback the transaction
+                            transaction.Rollback();
+                            if (!responsedata.isUnique)
+                            {
+                                responsedata.message = "The pallet has been already mapped.";
+                            }
+
                         }
                         responsedata.status = true;
 
@@ -1229,10 +1911,163 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                 var _params = new DynamicParameters();
                 _params.Add("@TruckNumber", truckDetails.TruckNumber);
                 _params.Add("@DRN", truckDetails.DRN);
+                _params.Add("@ProcessType", truckDetails.ProcessType);
                 data = db.Query<ItemDescriptionDetails>(AppSettings.SQLQueryCommand.SP_GetSTOLineItemsByTruckID, _params, commandType: CommandType.StoredProcedure).ToList();
             }
             return data;
         }
+        //public ActivityResponseData InsertTransactionForItems(ActivityModelItems activityItems)
+        //{
+        //    //bool retVal = false;
+        //    ActivityResponseData responseData = new ActivityResponseData();
+        //    Guid activityID = Guid.NewGuid();
+        //    Guid activityDetailsID = Guid.NewGuid();
+        //    WMSPalletData wmsPalletData = new WMSPalletData();
+        //    WMSPalletDataDispatch wmsPalletDataDis = new WMSPalletDataDispatch();
+        //    List<WmsItems> itemsList = new List<WmsItems>();
+
+        //    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        DateTime TransactionDateTime = DateTime.Now;
+        //        conn.Open();
+        //        WorkorderCreationItemDetails workorderCreationItemDetails = new WorkorderCreationItemDetails();
+        //        using (SqlTransaction transaction = conn.BeginTransaction())
+        //        {
+        //            try
+        //            {
+        //                var _params = new DynamicParameters();
+        //                _params.Add("@ActivityID", activityID);
+        //                _params.Add("@ClientDeviceID", activityItems.ClientDeviceID);
+        //                _params.Add("@ActivityType", activityItems.ActivityType);
+        //                _params.Add("@StartDate", activityItems.StartDate);
+        //                _params.Add("@EndDate", activityItems.EndDate);
+        //                //_params.Add("@TransactionDateTime", TransactionDateTime);
+        //                _params.Add("@CustomerID", activityItems.CustomerID);
+        //                _params.Add("@TouchPointID", activityItems.TouchpointID);
+        //                _params.Add("@Count", activityItems.Count);
+        //                _params.Add("@ParentTagID", activityItems.ParentTagID);
+        //                _params.Add("@ParentAssetType", activityItems.ParentAssetType);
+        //                _params.Add("@TruckNumber", activityItems.TruckNumber);
+        //                _params.Add("@ProcessType", activityItems.ProcessType);
+        //                _params.Add("@DRN", activityItems.DRN);
+        //                _params.Add("@isUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivity, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+        //                workorderCreationItemDetails.TruckNumber = activityItems.TruckNumber;
+        //                workorderCreationItemDetails.PalletTagID = activityItems.ParentTagID;
+        //                responseData.isUnique = _params.Get<bool>("@isUnique");
+        //                if (responseData.isUnique) {
+        //                    foreach (var activityItemDetails in activityItems.data)
+        //                    {
+        //                        WmsItems items = new WmsItems();
+        //                        WmsQRInfo qrInfo = new WmsQRInfo();
+        //                        var _paramsActivityDetails = new DynamicParameters();
+        //                        //_paramsActivityDetails.Add("@ActivityDetailsID", activityDetailsID);
+
+        //                        var ItemDesc = activityItemDetails.ItemDescription.Split(',');
+        //                        items.skuCode = ItemDesc[2];
+        //                        items.batchNumber = ItemDesc[1] == "null" ? null: ItemDesc[1];
+        //                        qrInfo.skuCode = ItemDesc[2];
+        //                        qrInfo.batchNumber = ItemDesc[1];
+        //                        items.qrInfo = qrInfo;
+        //                        items.qty = 1.0;
+        //                        _paramsActivityDetails.Add("@ItemDescription", ItemDesc[0]);
+        //                        _paramsActivityDetails.Add("@ItemName", ItemDesc[2]);
+        //                        _paramsActivityDetails.Add("@BatchID", ItemDesc[1]);
+        //                        _paramsActivityDetails.Add("@Qty", activityItemDetails.Qty);
+        //                        _paramsActivityDetails.Add("@ActivityID", activityID);
+        //                        _paramsActivityDetails.Add("@ProcessType", activityItems.ProcessType);
+        //                        _paramsActivityDetails.Add("@DRN", activityItems.DRN);
+        //                        _paramsActivityDetails.Add("@TransactionDateTime", TransactionDateTime);
+        //                        _paramsActivityDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivityDetailsForItems, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+        //                        responseData.isItemUnique = _paramsActivityDetails.Get<bool>("@Status");
+
+        //                        //WMS Data Posting
+        //                        if (responseData.isItemUnique)
+        //                        {
+        //                            if (items.skuCode != null)
+        //                            {
+        //                                for (int i = 0; i < activityItemDetails.Qty; i++)
+        //                                {
+        //                                    itemsList.Add(items);
+        //                                }
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            responseData.message = "";
+        //                        }
+        //                    }
+        //                }
+
+        //                //WMS Data Posting
+        //                if (responseData.isUnique && responseData.isItemUnique)
+        //                {
+        //                    transaction.Commit();
+        //                    if (activityItems.ProcessType == "IN")
+        //                    {
+        //                        if (workorderCreationItemDetails != null)
+        //                        {
+        //                            InsertWorkorderItemDetailsU0(workorderCreationItemDetails);
+        //                        }
+        //                        wmsPalletData = GetPalletInfo(activityItems.TruckNumber, activityItems.ParentTagID);
+        //                        wmsPalletData.receivingNo = activityItems.DRN;
+        //                        wmsPalletData.items = itemsList;
+        //                        wmsPalletData.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                        string jsonRec = JsonConvert.SerializeObject(wmsPalletData);
+        //                        responseData.wmsData = jsonRec;
+        //                        var _wmsParams = new DynamicParameters();
+        //                        _wmsParams.Add("@ID", activityID);
+        //                        _wmsParams.Add("@DRN", activityItems.DRN);
+        //                        _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonRec));
+        //                        _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Receiving");
+        //                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                        //PutPalletInfo(wmsPalletData);
+
+        //                    }
+        //                    else if (activityItems.ProcessType == "OUT")
+        //                    {
+        //                        wmsPalletDataDis = GetPalletInfoDispatch(activityItems.DRN, activityItems.ParentTagID);
+        //                        wmsPalletDataDis.dispatchNo = activityItems.DRN;
+        //                        wmsPalletDataDis.items = itemsList;
+        //                        wmsPalletDataDis.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                        wmsPalletDataDis.comment = "Verified and Loaded on Truck";
+        //                        string jsonDis = JsonConvert.SerializeObject(wmsPalletDataDis);
+        //                        responseData.wmsData = jsonDis;
+        //                        var JsonByte = Encoding.UTF8.GetBytes(jsonDis);
+        //                        var JsonString = Encoding.UTF8.GetString(JsonByte);
+        //                        var _wmsParams = new DynamicParameters();
+        //                        _wmsParams.Add("@ID", activityID);
+        //                        _wmsParams.Add("@DRN", activityItems.DRN);
+        //                        _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonDis));
+        //                        _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Dispatch");
+        //                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                        //PutPalletInfoDispatch(wmsPalletDataDis);
+
+        //                    }
+        //                }
+        //                else
+        //                { 
+        //                        // If any condition is not met, rollback the transaction
+        //                        transaction.Rollback();
+        //                        if (!responseData.isUnique)
+        //                        {
+        //                            responseData.message = "The pallet has been already mapped.";
+        //                        }
+        //                }
+        //                responseData.status = true;
+
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                responseData.status = false;
+        //                responseData.message = ex.Message;
+
+        //            }
+        //        }
+        //    }
+        //    return responseData;
+        //}
         public ActivityResponseData InsertTransactionForItems(ActivityModelItems activityItems)
         {
             //bool retVal = false;
@@ -1267,22 +2102,24 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                         _params.Add("@TruckNumber", activityItems.TruckNumber);
                         _params.Add("@ProcessType", activityItems.ProcessType);
                         _params.Add("@DRN", activityItems.DRN);
+                        _params.Add("@WarehouseID", activityItems.WarehouseID);
                         _params.Add("@isUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
                         conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivity, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
                         workorderCreationItemDetails.TruckNumber = activityItems.TruckNumber;
                         workorderCreationItemDetails.PalletTagID = activityItems.ParentTagID;
                         responseData.isUnique = _params.Get<bool>("@isUnique");
-                        if (responseData.isUnique) {
+                        if (responseData.isUnique)
+                        {
                             foreach (var activityItemDetails in activityItems.data)
                             {
                                 WmsItems items = new WmsItems();
                                 WmsQRInfo qrInfo = new WmsQRInfo();
                                 var _paramsActivityDetails = new DynamicParameters();
                                 //_paramsActivityDetails.Add("@ActivityDetailsID", activityDetailsID);
-                                
+
                                 var ItemDesc = activityItemDetails.ItemDescription.Split(',');
                                 items.skuCode = ItemDesc[2];
-                                items.batchNumber = ItemDesc[1];
+                                items.batchNumber = ItemDesc[1] == "null" ? null : ItemDesc[1];
                                 qrInfo.skuCode = ItemDesc[2];
                                 qrInfo.batchNumber = ItemDesc[1];
                                 items.qrInfo = qrInfo;
@@ -1292,6 +2129,9 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                 _paramsActivityDetails.Add("@BatchID", ItemDesc[1]);
                                 _paramsActivityDetails.Add("@Qty", activityItemDetails.Qty);
                                 _paramsActivityDetails.Add("@ActivityID", activityID);
+                                _paramsActivityDetails.Add("@ProcessType", activityItems.ProcessType);
+                                _paramsActivityDetails.Add("@DRN", activityItems.DRN);
+                                _paramsActivityDetails.Add("@WarehouseID", activityItems.WarehouseID);
                                 _paramsActivityDetails.Add("@TransactionDateTime", TransactionDateTime);
                                 _paramsActivityDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
                                 conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivityDetailsForItems, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
@@ -1314,7 +2154,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                 }
                             }
                         }
-                      
+
                         //WMS Data Posting
                         if (responseData.isUnique && responseData.isItemUnique)
                         {
@@ -1328,43 +2168,94 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                 wmsPalletData = GetPalletInfo(activityItems.TruckNumber, activityItems.ParentTagID);
                                 wmsPalletData.receivingNo = activityItems.DRN;
                                 wmsPalletData.items = itemsList;
-                                wmsPalletData.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+                                wmsPalletData.warehouseId = activityItems.WarehouseID.ToString();
                                 string jsonRec = JsonConvert.SerializeObject(wmsPalletData);
                                 responseData.wmsData = jsonRec;
                                 var _wmsParams = new DynamicParameters();
-                                _wmsParams.Add("@DRN", activityItems.DRN);
-                                _wmsParams.Add("@JSONData", jsonRec);
-                                _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Receiving");
-                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
-                                //PutPalletInfo(wmsPalletData);
-                                
+                                _wmsParams.Add("@ID", activityID);
+                                _wmsParams.Add("@Type", "ASSET_PALLET_MAPPING_RECEIVING");
+                                _wmsParams.Add("@receivingNo", wmsPalletData.receivingNo);
+                                _wmsParams.Add("@dispatchNo", null);
+                                _wmsParams.Add("@warehouseId", wmsPalletData.warehouseId);
+                                _wmsParams.Add("@palletName", wmsPalletData.palletName);
+                                _wmsParams.Add("@palletSensorId", activityItems.ParentTagID);
+                                _wmsParams.Add("@binName", wmsPalletData.binName);
+                                _wmsParams.Add("@fromBinName", null);
+                                _wmsParams.Add("@fromPalletName", null);
+                                _wmsParams.Add("@toPalletName", null);
+                                _wmsParams.Add("@toBinName", null);
+                                _wmsParams.Add("@comment", null);
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                                foreach (var wmsData in wmsPalletData.items)
+                                {
+                                    var _wmsParamsDetails = new DynamicParameters();
+                                    _wmsParamsDetails.Add("@ParentID", activityID);
+                                    _wmsParamsDetails.Add("@Type", "ASSET_PALLET_MAPPING_RECEIVING");
+                                    _wmsParamsDetails.Add("@fromBinName", null);
+                                    _wmsParamsDetails.Add("@fromPalletName", null);
+                                    _wmsParamsDetails.Add("@stockBinId", null);
+                                    _wmsParamsDetails.Add("@serialNumber", null);
+                                    _wmsParamsDetails.Add("@skuCode", wmsData.skuCode);
+                                    _wmsParamsDetails.Add("@batchNumber", wmsData.batchNumber);
+                                    _wmsParamsDetails.Add("@batchDateTime", null);
+                                    _wmsParamsDetails.Add("@status", null);
+                                    _wmsParamsDetails.Add("@qty", wmsData.qty);
+                                    conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataChild, _wmsParamsDetails, commandType: CommandType.StoredProcedure);
+                                }
                             }
                             else if (activityItems.ProcessType == "OUT")
                             {
-                                wmsPalletDataDis = GetPalletInfoDispatch(activityItems.TruckNumber, activityItems.ParentTagID);
+                                wmsPalletDataDis = GetPalletInfoDispatch(activityItems.DRN, activityItems.ParentTagID);
                                 wmsPalletDataDis.dispatchNo = activityItems.DRN;
                                 wmsPalletDataDis.items = itemsList;
-                                wmsPalletDataDis.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+                                wmsPalletDataDis.warehouseId = activityItems.WarehouseID.ToString();
                                 wmsPalletDataDis.comment = "Verified and Loaded on Truck";
                                 string jsonDis = JsonConvert.SerializeObject(wmsPalletDataDis);
                                 responseData.wmsData = jsonDis;
+                                var JsonByte = Encoding.UTF8.GetBytes(jsonDis);
+                                var JsonString = Encoding.UTF8.GetString(JsonByte);
                                 var _wmsParams = new DynamicParameters();
-                                _wmsParams.Add("@DRN", activityItems.DRN);
-                                _wmsParams.Add("@JSONData", jsonDis);
-                                _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Dispatch");
-                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
-                                //PutPalletInfoDispatch(wmsPalletDataDis);
-                                
+                                _wmsParams.Add("@ID", activityID);
+                                _wmsParams.Add("@Type", "ASSET_PALLET_MAPPING_DISPATCH");
+                                _wmsParams.Add("@receivingNo", null);
+                                _wmsParams.Add("@dispatchNo", wmsPalletDataDis.dispatchNo);
+                                _wmsParams.Add("@warehouseId", wmsPalletDataDis.warehouseId);
+                                _wmsParams.Add("@palletName", wmsPalletDataDis.palletName);
+                                _wmsParams.Add("@palletSensorId", activityItems.ParentTagID);
+                                _wmsParams.Add("@binName", wmsPalletDataDis.binName);
+                                _wmsParams.Add("@fromBinName", null);
+                                _wmsParams.Add("@fromPalletName", null);
+                                _wmsParams.Add("@toPalletName", null);
+                                _wmsParams.Add("@toBinName", null);
+                                _wmsParams.Add("@comment", wmsPalletDataDis.comment);
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                                foreach (var wmsData in wmsPalletDataDis.items)
+                                {
+                                    var _wmsParamsDetails = new DynamicParameters();
+                                    _wmsParamsDetails.Add("@ParentID", activityID);
+                                    _wmsParamsDetails.Add("@Type", "ASSET_PALLET_MAPPING_DISPATCH");
+                                    _wmsParamsDetails.Add("@fromBinName", null);
+                                    _wmsParamsDetails.Add("@fromPalletName", null);
+                                    _wmsParamsDetails.Add("@stockBinId", null);
+                                    _wmsParamsDetails.Add("@serialNumber", null);
+                                    _wmsParamsDetails.Add("@skuCode", wmsData.skuCode);
+                                    _wmsParamsDetails.Add("@batchNumber", wmsData.batchNumber);
+                                    _wmsParamsDetails.Add("@batchDateTime", null);
+                                    _wmsParamsDetails.Add("@status", null);
+                                    _wmsParamsDetails.Add("@qty", wmsData.qty);
+                                    conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataChild, _wmsParamsDetails, commandType: CommandType.StoredProcedure);
+                                }
+
                             }
                         }
                         else
-                        { 
-                                // If any condition is not met, rollback the transaction
-                                transaction.Rollback();
-                                if (!responseData.isUnique)
-                                {
-                                    responseData.message = "The pallet has been already mapped.";
-                                }
+                        {
+                            // If any condition is not met, rollback the transaction
+                            transaction.Rollback();
+                            if (!responseData.isUnique)
+                            {
+                                responseData.message = "The pallet has been already mapped.";
+                            }
                         }
                         responseData.status = true;
 
@@ -1387,6 +2278,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                 db.Open();
                 var _params = new DynamicParameters();
                 _params.Add("@clientDeviceID", deviceData.ClientDeviceID);
+                _params.Add("@WarehouseID", deviceData.WarehouseID);
                 data = db.Query<PartialWorkOrderResponse>(AppSettings.SQLQueryCommand.SP_GetPartialWorkorderList, _params, commandType: CommandType.StoredProcedure).ToList();
             }
             return data;
@@ -1405,58 +2297,214 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
             }
             return data;
         }
-        public bool InsertPartialWorkorderDetails(PartialTransactionDetails transactionDetails)
+        //public Response InsertPartialWorkorderDetails(PartialTransactionDetails transactionDetails)
+        //{
+        //    Response res = new Response();
+        //    bool stat1 = false;
+        //    bool stat2 = false;
+        //    string mess = string.Empty;
+        //    Guid workorderDetailsID = Guid.NewGuid();
+        //    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        DateTime TransactionDateTime = DateTime.Now;
+        //        conn.Open();
+        //        using (SqlTransaction transaction = conn.BeginTransaction())
+        //        {
+        //            try
+        //            {
+        //                var _params = new DynamicParameters();
+        //                WmsPalletBinInfoL0 wmsPalletBinInfoL0 = new WmsPalletBinInfoL0();
+        //                _params.Add("@WorkorderDetailsID", workorderDetailsID);
+        //                _params.Add("@CustomerID", transactionDetails.CustomerID);
+        //                _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
+        //                _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+        //                _params.Add("@WorkorderType", transactionDetails.WorkorderType);
+        //                _params.Add("@TransactionDateTime", TransactionDateTime);
+        //                _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+        //                _params.Add("@PalletName", transactionDetails.PalletName);
+        //                _params.Add("@LocationTagID", transactionDetails.LocationTagID);
+        //                _params.Add("@LocationCategoryID", transactionDetails.LocationCategoryID);
+        //                _params.Add("@DCNumber", transactionDetails.DCNumber);
+        //                _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //                _params.Add("@Message", dbType: DbType.String, size: 500, direction: ParameterDirection.Output);
+        //                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertPartialWorkorder, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+        //                stat1 = _params.Get<bool>("@Status");
+        //                mess = _params.Get<string>("@Message");
+
+        //                if (stat1)
+        //                {
+        //                    foreach (PartialItemDetails i in transactionDetails.ItemDetails)
+        //                    {
+        //                        var _paramsItemDetails = new DynamicParameters();
+        //                        _paramsItemDetails.Add("@WorkorderDetailsID", workorderDetailsID);
+        //                        _paramsItemDetails.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+        //                        _paramsItemDetails.Add("@WorkorderType", transactionDetails.WorkorderType);
+        //                        _paramsItemDetails.Add("@BinName", i.BinName);
+        //                        _paramsItemDetails.Add("@ItemDescription", i.ItemDescription);
+        //                        _paramsItemDetails.Add("@ItemName", i.ItemName);
+        //                        _paramsItemDetails.Add("@PickedItemID", i.PickedItemID);
+        //                        _paramsItemDetails.Add("@BatchID", i.BatchID);
+        //                        _paramsItemDetails.Add("@Qty", i.Qty);
+        //                        _paramsItemDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertPartialWorkorderItems, _paramsItemDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+        //                        stat2 = _paramsItemDetails.Get<bool>("@Status");
+        //                    }
+        //                    res.status = stat1;
+        //                }
+        //                else
+        //                {
+        //                    res.status = stat1;
+        //                    res.message = mess;
+        //                }
+
+        //                if (stat1 && stat2)
+        //                {
+        //                    transaction.Commit();
+        //                    wmsPalletBinInfoL0 = GetPalletBinMappedInfoL0(transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, transactionDetails.PalletTagID, transactionDetails.LocationTagID);
+        //                    string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL0);
+        //                    var _wmsParams = new DynamicParameters();
+        //                    _wmsParams.Add("@ID", workorderDetailsID);
+        //                    _wmsParams.Add("@DRN", wmsPalletBinInfoL0.dispatchNo);
+        //                    _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonData));
+        //                    _wmsParams.Add("@ProcessType", "Pallet_Movement_L0");
+        //                    conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                    //PutPalletBinMappedInfoL0(wmsPalletBinInfoL0);
+        //                    res.status = true;
+        //                }
+        //                else
+        //                {
+        //                    res.status = false;
+        //                    res.message = mess;
+        //                }
+        //            }
+        //            catch(Exception ex)
+        //            {
+        //                transaction.Rollback();
+        //                res.status = false;
+        //                res.message = ex.Message;
+        //            }
+
+        //        }
+        //    }
+        //    return res;
+        //}
+        public Response InsertPartialWorkorderDetails(PartialTransactionDetails transactionDetails)
         {
-            bool retVal = false;
+            Response res = new Response();
+            bool stat1 = false;
+            bool stat2 = false;
+            string mess = string.Empty;
             Guid workorderDetailsID = Guid.NewGuid();
             using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
             {
                 DateTime TransactionDateTime = DateTime.Now;
                 conn.Open();
-            
-                var _params = new DynamicParameters();
-                WmsPalletBinInfoL0 wmsPalletBinInfoL0 = new WmsPalletBinInfoL0();
-                _params.Add("@WorkorderDetailsID", workorderDetailsID);
-                _params.Add("@CustomerID", transactionDetails.CustomerID);
-                _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
-                _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
-                _params.Add("@WorkorderType", transactionDetails.WorkorderType);
-                _params.Add("@TransactionDateTime", TransactionDateTime);
-                _params.Add("@PalletTagID", transactionDetails.PalletTagID);
-                _params.Add("@PalletName", transactionDetails.PalletName);
-                _params.Add("@LocationTagID", transactionDetails.LocationTagID);
-                _params.Add("@LocationCategoryID", transactionDetails.LocationCategoryID);
-                _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
-                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertPartialWorkorder, _params, commandType: CommandType.StoredProcedure);
-                foreach (PartialItemDetails i in transactionDetails.ItemDetails)
+                using (SqlTransaction transaction = conn.BeginTransaction())
                 {
-                    var _paramsItemDetails = new DynamicParameters();
-                    _paramsItemDetails.Add("@WorkorderDetailsID", workorderDetailsID);
-                    _paramsItemDetails.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
-                    _paramsItemDetails.Add("@WorkorderType", transactionDetails.WorkorderType);
-                    _paramsItemDetails.Add("@BinName", i.BinName);
-                    _paramsItemDetails.Add("@ItemDescription", i.ItemDescription);
-                    _paramsItemDetails.Add("@BatchID", i.BatchID);
-                    _paramsItemDetails.Add("@Qty", i.Qty);
-                    _paramsItemDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
-                    conn.Execute(AppSettings.SQLQueryCommand.SP_InsertPartialWorkorderItems, _paramsItemDetails, commandType: CommandType.StoredProcedure);
-                    retVal = _paramsItemDetails.Get<bool>("@Status");
-                  
-                }
-                retVal = _params.Get<bool>("@Status");
-                if (retVal)
-                {
-                    wmsPalletBinInfoL0 = GetPalletBinMappedInfoL0(transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, transactionDetails.PalletTagID, transactionDetails.LocationTagID);
-                    string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL0);
-                    var _wmsParams = new DynamicParameters();
-                    _wmsParams.Add("@DRN", wmsPalletBinInfoL0.dispatchNo);
-                    _wmsParams.Add("@JSONData", jsonData);
-                    _wmsParams.Add("@ProcessType", "Pallet_Movement_L0");
-                    conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
-                    //PutPalletBinMappedInfoL0(wmsPalletBinInfoL0);
+                    try
+                    {
+                        var _params = new DynamicParameters();
+                        WmsPalletBinInfoL0 wmsPalletBinInfoL0 = new WmsPalletBinInfoL0();
+                        _params.Add("@WorkorderDetailsID", workorderDetailsID);
+                        _params.Add("@CustomerID", transactionDetails.CustomerID);
+                        _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
+                        _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+                        _params.Add("@WorkorderType", transactionDetails.WorkorderType);
+                        _params.Add("@TransactionDateTime", TransactionDateTime);
+                        _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+                        _params.Add("@PalletName", transactionDetails.PalletName);
+                        _params.Add("@LocationTagID", transactionDetails.LocationTagID);
+                        _params.Add("@LocationCategoryID", transactionDetails.LocationCategoryID);
+                        _params.Add("@DCNumber", transactionDetails.DCNo);
+                        _params.Add("@WarehouseID", transactionDetails.WarehouseID);
+                        _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+                        _params.Add("@Message", dbType: DbType.String, size: 500, direction: ParameterDirection.Output);
+                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertPartialWorkorder, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+                        stat1 = _params.Get<bool>("@Status");
+                        mess = _params.Get<string>("@Message");
+
+                        if (stat1)
+                        {
+                            foreach (PartialItemDetails i in transactionDetails.ItemDetails)
+                            {
+                                WmsItemsList items = new WmsItemsList();
+                                var _paramsItemDetails = new DynamicParameters();
+                                _paramsItemDetails.Add("@WorkorderDetailsID", workorderDetailsID);
+                                _paramsItemDetails.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+                                _paramsItemDetails.Add("@WorkorderType", transactionDetails.WorkorderType);
+                                _paramsItemDetails.Add("@stockBinId", i.stockBinId);
+                                _paramsItemDetails.Add("@BinName", i.BinName);
+                                _paramsItemDetails.Add("@ItemDescription", i.ItemDescription);
+                                _paramsItemDetails.Add("@ItemName", i.ItemName);
+                                _paramsItemDetails.Add("@PickedItemID", i.PickedItemID);
+                                _paramsItemDetails.Add("@BatchID", i.BatchID);
+                                _paramsItemDetails.Add("@Qty", i.Qty);
+                                _paramsItemDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertPartialWorkorderItems, _paramsItemDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+                                stat2 = _paramsItemDetails.Get<bool>("@Status");
+                            }
+                            res.status = stat1;
+                        }
+                        else
+                        {
+                            res.status = stat1;
+                            res.message = mess;
+                        }
+
+                        if (stat1 && stat2)
+                        {
+                            transaction.Commit();
+                            wmsPalletBinInfoL0 = GetPalletBinMappedInfoL0(transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, transactionDetails.PalletTagID, transactionDetails.LocationTagID);
+                            string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL0);
+                            var _wmsParams = new DynamicParameters();
+                            _wmsParams.Add("@ID", workorderDetailsID);
+                            _wmsParams.Add("@Type", "Pallet_Movement_L0");
+                            _wmsParams.Add("@receivingNo", null);
+                            _wmsParams.Add("@dispatchNo", transactionDetails.DCNo);
+                            _wmsParams.Add("@warehouseId", transactionDetails.WarehouseID.ToString());
+                            _wmsParams.Add("@palletName", null);
+                            _wmsParams.Add("@palletSensorId", transactionDetails.PalletTagID);
+                            _wmsParams.Add("@binName", null);
+                            _wmsParams.Add("@fromBinName", null);
+                            _wmsParams.Add("@fromPalletName", null);
+                            _wmsParams.Add("@toPalletName", wmsPalletBinInfoL0.toPalletName);
+                            _wmsParams.Add("@toBinName", wmsPalletBinInfoL0.toBinName);
+                            _wmsParams.Add("@comment", null);
+                            conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                            foreach (var wmsData in wmsPalletBinInfoL0.items)
+                            {
+                                var _wmsParamsDetails = new DynamicParameters();
+                                _wmsParamsDetails.Add("@ParentID", workorderDetailsID);
+                                _wmsParamsDetails.Add("@Type", "Pallet_Movement_L0");
+                                _wmsParamsDetails.Add("@fromBinName", wmsData.fromBinName);
+                                _wmsParamsDetails.Add("@fromPalletName", null);
+                                _wmsParamsDetails.Add("@stockBinId", wmsData.stockBinId);
+                                _wmsParamsDetails.Add("@serialNumber", null);
+                                _wmsParamsDetails.Add("@skuCode", wmsData.skuCode);
+                                _wmsParamsDetails.Add("@batchNumber", wmsData.batchNumber);
+                                _wmsParamsDetails.Add("@batchDateTime", null);
+                                _wmsParamsDetails.Add("@status", null);
+                                _wmsParamsDetails.Add("@qty", wmsData.qty);
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataChild, _wmsParamsDetails, commandType: CommandType.StoredProcedure);
+                            }
+                            res.status = true;
+                        }
+                        else
+                        {
+                            res.status = false;
+                            res.message = mess;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        transaction.Rollback();
+                        res.status = false;
+                        res.message = ex.Message;
+                    }
+
                 }
             }
-            return retVal;
+            return res;
         }
         public List<OrderDetails> GetWorkorderListForPDA(PDAWorkorderList workorderList)
         {
@@ -1483,8 +2531,2079 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
         //    }
         //    return data;
         //}
+        //public bool ItemMovementTransaction(ActivityModelInternal activityModel)
+        //{
+        //    bool Status1 = false;
+        //    bool Status2 = false;
+        //    bool retVal = false;
+        //    WmsPalletBinInfoInternal wmsPalletBinInfo = new WmsPalletBinInfoInternal();
+        //    List<WmsPalletBinInfoInternalDetails> wmsPalletBinInfoInternalList = new List<WmsPalletBinInfoInternalDetails>();
+        //    WmsPalletBinInfoInternalDetails wmsPalletBinInfoInternal = new WmsPalletBinInfoInternalDetails();
+        //    List<WmsItemsInternal> itemsList = new List<WmsItemsInternal>();
+
+        //    //bool retVal = false;
+        //    Guid activityID = Guid.NewGuid();
+
+        //    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        DateTime TransactionDateTime = DateTime.Now;
+        //        conn.Open();
+
+        //        using (SqlTransaction transaction = conn.BeginTransaction())
+        //        {
+        //            try
+        //            {
+        //                var _params = new DynamicParameters();
+        //                _params.Add("@ActivityID", activityID);
+        //                _params.Add("@ClientDeviceID", activityModel.ClientDeviceID);
+        //                _params.Add("@ActivityType", activityModel.ActivityType);
+        //                _params.Add("@StartDate", activityModel.StartDate);
+        //                _params.Add("@EndDate", activityModel.EndDate);
+        //                _params.Add("@CustomerID", activityModel.CustomerID);
+        //                _params.Add("@Count", activityModel.Count);
+        //                _params.Add("@SourcePalletTagID", activityModel.SourcePalletTagID);
+        //                _params.Add("@DestinationPalletTagID", activityModel.DestinationPalletTagID);
+        //                _params.Add("@SourceBinTagID", activityModel.SourceBinTagID);
+        //                _params.Add("@DestinationBinTagID", activityModel.DestinationBinTagID);
+        //                _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+
+        //                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertItemMovementActivity, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+        //                Status1 = _params.Get<bool>("@Status");
+        //                if (Status1)
+        //                {
+        //                    foreach (var activityDetailsModelInternal in activityModel.data)
+        //                    {
+        //                        WmsItemsInternal items = new WmsItemsInternal();
+        //                        WmsQRInfoInternal qrInfo = new WmsQRInfoInternal();
+        //                        var _paramsActivityDetails = new DynamicParameters();
+        //                        _paramsActivityDetails.Add("@ItemDescription", activityDetailsModelInternal.ItemDescription);
+
+        //                        string[] parts;
+        //                        if (activityDetailsModelInternal.ItemDescription.Contains(','))
+        //                        {
+        //                            parts = activityDetailsModelInternal.ItemDescription.Split(',');
+        //                            if (parts.Length > 1)
+        //                            {
+        //                                string itemName = parts[1].TrimStart('0');
+        //                                string itemSerialNo = parts[0].TrimStart('0');
+        //                                string batchID = parts[3].TrimStart('0');
+        //                                string batchDateTime = parts[2];
+        //                                _paramsActivityDetails.Add("@ItemName", itemName);
+        //                                items.skuCode = itemName;
+        //                                qrInfo.skuCode = itemName;
+
+        //                                _paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+        //                                items.serialNumber = itemSerialNo;
+        //                                qrInfo.serialNumber = itemSerialNo;
+
+
+        //                                _paramsActivityDetails.Add("@BatchID", batchID);
+        //                                items.batchNumber = batchID;
+        //                                qrInfo.batchNumber = batchID;
+
+        //                                DateTime date;
+        //                                if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                _paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            parts = activityDetailsModelInternal.ItemDescription.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        //                            if (parts.Length > 1)
+        //                            {
+        //                                string itemName = parts[1].TrimStart('0');
+        //                                string itemSerialNo = parts[0].TrimStart('0');
+        //                                string batchID = parts[3].TrimStart('0');
+        //                                string batchDateTime = parts[2];
+        //                                _paramsActivityDetails.Add("@ItemName", itemName);
+        //                                items.skuCode = itemName;
+        //                                qrInfo.skuCode = itemName;
+
+        //                                _paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+        //                                items.serialNumber = itemSerialNo;
+        //                                qrInfo.serialNumber = itemSerialNo;
+
+        //                                _paramsActivityDetails.Add("@BatchID", batchID);
+        //                                items.batchNumber = batchID;
+        //                                qrInfo.batchNumber = batchID;
+
+        //                                DateTime date;
+        //                                if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                // If parsing in "yyyy-MM-dd HH:mm:ss" format fails, try "yyyy-MM-dd" format
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                // If parsing in "yyyy-MM-dd" format fails, try "MMM-yyyy" format
+        //                                else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                _paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
+        //                            }
+        //                        }
+
+        //                        items.qrInfo = qrInfo;
+        //                        items.status = "GOOD";
+        //                        items.qty = 1.0;
+
+        //                        _paramsActivityDetails.Add("@ActivityID", activityID);
+        //                        _paramsActivityDetails.Add("@TransactionDateTime", TransactionDateTime);
+        //                        _paramsActivityDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+
+        //                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertItemMovementActivityDetails, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+        //                        Status2 = _paramsActivityDetails.Get<bool>("@Status");
+
+        //                        //WMS Data Posting
+
+        //                        if (Status2)
+        //                        {
+        //                            if (items.skuCode != null)
+        //                            {
+        //                                itemsList.Add(items);
+        //                            }
+        //                        }
+        //                    }
+        //                }
+
+
+        //                if (Status1 && Status2)
+        //                {
+        //                    transaction.Commit();
+        //                    retVal = true;
+
+
+        //                    wmsPalletBinInfoInternal = GetPalletInfoForItemMovement(activityModel.SourcePalletTagID, activityModel.DestinationPalletTagID, activityModel.SourceBinTagID, activityModel.DestinationBinTagID);
+        //                    wmsPalletBinInfoInternal.items = itemsList;
+        //                    wmsPalletBinInfoInternal.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                    wmsPalletBinInfoInternalList.Add(wmsPalletBinInfoInternal);
+        //                    wmsPalletBinInfo.data = wmsPalletBinInfoInternalList;
+        //                    string jsonInternal = JsonConvert.SerializeObject(wmsPalletBinInfo);
+        //                    var _wmsParams = new DynamicParameters();
+        //                    _wmsParams.Add("@ID", activityID);
+        //                    _wmsParams.Add("@DRN", "Item_Movement");
+        //                    _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonInternal));
+        //                    _wmsParams.Add("@ProcessType", "Item_Movement");
+        //                    conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+
+        //                }
+        //                else
+        //                {
+        //                    // If any condition is not met, rollback the transaction
+        //                    transaction.Rollback();
+        //                    retVal = false;
+
+        //                }
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                retVal = false;
+
+        //            }
+        //        }
+        //    }
+        //    return retVal;
+        //}
+        public bool ItemMovementTransaction(ActivityModelInternal activityModel)
+        {
+            bool Status1 = false;
+            bool Status2 = false;
+            bool retVal = false;
+            WmsPalletBinInfoInternal wmsPalletBinInfo = new WmsPalletBinInfoInternal();
+            List<WmsPalletBinInfoInternalDetails> wmsPalletBinInfoInternalList = new List<WmsPalletBinInfoInternalDetails>();
+            WmsPalletBinInfoInternalDetails wmsPalletBinInfoInternal = new WmsPalletBinInfoInternalDetails();
+            List<WmsItemsInternal> itemsList = new List<WmsItemsInternal>();
+
+            //bool retVal = false;
+            Guid activityID = Guid.NewGuid();
+
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+            {
+                DateTime TransactionDateTime = DateTime.Now;
+                conn.Open();
+
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        var _params = new DynamicParameters();
+                        _params.Add("@ActivityID", activityID);
+                        _params.Add("@ClientDeviceID", activityModel.ClientDeviceID);
+                        _params.Add("@ActivityType", activityModel.ActivityType);
+                        _params.Add("@StartDate", activityModel.StartDate);
+                        _params.Add("@EndDate", activityModel.EndDate);
+                        _params.Add("@CustomerID", activityModel.CustomerID);
+                        _params.Add("@Count", activityModel.Count);
+                        _params.Add("@SourcePalletTagID", activityModel.SourcePalletTagID);
+                        _params.Add("@DestinationPalletTagID", activityModel.DestinationPalletTagID);
+                        _params.Add("@SourceBinTagID", activityModel.SourceBinTagID);
+                        _params.Add("@DestinationBinTagID", activityModel.DestinationBinTagID);
+                        _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+
+                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertItemMovementActivity, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+                        Status1 = _params.Get<bool>("@Status");
+                        if (Status1)
+                        {
+                            foreach (var activityDetailsModelInternal in activityModel.data)
+                            {
+                                WmsItemsInternal items = new WmsItemsInternal();
+                                WmsQRInfoInternal qrInfo = new WmsQRInfoInternal();
+                                var _paramsActivityDetails = new DynamicParameters();
+                                _paramsActivityDetails.Add("@ItemDescription", activityDetailsModelInternal.ItemDescription);
+
+                                string[] parts;
+                                if (activityDetailsModelInternal.ItemDescription.Contains(','))
+                                {
+                                    parts = activityDetailsModelInternal.ItemDescription.Split(',');
+                                    if (parts.Length > 1)
+                                    {
+                                        string itemName = parts[1].TrimStart('0');
+                                        string itemSerialNo = parts[0].TrimStart('0');
+                                        string batchID = parts[3].TrimStart('0');
+                                        string batchDateTime = parts[2];
+                                        _paramsActivityDetails.Add("@ItemName", itemName);
+                                        items.skuCode = itemName;
+                                        qrInfo.skuCode = itemName;
+
+                                        _paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+                                        items.serialNumber = itemSerialNo;
+                                        qrInfo.serialNumber = itemSerialNo;
+
+
+                                        _paramsActivityDetails.Add("@BatchID", batchID);
+                                        items.batchNumber = batchID;
+                                        qrInfo.batchNumber = batchID;
+
+                                        DateTime date;
+                                        if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        _paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
+                                    }
+                                }
+                                else
+                                {
+                                    parts = activityDetailsModelInternal.ItemDescription.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    if (parts.Length > 1)
+                                    {
+                                        string itemName = parts[1].TrimStart('0');
+                                        string itemSerialNo = parts[0].TrimStart('0');
+                                        string batchID = parts[3].TrimStart('0');
+                                        string batchDateTime = parts[2];
+                                        _paramsActivityDetails.Add("@ItemName", itemName);
+                                        items.skuCode = itemName;
+                                        qrInfo.skuCode = itemName;
+
+                                        _paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+                                        items.serialNumber = itemSerialNo;
+                                        qrInfo.serialNumber = itemSerialNo;
+
+                                        _paramsActivityDetails.Add("@BatchID", batchID);
+                                        items.batchNumber = batchID;
+                                        qrInfo.batchNumber = batchID;
+
+                                        DateTime date;
+                                        if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        // If parsing in "yyyy-MM-dd HH:mm:ss" format fails, try "yyyy-MM-dd" format
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        // If parsing in "yyyy-MM-dd" format fails, try "MMM-yyyy" format
+                                        else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        _paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
+                                    }
+                                }
+
+                                items.qrInfo = qrInfo;
+                                items.status = "GOOD";
+                                items.qty = 1.0;
+
+                                _paramsActivityDetails.Add("@ActivityID", activityID);
+                                _paramsActivityDetails.Add("@TransactionDateTime", TransactionDateTime);
+                                _paramsActivityDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertItemMovementActivityDetails, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                                Status2 = _paramsActivityDetails.Get<bool>("@Status");
+
+                                //WMS Data Posting
+
+                                if (Status2)
+                                {
+                                    if (items.skuCode != null)
+                                    {
+                                        itemsList.Add(items);
+                                    }
+                                }
+                            }
+                        }
+
+
+                        if (Status1 && Status2)
+                        {
+                            transaction.Commit();
+                            retVal = true;
+
+
+                            wmsPalletBinInfoInternal = GetPalletInfoForItemMovement(activityModel.SourcePalletTagID, activityModel.DestinationPalletTagID, activityModel.SourceBinTagID, activityModel.DestinationBinTagID);
+                            wmsPalletBinInfoInternal.items = itemsList;
+                            wmsPalletBinInfoInternal.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+                            wmsPalletBinInfoInternalList.Add(wmsPalletBinInfoInternal);
+                            wmsPalletBinInfo.data = wmsPalletBinInfoInternalList;
+                            string jsonInternal = JsonConvert.SerializeObject(wmsPalletBinInfo);
+                           
+                            var _wmsParams = new DynamicParameters();
+                            _wmsParams.Add("@ID", activityID);
+                            _wmsParams.Add("@Type", "Item_Movement");
+                            _wmsParams.Add("@receivingNo", null);
+                            _wmsParams.Add("@dispatchNo", null);
+                            _wmsParams.Add("@warehouseId", wmsPalletBinInfoInternal.warehouseId);
+                            _wmsParams.Add("@palletName", null);
+                            _wmsParams.Add("@palletSensorId", null);
+                            _wmsParams.Add("@binName", null);
+                            _wmsParams.Add("@fromBinName", wmsPalletBinInfoInternal.fromBinName);
+                            _wmsParams.Add("@fromPalletName", wmsPalletBinInfoInternal.fromPalletName);
+                            _wmsParams.Add("@toPalletName", wmsPalletBinInfoInternal.toPalletName);
+                            _wmsParams.Add("@toBinName", wmsPalletBinInfoInternal.toBinName);
+                            _wmsParams.Add("@comment", null);
+                            conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                            foreach (var wmsData in wmsPalletBinInfoInternal.items)
+                            {
+                                var _wmsParamsDetails = new DynamicParameters();
+                                _wmsParamsDetails.Add("@ParentID", activityID);
+                                _wmsParamsDetails.Add("@Type", "Item_Movement");
+                                _wmsParamsDetails.Add("@fromBinName", null);
+                                _wmsParamsDetails.Add("@fromPalletName", null);
+                                _wmsParamsDetails.Add("@stockBinId", null);
+                                _wmsParamsDetails.Add("@serialNumber", wmsData.serialNumber);
+                                _wmsParamsDetails.Add("@skuCode", wmsData.skuCode);
+                                _wmsParamsDetails.Add("@batchNumber", wmsData.batchNumber);
+                                _wmsParamsDetails.Add("@batchDateTime", wmsData.batchDateTime);
+                                _wmsParamsDetails.Add("@status", null);
+                                _wmsParamsDetails.Add("@qty", wmsData.qty);
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataChild, _wmsParamsDetails, commandType: CommandType.StoredProcedure);
+                            }
+
+                        }
+                        else
+                        {
+                            // If any condition is not met, rollback the transaction
+                            transaction.Rollback();
+                            retVal = false;
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        retVal = false;
+
+                    }
+                }
+            }
+            return retVal;
+        }
+        public bool InsertItemQRData(ItemsQRActivityModel itemsQRActivity)
+        {
+            bool retVal = false;
+            bool Status1 = false;
+            bool Status2 = false;
+            string dateTime = null;
+
+            //bool retVal = false;
+            Guid activityID = Guid.NewGuid();
+
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+            {
+                DateTime TransactionDateTime = DateTime.Now;
+                conn.Open();
+
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        var _params = new DynamicParameters();
+                        _params.Add("@ID", activityID);
+                        _params.Add("@CustomerID", itemsQRActivity.CustomerID);
+                        _params.Add("@ClientDeviceID", itemsQRActivity.ClientDeviceID);
+                        _params.Add("@UserID", itemsQRActivity.UserID);
+                        _params.Add("@LocationID", itemsQRActivity.LocationID);
+                        _params.Add("@PlantID", itemsQRActivity.PlantID);
+                        _params.Add("@Count", itemsQRActivity.Count);
+                        _params.Add("@StartDateTime", itemsQRActivity.StartDateTime);
+                        _params.Add("@EndDateTime", itemsQRActivity.EndDateTime);
+                        _params.Add("@TransactionDateTime", itemsQRActivity.TransactionDateTime);
+                        _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+
+                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertItemQrActivity, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+                        Status1 = _params.Get<bool>("@Status");
+                        if (Status1)
+                        {
+                            foreach (var itemsQRActivityDetailsModel in itemsQRActivity.items)
+                            {
+                              
+                                var _paramsActivityDetails = new DynamicParameters();
+                                _paramsActivityDetails.Add("@ItemDescription", itemsQRActivityDetailsModel.ItemDescription);
+
+                                string[] parts;
+                                if (itemsQRActivityDetailsModel.ItemDescription.Contains(','))
+                                {
+                                    parts = itemsQRActivityDetailsModel.ItemDescription.Split(',');
+                                    if (parts.Length > 1)
+                                    {
+                                        string itemName = parts[1].TrimStart('0');
+                                        string itemSerialNo = parts[0].TrimStart('0');
+                                        string batchID = parts[3].TrimStart('0');
+                                        string batchDateTime = parts[2];
+                                        _paramsActivityDetails.Add("@ItemName", itemName);
+
+                                        _paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+
+                                        _paramsActivityDetails.Add("@BatchID", batchID);
+                                    
+                                        DateTime date;
+                                        
+                                        if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            dateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            dateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            dateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            dateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            dateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            dateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        _paramsActivityDetails.Add("@BatchDateTime", dateTime);
+                                    }
+                                }
+                                else
+                                {
+                                    parts = itemsQRActivityDetailsModel.ItemDescription.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    if (parts.Length > 1)
+                                    {
+                                        string itemName = parts[1].TrimStart('0');
+                                        string itemSerialNo = parts[0].TrimStart('0');
+                                        string batchID = parts[3].TrimStart('0');
+                                        string batchDateTime = parts[2];
+                                        _paramsActivityDetails.Add("@ItemName", itemName);
+                                       
+                                        _paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+                                        
+                                        _paramsActivityDetails.Add("@BatchID", batchID);
+                                       
+                                        DateTime date;
+                                        if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            dateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        // If parsing in "yyyy-MM-dd HH:mm:ss" format fails, try "yyyy-MM-dd" format
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            dateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        // If parsing in "yyyy-MM-dd" format fails, try "MMM-yyyy" format
+                                        else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            dateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            dateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            dateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            dateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        _paramsActivityDetails.Add("@BatchDateTime", dateTime);
+                                    }
+                                }
+
+
+                                _paramsActivityDetails.Add("@ParentID", activityID);
+                                _paramsActivityDetails.Add("@TransactionDateTime", TransactionDateTime);
+                                _paramsActivityDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertItemQrActivityDetails, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                                Status2 = _paramsActivityDetails.Get<bool>("@Status");
+                            }
+                        }
+
+
+                        if (Status1 && Status2)
+                        {
+                            transaction.Commit();
+                            retVal = true;
+                        }
+                        else
+                        {
+                            // If any condition is not met, rollback the transaction
+                            transaction.Rollback();
+                            retVal = false;
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        retVal = false;
+
+                    }
+                }
+            }
+            return retVal;
+        }
+        public bool InsertDigitizerItemQRData(DigitizerModel digitizerModel)
+        {
+            bool retVal = false;
+            bool Status1 = false;
+            bool Status2 = false;
+            string dateTime = null;
+
+            //bool retVal = false;
+            Guid activityID = Guid.NewGuid();
+
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+            {
+                DateTime TransactionDateTime = DateTime.Now;
+                conn.Open();
+
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        var _params = new DynamicParameters();
+                        _params.Add("@ID", activityID);
+                        _params.Add("@CustomerID", digitizerModel.CustomerID);
+                        _params.Add("@ClientDeviceID", digitizerModel.ClientDeviceID);
+                        _params.Add("@UserID", digitizerModel.UserID);
+                        _params.Add("@LocationID", digitizerModel.LocationID);
+                        _params.Add("@PlantID", digitizerModel.PlantID);
+                        _params.Add("@Count", digitizerModel.Count);
+                        _params.Add("@StartDateTime", digitizerModel.StartDateTime);
+                        _params.Add("@EndDateTime", digitizerModel.EndDateTime);
+                        _params.Add("@TransactionDateTime", digitizerModel.TransactionDateTime);
+                        _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+
+                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertDigitizerData, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+                        Status1 = _params.Get<bool>("@Status");
+                        if (Status1)
+                        {
+                            foreach (var digitizerModelItems in digitizerModel.items)
+                            {
+
+                                var _paramsActivityDetails = new DynamicParameters();
+                                _paramsActivityDetails.Add("@ItemDescription", digitizerModelItems.ItemDescription);
+                                _paramsActivityDetails.Add("@ItemSerialNo", digitizerModelItems.ItemSerialNo);
+                                _paramsActivityDetails.Add("@ItemName", digitizerModelItems.ItemName);
+                                _paramsActivityDetails.Add("@ItemCode", digitizerModelItems.ItemCode);
+                                _paramsActivityDetails.Add("@BatchID", digitizerModelItems.BatchID);
+                                _paramsActivityDetails.Add("@Weight", digitizerModelItems.Weight);
+                                string batchDateTime = digitizerModelItems.BatchDateTime;
+
+                                DateTime date;
+                                if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                {
+                                    dateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                }
+                                // If parsing in "yyyy-MM-dd HH:mm:ss" format fails, try "yyyy-MM-dd" format
+                                else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                                    DateTimeStyles.None, out date))
+                                {
+                                    dateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                }
+                                // If parsing in "yyyy-MM-dd" format fails, try "MMM-yyyy" format
+                                else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+                                    DateTimeStyles.None, out date))
+                                {
+                                    dateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                }
+                                else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+                                    DateTimeStyles.None, out date))
+                                {
+                                    dateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                }
+                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                {
+                                    dateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                }
+                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                {
+                                    dateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                }
+                                _paramsActivityDetails.Add("@BatchDateTime", dateTime);
+                                _paramsActivityDetails.Add("@ParentID", activityID);
+                                _paramsActivityDetails.Add("@TransactionDateTime", digitizerModelItems.TransactionDateTime);
+                                _paramsActivityDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertDigitizerDataDetails, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                                Status2 = _paramsActivityDetails.Get<bool>("@Status");
+                            }
+                        }
+
+
+                        if (Status1 && Status2)
+                        {
+                            transaction.Commit();
+                            retVal = true;
+                        }
+                        else
+                        {
+                            // If any condition is not met, rollback the transaction
+                            transaction.Rollback();
+                            retVal = false;
+
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        retVal = false;
+
+                    }
+                }
+            }
+            return retVal;
+        }
+        public List<BarcodeResponse> GetAllBarcodesForTransaction(Barcode barcode)
+        {
+            List<BarcodeResponse> data = new List<BarcodeResponse>();
+            using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+            {
+                db.Open();
+                var _params = new DynamicParameters();
+                _params.Add("@ItemDescription", barcode.ItemDescription);
+                _params.Add("@ClientDeviceID", barcode.ClientDeviceID);
+                data = db.Query<BarcodeResponse>(AppSettings.SQLQueryCommand.SP_GetAllBarcodesForTransaction, _params, commandType: CommandType.StoredProcedure).ToList();
+            }
+            return data;
+        }
+        public bool InsertPalletBinTransaction(PalletBinTransModel transModel)
+        {
+       
+            bool retVal = false;
+            int stat = 0;
+            Guid transID = Guid.NewGuid();
+            DateTime serverDateTime = DateTime.Now;
+
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+            {
+                conn.Open();
+
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    try
+                    {
+
+                        string query = "INSERT INTO PalletBinTransactionTable (TransID, DeviceID, PalletName, PalletTagID, BinName, BinTagID, ServerDateTime) VALUES ('@TransID', '@DeviceID', '@PalletName', '@PalletTagID', '@BinName', '@BinTagID', '@ServerDateTime')";
+                        query = query.Replace("@TransID", transID.ToString());
+                        query = query.Replace("@DeviceID", transModel.DeviceID);
+                        query = query.Replace("@PalletTagID", transModel.PalletTagID);
+                        query = query.Replace("@PalletName", transModel.PalletName);
+                        query = query.Replace("@BinTagID", transModel.BinTagID);
+                        query = query.Replace("@BinName", transModel.BinName);
+                        query = query.Replace("@ServerDateTime", serverDateTime.ToString());
+                        cmd.CommandText = query;
+                        cmd.CommandType = CommandType.Text;
+                        stat=  cmd.ExecuteNonQuery();
+                        if (stat == 1)
+                        {
+                            retVal = true;
+                        }
+                        else
+                        {
+                            retVal = false;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        retVal = false;
+
+                    }
+                }
+            }
+            return retVal;
+        }
+        //public ActivityResponseData InsertTransactionForQRManual(ActivityModelItems activityItems)
+        //{
+        //    //bool retVal = false;
+        //    ActivityResponseData responseData = new ActivityResponseData();
+        //    Guid activityID = Guid.NewGuid();
+        //    Guid activityDetailsID = Guid.NewGuid();
+        //    WMSPalletData wmsPalletData = new WMSPalletData();
+        //    WMSPalletDataDispatch wmsPalletDataDis = new WMSPalletDataDispatch();
+        //    List<WmsItems> itemsList = new List<WmsItems>();
+
+        //    using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        DateTime TransactionDateTime = DateTime.Now;
+        //        conn.Open();
+        //        WorkorderCreationItemDetails workorderCreationItemDetails = new WorkorderCreationItemDetails();
+        //        using (SqlTransaction transaction = conn.BeginTransaction())
+        //        {
+        //            try
+        //            {
+        //                var _params = new DynamicParameters();
+        //                _params.Add("@ActivityID", activityID);
+        //                _params.Add("@ClientDeviceID", activityItems.ClientDeviceID);
+        //                _params.Add("@ActivityType", activityItems.ActivityType);
+        //                _params.Add("@StartDate", activityItems.StartDate);
+        //                _params.Add("@EndDate", activityItems.EndDate);
+        //                //_params.Add("@TransactionDateTime", TransactionDateTime);
+        //                _params.Add("@CustomerID", activityItems.CustomerID);
+        //                _params.Add("@TouchPointID", activityItems.TouchpointID);
+        //                _params.Add("@Count", activityItems.Count);
+        //                _params.Add("@ParentTagID", activityItems.ParentTagID);
+        //                _params.Add("@ParentAssetType", activityItems.ParentAssetType);
+        //                _params.Add("@TruckNumber", activityItems.TruckNumber);
+        //                _params.Add("@ProcessType", activityItems.ProcessType);
+        //                _params.Add("@DRN", activityItems.DRN);
+        //                _params.Add("@isUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivity, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+        //                workorderCreationItemDetails.TruckNumber = activityItems.TruckNumber;
+        //                workorderCreationItemDetails.PalletTagID = activityItems.ParentTagID;
+        //                responseData.isUnique = _params.Get<bool>("@isUnique");
+        //                if (responseData.isUnique)
+        //                {
+        //                    foreach (var activityItemDetails in activityItems.data)
+        //                    {
+        //                        WmsItems items = new WmsItems();
+        //                        WmsQRInfo qrInfo = new WmsQRInfo();
+        //                        var _paramsActivityDetails = new DynamicParameters();
+        //                        _paramsActivityDetails.Add("@ItemDescription", activityItemDetails.ItemDescription);
+
+        //                        string[] parts;
+        //                        if (activityItemDetails.ItemDescription.Contains(','))
+        //                        {
+        //                            parts = activityItemDetails.ItemDescription.Split(',');
+        //                            if (parts.Length > 1)
+        //                            {
+        //                                string itemName = parts[1].TrimStart('0');
+        //                                string itemSerialNo = parts[0].TrimStart('0');
+        //                                string batchID = parts[3].TrimStart('0');
+        //                                string batchDateTime = parts[2];
+        //                                _paramsActivityDetails.Add("@ItemName", itemName);
+        //                                items.skuCode = itemName;
+        //                                qrInfo.skuCode = itemName;
+
+        //                                //_paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+        //                                //items.serialNumber = itemSerialNo;
+        //                                //qrInfo.serialNumber = itemSerialNo;
+
+
+        //                                _paramsActivityDetails.Add("@BatchID", batchID);
+        //                                items.batchNumber = batchID;
+        //                                qrInfo.batchNumber = batchID;
+
+        //                                DateTime date;
+        //                                if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                //_paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            parts = activityItemDetails.ItemDescription.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+        //                            if (parts.Length > 1)
+        //                            {
+        //                                string itemName = parts[1].TrimStart('0');
+        //                                string itemSerialNo = parts[0].TrimStart('0');
+        //                                string batchID = parts[3].TrimStart('0');
+        //                                string batchDateTime = parts[2];
+        //                                _paramsActivityDetails.Add("@ItemName", itemName);
+        //                                items.skuCode = itemName;
+        //                                qrInfo.skuCode = itemName;
+
+        //                                //_paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+        //                                //items.serialNumber = itemSerialNo;
+        //                                //qrInfo.serialNumber = itemSerialNo;
+
+        //                                _paramsActivityDetails.Add("@BatchID", batchID);
+        //                                items.batchNumber = batchID;
+        //                                qrInfo.batchNumber = batchID;
+
+        //                                DateTime date;
+        //                                if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                // If parsing in "yyyy-MM-dd HH:mm:ss" format fails, try "yyyy-MM-dd" format
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                // If parsing in "yyyy-MM-dd" format fails, try "MMM-yyyy" format
+        //                                else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+        //                                    DateTimeStyles.None, out date))
+        //                                {
+        //                                    items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+        //                                }
+        //                                //_paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
+        //                            }
+        //                        }
+        //                        items.qrInfo = qrInfo;
+        //                        items.qty = 1.0;
+        //                        _paramsActivityDetails.Add("@Qty", activityItemDetails.Qty);
+        //                        _paramsActivityDetails.Add("@ActivityID", activityID);
+        //                        _paramsActivityDetails.Add("@ProcessType", activityItems.ProcessType);
+        //                        _paramsActivityDetails.Add("@DRN", activityItems.DRN);
+        //                        _paramsActivityDetails.Add("@TransactionDateTime", TransactionDateTime);
+        //                        _paramsActivityDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivityDetailsForItems, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+        //                        responseData.isItemUnique = _paramsActivityDetails.Get<bool>("@Status");
+
+        //                        //WMS Data Posting
+        //                        if (responseData.isItemUnique)
+        //                        {
+        //                            if (items.skuCode != null)
+        //                            {
+        //                                for (int i = 0; i < activityItemDetails.Qty; i++)
+        //                                {
+        //                                    itemsList.Add(items);
+        //                                }
+        //                            }
+        //                        }
+        //                        else
+        //                        {
+        //                            responseData.message = "";
+        //                        }
+        //                    }
+        //                }
+
+        //                //WMS Data Posting
+        //                if (responseData.isUnique && responseData.isItemUnique)
+        //                {
+        //                    transaction.Commit();
+        //                    if (activityItems.ProcessType == "IN")
+        //                    {
+        //                        if (workorderCreationItemDetails != null)
+        //                        {
+        //                            InsertWorkorderItemDetailsU0(workorderCreationItemDetails);
+        //                        }
+        //                        wmsPalletData = GetPalletInfo(activityItems.TruckNumber, activityItems.ParentTagID);
+        //                        wmsPalletData.receivingNo = activityItems.DRN;
+        //                        wmsPalletData.items = itemsList;
+        //                        wmsPalletData.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                        string jsonRec = JsonConvert.SerializeObject(wmsPalletData);
+        //                        responseData.wmsData = jsonRec;
+        //                        var _wmsParams = new DynamicParameters();
+        //                        _wmsParams.Add("@ID", activityID);
+        //                        _wmsParams.Add("@DRN", activityItems.DRN);
+        //                        _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonRec));
+        //                        _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Receiving");
+        //                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                        //PutPalletInfo(wmsPalletData);
+
+        //                    }
+        //                    else if (activityItems.ProcessType == "OUT")
+        //                    {
+        //                        wmsPalletDataDis = GetPalletInfoDispatch(activityItems.TruckNumber, activityItems.ParentTagID);
+        //                        wmsPalletDataDis.dispatchNo = activityItems.DRN;
+        //                        wmsPalletDataDis.items = itemsList;
+        //                        wmsPalletDataDis.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                        wmsPalletDataDis.comment = "Verified and Loaded on Truck";
+        //                        string jsonDis = JsonConvert.SerializeObject(wmsPalletDataDis);
+        //                        responseData.wmsData = jsonDis;
+        //                        var _wmsParams = new DynamicParameters();
+        //                        _wmsParams.Add("@ID", activityID);
+        //                        _wmsParams.Add("@DRN", activityItems.DRN);
+        //                        _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonDis));
+        //                        _wmsParams.Add("@ProcessType", "Asset_Pallet_Mapping_Dispatch");
+        //                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                        //PutPalletInfoDispatch(wmsPalletDataDis);
+
+        //                    }
+        //                }
+        //                else
+        //                {
+        //                    // If any condition is not met, rollback the transaction
+        //                    transaction.Rollback();
+        //                    if (!responseData.isUnique)
+        //                    {
+        //                        responseData.message = "The pallet has been already mapped.";
+        //                    }
+        //                }
+        //                responseData.status = true;
+
+        //            }
+        //            catch (Exception ex)
+        //            {
+        //                responseData.status = false;
+        //                responseData.message = ex.Message;
+
+        //            }
+        //        }
+        //    }
+        //    return responseData;
+        //}
+        public ActivityResponseData InsertTransactionForQRManual(ActivityModelItems activityItems)
+        {
+            //bool retVal = false;
+            ActivityResponseData responseData = new ActivityResponseData();
+            Guid activityID = Guid.NewGuid();
+            Guid activityDetailsID = Guid.NewGuid();
+            WMSPalletData wmsPalletData = new WMSPalletData();
+            WMSPalletDataDispatch wmsPalletDataDis = new WMSPalletDataDispatch();
+            List<WmsItems> itemsList = new List<WmsItems>();
+
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+            {
+                DateTime TransactionDateTime = DateTime.Now;
+                conn.Open();
+                WorkorderCreationItemDetails workorderCreationItemDetails = new WorkorderCreationItemDetails();
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        var _params = new DynamicParameters();
+                        _params.Add("@ActivityID", activityID);
+                        _params.Add("@ClientDeviceID", activityItems.ClientDeviceID);
+                        _params.Add("@ActivityType", activityItems.ActivityType);
+                        _params.Add("@StartDate", activityItems.StartDate);
+                        _params.Add("@EndDate", activityItems.EndDate);
+                        //_params.Add("@TransactionDateTime", TransactionDateTime);
+                        _params.Add("@CustomerID", activityItems.CustomerID);
+                        _params.Add("@TouchPointID", activityItems.TouchpointID);
+                        _params.Add("@Count", activityItems.Count);
+                        _params.Add("@ParentTagID", activityItems.ParentTagID);
+                        _params.Add("@ParentAssetType", activityItems.ParentAssetType);
+                        _params.Add("@TruckNumber", activityItems.TruckNumber);
+                        _params.Add("@ProcessType", activityItems.ProcessType);
+                        _params.Add("@DRN", activityItems.DRN);
+                        _params.Add("@WarehouseID", activityItems.WarehouseID);
+                        _params.Add("@isUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivity, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+                        workorderCreationItemDetails.TruckNumber = activityItems.TruckNumber;
+                        workorderCreationItemDetails.PalletTagID = activityItems.ParentTagID;
+                        responseData.isUnique = _params.Get<bool>("@isUnique");
+                        if (responseData.isUnique)
+                        {
+                            foreach (var activityItemDetails in activityItems.data)
+                            {
+                                WmsItems items = new WmsItems();
+                                WmsQRInfo qrInfo = new WmsQRInfo();
+                                var _paramsActivityDetails = new DynamicParameters();
+                                _paramsActivityDetails.Add("@ItemDescription", activityItemDetails.ItemDescription);
+
+                                string[] parts;
+                                if (activityItemDetails.ItemDescription.Contains(','))
+                                {
+                                    parts = activityItemDetails.ItemDescription.Split(',');
+                                    if (parts.Length > 1)
+                                    {
+                                        string itemName = parts[1].TrimStart('0');
+                                        string itemSerialNo = parts[0].TrimStart('0');
+                                        string batchID = parts[3].TrimStart('0');
+                                        string batchDateTime = parts[2];
+                                        _paramsActivityDetails.Add("@ItemName", itemName);
+                                        items.skuCode = itemName;
+                                        qrInfo.skuCode = itemName;
+
+                                        //_paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+                                        //items.serialNumber = itemSerialNo;
+                                        //qrInfo.serialNumber = itemSerialNo;
+
+
+                                        _paramsActivityDetails.Add("@BatchID", batchID);
+                                        items.batchNumber = batchID;
+                                        qrInfo.batchNumber = batchID;
+
+                                        DateTime date;
+                                        if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        //_paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
+                                    }
+                                }
+                                else
+                                {
+                                    parts = activityItemDetails.ItemDescription.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    if (parts.Length > 1)
+                                    {
+                                        string itemName = parts[1].TrimStart('0');
+                                        string itemSerialNo = parts[0].TrimStart('0');
+                                        string batchID = parts[3].TrimStart('0');
+                                        string batchDateTime = parts[2];
+                                        _paramsActivityDetails.Add("@ItemName", itemName);
+                                        items.skuCode = itemName;
+                                        qrInfo.skuCode = itemName;
+
+                                        //_paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+                                        //items.serialNumber = itemSerialNo;
+                                        //qrInfo.serialNumber = itemSerialNo;
+
+                                        _paramsActivityDetails.Add("@BatchID", batchID);
+                                        items.batchNumber = batchID;
+                                        qrInfo.batchNumber = batchID;
+
+                                        DateTime date;
+                                        if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        // If parsing in "yyyy-MM-dd HH:mm:ss" format fails, try "yyyy-MM-dd" format
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        // If parsing in "yyyy-MM-dd" format fails, try "MMM-yyyy" format
+                                        else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            items.batchDateTime = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        //_paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
+                                    }
+                                }
+                                items.qrInfo = qrInfo;
+                                items.qty = 1.0;
+                                _paramsActivityDetails.Add("@Qty", activityItemDetails.Qty);
+                                _paramsActivityDetails.Add("@ActivityID", activityID);
+                                _paramsActivityDetails.Add("@ProcessType", activityItems.ProcessType);
+                                _paramsActivityDetails.Add("@DRN", activityItems.DRN);
+                                _paramsActivityDetails.Add("@WarehouseID", activityItems.WarehouseID);
+                                _paramsActivityDetails.Add("@TransactionDateTime", TransactionDateTime);
+                                _paramsActivityDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivityDetailsForItems, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+                                responseData.isItemUnique = _paramsActivityDetails.Get<bool>("@Status");
+
+                                //WMS Data Posting
+                                if (responseData.isItemUnique)
+                                {
+                                    if (items.skuCode != null)
+                                    {
+                                        for (int i = 0; i < activityItemDetails.Qty; i++)
+                                        {
+                                            itemsList.Add(items);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    responseData.message = "";
+                                }
+                            }
+                        }
+
+                        //WMS Data Posting
+                        if (responseData.isUnique && responseData.isItemUnique)
+                        {
+                            transaction.Commit();
+                            if (activityItems.ProcessType == "IN")
+                            {
+                                if (workorderCreationItemDetails != null)
+                                {
+                                    InsertWorkorderItemDetailsU0(workorderCreationItemDetails);
+                                }
+                                wmsPalletData = GetPalletInfo(activityItems.TruckNumber, activityItems.ParentTagID);
+                                wmsPalletData.receivingNo = activityItems.DRN;
+                                wmsPalletData.items = itemsList;
+                                wmsPalletData.warehouseId = activityItems.WarehouseID.ToString();
+                                string jsonRec = JsonConvert.SerializeObject(wmsPalletData);
+                                responseData.wmsData = jsonRec;
+                           
+                                var _wmsParams = new DynamicParameters();
+                                _wmsParams.Add("@ID", activityID);
+                                _wmsParams.Add("@Type", "ASSET_PALLET_MAPPING_RECEIVING");
+                                _wmsParams.Add("@receivingNo", wmsPalletData.receivingNo);
+                                _wmsParams.Add("@dispatchNo", null);
+                                _wmsParams.Add("@warehouseId", wmsPalletData.warehouseId);
+                                _wmsParams.Add("@palletName", wmsPalletData.palletName);
+                                _wmsParams.Add("@palletSensorId", activityItems.ParentTagID);
+                                _wmsParams.Add("@binName", wmsPalletData.binName);
+                                _wmsParams.Add("@fromBinName", null);
+                                _wmsParams.Add("@fromPalletName", null);
+                                _wmsParams.Add("@toPalletName", null);
+                                _wmsParams.Add("@toBinName", null);
+                                _wmsParams.Add("@comment", null);
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                                foreach (var wmsData in wmsPalletData.items)
+                                {
+                                    var _wmsParamsDetails = new DynamicParameters();
+                                    _wmsParamsDetails.Add("@ParentID", activityID);
+                                    _wmsParamsDetails.Add("@Type", "ASSET_PALLET_MAPPING_RECEIVING");
+                                    _wmsParamsDetails.Add("@fromBinName", null);
+                                    _wmsParamsDetails.Add("@fromPalletName", null);
+                                    _wmsParamsDetails.Add("@stockBinId", null);
+                                    _wmsParamsDetails.Add("@serialNumber", null);
+                                    _wmsParamsDetails.Add("@skuCode", wmsData.skuCode);
+                                    _wmsParamsDetails.Add("@batchNumber", wmsData.batchNumber);
+                                    _wmsParamsDetails.Add("@batchDateTime", wmsData.batchDateTime);
+                                    _wmsParamsDetails.Add("@status", null);
+                                    _wmsParamsDetails.Add("@qty", wmsData.qty);
+                                    conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataChild, _wmsParamsDetails, commandType: CommandType.StoredProcedure);
+                                }
+
+                            }
+                            else if (activityItems.ProcessType == "OUT")
+                            {
+                                wmsPalletDataDis = GetPalletInfoDispatch(activityItems.TruckNumber, activityItems.ParentTagID);
+                                wmsPalletDataDis.dispatchNo = activityItems.DRN;
+                                wmsPalletDataDis.items = itemsList;
+                                wmsPalletDataDis.warehouseId = activityItems.WarehouseID.ToString();
+                                wmsPalletDataDis.comment = "Verified and Loaded on Truck";
+                                string jsonDis = JsonConvert.SerializeObject(wmsPalletDataDis);
+                                responseData.wmsData = jsonDis;
+                                                               
+                                var _wmsParams = new DynamicParameters();
+                                _wmsParams.Add("@ID", activityID);
+                                _wmsParams.Add("@Type", "ASSET_PALLET_MAPPING_DISPATCH");
+                                _wmsParams.Add("@receivingNo", null);
+                                _wmsParams.Add("@dispatchNo", wmsPalletDataDis.dispatchNo);
+                                _wmsParams.Add("@warehouseId", wmsPalletData.warehouseId);
+                                _wmsParams.Add("@palletName", wmsPalletData.palletName);
+                                _wmsParams.Add("@palletSensorId", activityItems.ParentTagID);
+                                _wmsParams.Add("@binName", wmsPalletData.binName);
+                                _wmsParams.Add("@fromBinName", null);
+                                _wmsParams.Add("@fromPalletName", null);
+                                _wmsParams.Add("@toPalletName", null);
+                                _wmsParams.Add("@toBinName", null);
+                                _wmsParams.Add("@comment", wmsPalletDataDis.comment);
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                                foreach (var wmsData in wmsPalletData.items)
+                                {
+                                    var _wmsParamsDetails = new DynamicParameters();
+                                    _wmsParamsDetails.Add("@ParentID", activityID);
+                                    _wmsParamsDetails.Add("@Type", "ASSET_PALLET_MAPPING_DISPATCH");
+                                    _wmsParamsDetails.Add("@fromBinName", null);
+                                    _wmsParamsDetails.Add("@fromPalletName", null);
+                                    _wmsParamsDetails.Add("@stockBinId", null);
+                                    _wmsParamsDetails.Add("@serialNumber", null);
+                                    _wmsParamsDetails.Add("@skuCode", wmsData.skuCode);
+                                    _wmsParamsDetails.Add("@batchNumber", wmsData.batchNumber);
+                                    _wmsParamsDetails.Add("@batchDateTime", wmsData.batchDateTime);
+                                    _wmsParamsDetails.Add("@status", null);
+                                    _wmsParamsDetails.Add("@qty", wmsData.qty);
+                                    conn.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataChild, _wmsParamsDetails, commandType: CommandType.StoredProcedure);
+                                }
+
+                            }
+                        }
+                        else
+                        {
+                            // If any condition is not met, rollback the transaction
+                            transaction.Rollback();
+                            if (!responseData.isUnique)
+                            {
+                                responseData.message = "The pallet has been already mapped.";
+                            }
+                        }
+                        responseData.status = true;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        responseData.status = false;
+                        responseData.message = ex.Message;
+
+                    }
+                }
+            }
+            return responseData;
+        }
+        public TruckResponseDetails GetDCDetailsForPDA(DCDetails dcTagID)
+        {
+            TruckResponseDetails data = null;
+            using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+            {
+                db.Open();
+                var _params = new DynamicParameters();
+                _params.Add("@DCTagID", dcTagID.DCTagID);
+                data = db.Query<TruckResponseDetails>(AppSettings.SQLQueryCommand.SP_GetDCDetailsForPDA, _params, commandType: CommandType.StoredProcedure).FirstOrDefault();
+            }
+            return data;
+        }
+        public List<SKUResponse> GetSKUDetailsForPDA(SKUDetails sKUDetails)
+        {
+            List<SKUResponse> data = new List<SKUResponse>();
+            using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+            {
+                db.Open();
+                var _params = new DynamicParameters();
+                _params.Add("@ClientDeviceID", sKUDetails.ClientDeviceID);
+                _params.Add("@DCNo", sKUDetails.DCNo);
+                _params.Add("@Type", sKUDetails.Type);
+                data = db.Query<SKUResponse>(AppSettings.SQLQueryCommand.SP_GetSKUDetailsForPDA, _params, commandType: CommandType.StoredProcedure).ToList();
+            }
+            return data;
+        }
+        public List<SKUData> GetAllSKUsPDA()
+        {
+            List<SKUData> data = new List<SKUData>();
+            using (SqlConnection db = new SqlConnection(AppSettings.ConnectionString))
+            {
+                db.Open();
+                using (SqlCommand cmd = db.CreateCommand())
+                {
+                    var query = "SELECT skuName AS ItemName, skuCode AS ItemCode FROM SKU WHERE skuName IS NOT NULL";
+                    data = db.Query<SKUData>(query).ToList();
+                }
+            }
+            return data;
+        }
+        public bool GetSOLineItemsLoading(DCDetails dcTagID)
+        {
+            bool retVal = false;
+            string token = GetAuthorizationToken().access_token;
+            string dcNo = dcTagID.DCTagID;
+            int warehouseID = dcTagID.WarehouseID;
+            string url = ConfigurationManager.AppSettings["SOSyncUrl"] + dcNo;
+            string urlReturnValue = GetWMSSyncData(url, token, warehouseID);
+            DispatchData W = JsonConvert.DeserializeObject<DispatchData>(urlReturnValue);
+            if (W != null && W.items.Count != 0)
+            {
+                retVal = InsetSODetails(W);
+            }
+            return retVal;
+        }
+        public List<WarehouseDetails> GetWarehouseDetails()
+        {
+            List<WarehouseDetails> data = new List<WarehouseDetails>();
+            using (SqlConnection db = new SqlConnection(AppSettings.ConnectionString))
+            {
+                db.Open();
+                using (SqlCommand cmd = db.CreateCommand())
+                {
+                    var query = "SELECT Name AS WarehouseName, ID AS WarehouseID FROM WarehouseMaster WHERE IsActive = 1";
+                    data = db.Query<WarehouseDetails>(query).ToList();
+                }
+            }
+            return data;
+        }
+
+        #region PLANT
+        public IEnumerable<object> GetDCNumbersForPlant(DeviceData deviceID)
+        {
+            IEnumerable<object> data = null;
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = conn.CreateCommand())
+                {
+                    var query = "SELECT DeliveryNo FROM STO WHERE IsProcessed = 0 ORDER BY ModifiedDateTime DESC";
+                    data = conn.Query<string>(query).ToList();
+                }
+            }
+            return data;
+        }
+        public PlantActivityResponse PlantTransactionForScannedItems(ScannedItemModel activityModel)
+        {
+            PlantActivityResponse responsedata = new PlantActivityResponse();
+            Guid activityID = Guid.NewGuid();
+            string batchDateTime1 = string.Empty;
+
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+            {
+                DateTime TransactionDateTime = DateTime.Now;
+                conn.Open();
+
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        var _params = new DynamicParameters();
+                        _params.Add("@ActivityID", activityID);
+                        _params.Add("@ClientDeviceID", activityModel.ClientDeviceID);
+                        _params.Add("@ActivityType", activityModel.ActivityType);
+                        _params.Add("@StartDate", activityModel.StartDate);
+                        _params.Add("@EndDate", activityModel.EndDate);
+                        _params.Add("@CustomerID", activityModel.CustomerID);
+                        _params.Add("@TouchPointID", activityModel.TouchpointID);
+                        _params.Add("@Count", activityModel.Count);
+                        _params.Add("@ParentTagID", activityModel.ParentTagID);
+                        _params.Add("@DRN", activityModel.DRN);
+                        _params.Add("@isUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivityForPlant, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+                        responsedata.isUnique = _params.Get<bool>("@isUnique");
+                        if (responsedata.isUnique)
+                        {
+                            foreach (var activityDetailsModel in activityModel.data)
+                            {
+                               
+                                var _paramsActivityDetails = new DynamicParameters();
+                                _paramsActivityDetails.Add("@ItemDescription", activityDetailsModel.ItemDescription);
+
+                                string[] parts;
+                                if (activityDetailsModel.ItemDescription.Contains(','))
+                                {
+                                    parts = activityDetailsModel.ItemDescription.Split(',');
+                                    if (parts.Length > 1)
+                                    {
+                                        string itemName = parts[1].TrimStart('0');
+                                        string itemSerialNo = parts[0].TrimStart('0');
+                                        string batchID = parts[3].TrimStart('0');
+                                        string batchDateTime = parts[2];
+                                        
+                                        _paramsActivityDetails.Add("@ItemName", itemName);
+                                        _paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+                                        _paramsActivityDetails.Add("@BatchID", batchID);
+                                        DateTime date;
+                                        if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        _paramsActivityDetails.Add("@BatchDateTime", batchDateTime1);
+                                    }
+                                }
+                                else
+                                {
+                                    parts = activityDetailsModel.ItemDescription.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    if (parts.Length > 1)
+                                    {
+                                        string itemName = parts[1].TrimStart('0');
+                                        string itemSerialNo = parts[0].TrimStart('0');
+                                        string batchID = parts[3].TrimStart('0');
+                                        string batchDateTime = parts[2];
+                                        _paramsActivityDetails.Add("@ItemName", itemName);
+                                        _paramsActivityDetails.Add("@ItemSerialNo", itemSerialNo);
+                                        _paramsActivityDetails.Add("@BatchID", batchID);
+                                       
+                                        DateTime date;
+                                        if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        // If parsing in "yyyy-MM-dd HH:mm:ss" format fails, try "yyyy-MM-dd" format
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        // If parsing in "yyyy-MM-dd" format fails, try "MMM-yyyy" format
+                                        else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        _paramsActivityDetails.Add("@BatchDateTime", batchDateTime1);
+                                    }
+                                }
+
+                              
+                                _paramsActivityDetails.Add("@ActivityID", activityID);
+                                _paramsActivityDetails.Add("@DRN", activityModel.DRN);
+                                _paramsActivityDetails.Add("@TransactionDateTime", TransactionDateTime);
+                                _paramsActivityDetails.Add("@isItemUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertScannedActivityDetailsForPlant, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+
+                                responsedata.isItemUnique = _paramsActivityDetails.Get<bool>("@isItemUnique");
+
+                              
+                                if (!responsedata.isItemUnique)
+                                {
+                                    var duplicateItemDescription = activityDetailsModel.ItemDescription;
+                                    if (duplicateItemDescription != null)
+                                    {
+                                        responsedata.message = $"Item '{duplicateItemDescription}' is already mapped.";
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (responsedata.isUnique && responsedata.isItemUnique)
+                        {
+                            transaction.Commit();
+                        }
+                        else
+                        {
+                            // If any condition is not met, rollback the transaction
+                            transaction.Rollback();
+                            if (!responsedata.isUnique)
+                            {
+                                responsedata.message = "The pallet has been already mapped.";
+                            }
+
+                        }
+                        responsedata.status = true;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        responsedata.status = false;
+                        responsedata.message = ex.Message;
+
+                    }
+                }
+            }
+            return responsedata;
+        }
+        public PlantActivityResponse PlantTransactionForWithoutScannedItems(ManualItemModel activityItems)
+        {
+            //bool retVal = false;
+            PlantActivityResponse responseData = new PlantActivityResponse();
+            Guid activityID = Guid.NewGuid();
+            
+
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+            {
+                DateTime TransactionDateTime = DateTime.Now;
+                conn.Open();
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        var _params = new DynamicParameters();
+                        _params.Add("@ActivityID", activityID);
+                        _params.Add("@ClientDeviceID", activityItems.ClientDeviceID);
+                        _params.Add("@ActivityType", activityItems.ActivityType);
+                        _params.Add("@StartDate", activityItems.StartDate);
+                        _params.Add("@EndDate", activityItems.EndDate);
+                        _params.Add("@CustomerID", activityItems.CustomerID);
+                        _params.Add("@TouchPointID", activityItems.TouchpointID);
+                        _params.Add("@Count", activityItems.Count);
+                        _params.Add("@ParentTagID", activityItems.ParentTagID);
+                        _params.Add("@DRN", activityItems.DRN);
+                        _params.Add("@isUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivityForPlant, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+                        responseData.isUnique = _params.Get<bool>("@isUnique");
+                        if (responseData.isUnique)
+                        {
+                            foreach (var activityItemDetails in activityItems.data)
+                            {
+                                var _paramsActivityDetails = new DynamicParameters();
+
+                                var ItemDesc = activityItemDetails.ItemDescription.Split(',');
+                                _paramsActivityDetails.Add("@ItemDescription", ItemDesc[0]);
+                                _paramsActivityDetails.Add("@ItemName", ItemDesc[2]);
+                                _paramsActivityDetails.Add("@BatchID", ItemDesc[1]);
+                                _paramsActivityDetails.Add("@Qty", activityItemDetails.Qty);
+                                _paramsActivityDetails.Add("@ActivityID", activityID);
+                                _paramsActivityDetails.Add("@TransactionDateTime", TransactionDateTime);
+                                _paramsActivityDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertManualActivityDetailsForPlant, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+                                responseData.isItemUnique = _paramsActivityDetails.Get<bool>("@Status");
+
+                            }
+                        }
+
+                        //WMS Data Posting
+                        if (responseData.isUnique && responseData.isItemUnique)
+                        {
+                            transaction.Commit();
+                        }
+                        else
+                        {
+                            // If any condition is not met, rollback the transaction
+                            transaction.Rollback();
+                            if (!responseData.isUnique)
+                            {
+                                responseData.message = "The pallet has been already mapped.";
+                            }
+                        }
+                        responseData.status = true;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        responseData.status = false;
+                        responseData.message = ex.Message;
+
+                    }
+                }
+            }
+            return responseData;
+        }
+        public PlantActivityResponse PlantTransactionForQRManualItems(ManualItemModel activityItems)
+        {
+            //bool retVal = false;
+            PlantActivityResponse responseData = new PlantActivityResponse();
+            Guid activityID = Guid.NewGuid();
+            string batchDateTime1 = string.Empty;
+
+            using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+            {
+                DateTime TransactionDateTime = DateTime.Now;
+                conn.Open();
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    try
+                    {
+                        var _params = new DynamicParameters();
+                        _params.Add("@ActivityID", activityID);
+                        _params.Add("@ClientDeviceID", activityItems.ClientDeviceID);
+                        _params.Add("@ActivityType", activityItems.ActivityType);
+                        _params.Add("@StartDate", activityItems.StartDate);
+                        _params.Add("@EndDate", activityItems.EndDate);
+                        _params.Add("@CustomerID", activityItems.CustomerID);
+                        _params.Add("@TouchPointID", activityItems.TouchpointID);
+                        _params.Add("@Count", activityItems.Count);
+                        _params.Add("@ParentTagID", activityItems.ParentTagID);
+                        _params.Add("@DRN", activityItems.DRN);
+                        _params.Add("@isUnique", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+                        conn.Execute(AppSettings.SQLQueryCommand.SP_InsertActivityForPlant, _params, commandType: CommandType.StoredProcedure, transaction: transaction);
+                        responseData.isUnique = _params.Get<bool>("@isUnique");
+                        if (responseData.isUnique)
+                        {
+                            foreach (var activityItemDetails in activityItems.data)
+                            {
+                                var _paramsActivityDetails = new DynamicParameters();
+                                _paramsActivityDetails.Add("@ItemDescription", activityItemDetails.ItemDescription);
+
+                                string[] parts;
+                                if (activityItemDetails.ItemDescription.Contains(','))
+                                {
+                                    parts = activityItemDetails.ItemDescription.Split(',');
+                                    if (parts.Length > 1)
+                                    {
+                                        string itemName = parts[1].TrimStart('0');
+                                        string itemSerialNo = parts[0].TrimStart('0');
+                                        string batchID = parts[3].TrimStart('0');
+                                        string batchDateTime = parts[2];
+                                        _paramsActivityDetails.Add("@ItemName", itemName);
+                                        _paramsActivityDetails.Add("@BatchID", batchID);
+
+                                        DateTime date;
+                                        if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        //_paramsActivityDetails.Add("@BatchDateTime", batchDateTime1);
+                                    }
+                                }
+                                else
+                                {
+                                    parts = activityItemDetails.ItemDescription.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                                    if (parts.Length > 1)
+                                    {
+                                        string itemName = parts[1].TrimStart('0');
+                                        string itemSerialNo = parts[0].TrimStart('0');
+                                        string batchID = parts[3].TrimStart('0');
+                                        string batchDateTime = parts[2];
+                                        _paramsActivityDetails.Add("@ItemName", itemName);
+                                        _paramsActivityDetails.Add("@BatchID", batchID);
+                                        DateTime date;
+                                        if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy HH:mm:ss", CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd.MM.yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "MMM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "yyyy-MM", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = new DateTime(date.Year, date.Month, 1).ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        else if (DateTime.TryParseExact(batchDateTime, "dd-MM-yyyy HH:mm:ss", CultureInfo.InvariantCulture,
+                                            DateTimeStyles.None, out date))
+                                        {
+                                            batchDateTime1 = date.ToString("yyyy-MM-ddTHH:mm:ssZ");
+
+                                        }
+                                        //_paramsActivityDetails.Add("@BatchDateTime", items.batchDateTime);
+                                    }
+                                }
+                                _paramsActivityDetails.Add("@Qty", activityItemDetails.Qty);
+                                _paramsActivityDetails.Add("@ActivityID", activityID);
+                                _paramsActivityDetails.Add("@TransactionDateTime", TransactionDateTime);
+                                _paramsActivityDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+                                conn.Execute(AppSettings.SQLQueryCommand.SP_InsertManualActivityDetailsForPlant, _paramsActivityDetails, commandType: CommandType.StoredProcedure, transaction: transaction);
+                                responseData.isItemUnique = _paramsActivityDetails.Get<bool>("@Status");
+
+                            }
+                        }
+
+                        //WMS Data Posting
+                        if (responseData.isUnique && responseData.isItemUnique)
+                        {
+                            transaction.Commit();
+                        }
+                        else
+                        {
+                            // If any condition is not met, rollback the transaction
+                            transaction.Rollback();
+                            if (!responseData.isUnique)
+                            {
+                                responseData.message = "The pallet has been already mapped.";
+                            }
+                        }
+                        responseData.status = true;
+
+                    }
+                    catch (Exception ex)
+                    {
+                        responseData.status = false;
+                        responseData.message = ex.Message;
+
+                    }
+                }
+            }
+            return responseData;
+        }
         #endregion
 
+        #endregion
+        #region Report
+        public List<QRTranscationDetails> GetItemsQRActivityDetails(int LocationId)
+        {
+            List<QRTranscationDetails> TranscationData = new List<QRTranscationDetails>();
+            try
+            {
+                using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+                {
+                    db.Open();
+
+                    var _params = new DynamicParameters();
+                    _params.Add("@LocationId", LocationId);
+                    var transcationNumbers = db.Query<ItemsQRActivity>(AppSettings.SQLQueryCommand.SP_GET_TranscationNoQR, _params, commandType: CommandType.StoredProcedure).ToList();
+
+
+                    foreach (var transNo in transcationNumbers)
+                    {
+                        QRTranscationDetails qR = new QRTranscationDetails();
+
+                        var palletDetails = GetQRDetails(transNo.Id.ToString());
+                        qR.TranscationId = transNo.Id.ToString();
+                        qR.TranscationNo = transNo.StartDateTime.ToString("ddMMyyyHHmmss");
+                        transNo.StartDateTimeSTR = transNo.StartDateTime.ToString("dd-MM-yyyy HH:mm:ss");
+                        transNo.EndDateTimeSTR = transNo.EndDateTime.ToString("dd-MM-yyyy HH:mm:ss");
+                        transNo.ServerDateTimeSTR = transNo.ServerDateTime.ToString("dd-MM-yyyy HH:mm:ss");
+                        qR.activity = transNo;
+                        qR.data = palletDetails;
+
+                        TranscationData.Add(qR);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+
+            }
+            return TranscationData;
+        }
+
+        public List<LocationDetails> GetQRLocationName()
+        {
+
+            List<LocationDetails> data = new List<LocationDetails>()
+            {
+                new LocationDetails() { LocationName = "1"},
+                new LocationDetails() { LocationName = "2" },
+                new LocationDetails() { LocationName = "3"},
+                new LocationDetails() { LocationName = "4"},
+                new LocationDetails() { LocationName = "5" }
+            };
+            return data;
+            //return null;
+        }
+
+
+        private List<ItemsQRActivityDetails> GetQRDetails(string transNo)
+        {
+            List<ItemsQRActivityDetails> items = new List<ItemsQRActivityDetails>();
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(AppSettings.ConnectionString))
+                {
+                    conn.Open();
+                    using (SqlCommand cmd = conn.CreateCommand())
+                    {
+                        string sqlStr = "SELECT * FROM ItemsQrActivityDetails WHERE ParentActivityId='@TranscationId' ORDER BY ServerDateTime DESC";
+                        sqlStr = sqlStr.Replace("@TranscationId", transNo);
+                        cmd.CommandText = sqlStr;
+                        cmd.CommandType = System.Data.CommandType.Text;
+                        using (PSLDataReader dr = new PSLDataReader(cmd.ExecuteReader()))
+                        {
+                            // transcations = new List<TranscationDetails>();
+                            while (dr.Read())
+                            {
+
+                                ItemsQRActivityDetails itemsQR = new ItemsQRActivityDetails();
+                                itemsQR.Id = dr.GetGuid("Id").ToString();
+                                itemsQR.ParentActivityId = dr.GetGuid("ParentActivityId").ToString();
+                                itemsQR.ItemDescription = dr.GetString("ItemDescription");
+                                itemsQR.ItemSerialNo = dr.GetInt32("ItemSerialNo").ToString();
+                                itemsQR.ItemCode = dr.GetString("ItemCode");
+                                itemsQR.BatchId = dr.GetString("BatchId");
+                                itemsQR.BatchDateTime = dr.GetString("BatchDateTime");
+                                itemsQR.TransactionDateTime = dr.GetDateTime("TransactionDateTime");
+                                itemsQR.Serverdatetime = dr.GetDateTime("Serverdatetime");
+                                itemsQR.ServerDateTimeSTR = itemsQR.Serverdatetime.ToString("dd-MM-yyyy HH:mm:ss");
+                                items.Add(itemsQR);
+                            }
+                        }
+                    }
+                }
+
+
+                //return transcations;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error While GetQRDetails : ", ex);
+            }
+
+            return items;
+
+        }
+        #endregion
         #region TV
         public List<LocationDetails> GetLocationName()
         {
@@ -1618,6 +4737,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                     var _params = new DynamicParameters();
                     _params.Add("@WorkorderID", obj);
                     _params.Add("@TruckID", workorderCreation.TruckNumber);
+                    _params.Add("@WarehouseID", workorderCreation.WarehouseID);
                     _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
                     db.Execute(AppSettings.SQLQueryCommand.SP_CreateWorkOrderU0, _params, commandType: CommandType.StoredProcedure);
                     retval = _params.Get<bool>("@Status");
@@ -1670,13 +4790,47 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                         _paramsWorkOrderDetails.Add("@PalletName", i.palletName);
                         _paramsWorkOrderDetails.Add("@BinName", i.toBinName);
                         _paramsWorkOrderDetails.Add("@ReceivingNo", i.receivingNo);
-                        _paramsWorkOrderDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+                        _paramsWorkOrderDetails.Add("@WarehouseID", i.warehouseId);
+                        _paramsWorkOrderDetails.Add("@IsU1", dbType: DbType.Boolean, direction: ParameterDirection.Output);
                         db.Execute(AppSettings.SQLQueryCommand.SP_CreateWorkOrderDetailsU1, _paramsWorkOrderDetails, commandType: CommandType.StoredProcedure);
 
 
-                        retval = _paramsWorkOrderDetails.Get<bool>("@Status");
-                    }
+                        bool isU1Required = _paramsWorkOrderDetails.Get<bool>("@IsU1");
+                        if (!isU1Required)
+                        {
+                            using (SqlConnection db1 = new SqlConnection(AppSettings.ConnectionString))
+                            {
+                                string updateQuery = "UPDATE WorkOrder SET WorkOrderStatus = 'C', IsActive = 0 WHERE ProcessInfo1 = @receivingNo AND WorkOrderType = 'U1' AND WorkOrderStatus = 'A' AND IsActive = 1";
 
+                                db1.Open();
+
+                                using (SqlCommand updateCommand = new SqlCommand(updateQuery, db1))
+                                {
+                                    updateCommand.Parameters.AddWithValue("@receivingNo", i.receivingNo);
+                                    int rowsAffected = updateCommand.ExecuteNonQuery(); 
+                                }
+
+                            }
+
+                            Guid TransID = Guid.NewGuid();
+                            var _wmsParams = new DynamicParameters();
+                            _wmsParams.Add("@ID", TransID);
+                            _wmsParams.Add("@Type", "Pallet_Movement_U0U1");
+                            _wmsParams.Add("@receivingNo", i.receivingNo);
+                            _wmsParams.Add("@dispatchNo", null);
+                            _wmsParams.Add("@warehouseId", i.warehouseId);
+                            _wmsParams.Add("@palletName", null);
+                            _wmsParams.Add("@palletSensorId", null);
+                            _wmsParams.Add("@binName", null);
+                            _wmsParams.Add("@fromBinName", i.fromBinName);
+                            _wmsParams.Add("@fromPalletName", null);
+                            _wmsParams.Add("@toPalletName", null);
+                            _wmsParams.Add("@toBinName", i.toBinName);
+                            _wmsParams.Add("@comment", null);
+                            db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                        }
+
+                    }
 
                     retval = _params.Get<bool>("@Status");
                 }
@@ -1713,6 +4867,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                         _paramsWorkOrderDetails.Add("@DispatchNo", i.dispatchNo);
                         _paramsWorkOrderDetails.Add("@Qty", i.qty);
                         _paramsWorkOrderDetails.Add("@IsFull", i.isFull);
+                        _paramsWorkOrderDetails.Add("@WarehouseID", i.warehouseId);
                         _paramsWorkOrderDetails.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
                         db.Execute(AppSettings.SQLQueryCommand.SP_CreateWorkOrderDetailsL0, _paramsWorkOrderDetails, commandType: CommandType.StoredProcedure);
 
@@ -1897,6 +5052,177 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
             }
             return data;
         }
+        //public bool InsertTransactionDetailsForBotService(TransactionDetailsV1 transactionDetails)
+        //{
+        //    bool retval = false;
+
+
+        //    using (IDbConnection db = new SqlConnection(AppSettings.ConnectionString))
+        //    {
+        //        db.Open();
+        //        var _params = new DynamicParameters();
+
+        //        if (transactionDetails.TransID != null && transactionDetails.SubTagDetails != null && transactionDetails.SubTagDetails.Count > 0)
+        //        {
+        //            _params.Add("@TransID", transactionDetails.TransID);
+        //            _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
+        //            _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+        //            _params.Add("@CategoryID", transactionDetails.CategoryID);
+        //            _params.Add("@AntennaID", transactionDetails.AntennaID);
+        //            _params.Add("@ListItemStatus", transactionDetails.ListItemStatus);
+        //            _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+        //            _params.Add("@WorkorderType", transactionDetails.WorkorderType);
+        //            _params.Add("@Count", transactionDetails.Count);
+        //            _params.Add("@RSSI", transactionDetails.RSSI);
+        //            _params.Add("@TransDatetime", transactionDetails.TransDatetime);
+        //            _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //            db.Execute(AppSettings.SQLQueryCommand.SP_InsertReaderTransLogForService, _params, commandType: CommandType.StoredProcedure);
+        //            retval = _params.Get<bool>("@Status");
+
+        //            if (transactionDetails.SubTagDetails != null && transactionDetails.SubTagDetails.Count != 0)
+        //            {
+        //                foreach (SubTagDataV1 i in transactionDetails.SubTagDetails)
+        //                {
+        //                    WmsPalletBinInfo wmsPalletBin = new WmsPalletBinInfo();
+        //                    WmsPalletBinInfoL0 wmsPalletBinInfoL0 = new WmsPalletBinInfoL0();
+        //                    WmsPalletBinInfoL1 wmsPalletBinInfoL1 = new WmsPalletBinInfoL1();
+        //                    List<WmsPalletBinInfoInternalDetails> wmsPalletBinInfoI0List = new List<WmsPalletBinInfoInternalDetails>();
+        //                    WmsPalletBinInfoInternalDetails wmsPalletBinInfoI0 = new WmsPalletBinInfoInternalDetails();
+        //                    WmsPalletBinInfoInternal wmsPalletBinInfoInternal = new WmsPalletBinInfoInternal();
+        //                    _params.Add("@TransID", transactionDetails.TransID);
+        //                    _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
+        //                    _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+        //                    _params.Add("@CategoryID", transactionDetails.CategoryID);
+        //                    _params.Add("@AntennaID", transactionDetails.AntennaID);
+        //                    _params.Add("@ListItemStatus", transactionDetails.ListItemStatus);
+        //                    _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+        //                    _params.Add("@WorkorderType", transactionDetails.WorkorderType);
+        //                    _params.Add("@Count", transactionDetails.Count);
+        //                    _params.Add("@RSSI", transactionDetails.RSSI);
+        //                    _params.Add("@TransDatetime", transactionDetails.TransDatetime);
+
+        //                    _params.Add("@SubTransID", transactionDetails.TransID);
+        //                    _params.Add("@SuggestedDestinationTagID", i.SuggestedDestinationTagID);
+        //                    _params.Add("@ActualDestinationTagID", i.ActualDestinationTagID);
+        //                    _params.Add("@SubRSSI", i.RSSI);
+        //                    _params.Add("@SubCount", i.Count);
+        //                    _params.Add("@SubCategoryID", i.CategoryID);
+        //                    _params.Add("@TagType", i.TagType);
+        //                    _params.Add("@SubTransDatetime", i.TransDatetime);
+        //                    _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertReaderTranslogitemsForService, _params, commandType: CommandType.StoredProcedure);
+        //                    retval = _params.Get<bool>("@Status");
+
+        //                    if (retval)
+        //                    {
+        //                        if (transactionDetails.WorkorderType == "U0" || transactionDetails.WorkorderType == "U1")
+        //                        {
+        //                            wmsPalletBin = GetPalletBinMappedInfo(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.ActualDestinationTagID);
+        //                            wmsPalletBin.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                            wmsPalletBin.palletSensorId = transactionDetails.PalletTagID;
+        //                            string jsonData = JsonConvert.SerializeObject(wmsPalletBin);
+        //                            var _wmsParams = new DynamicParameters();
+        //                            _wmsParams.Add("@ID", transactionDetails.TransID);
+        //                            _wmsParams.Add("@DRN", wmsPalletBin.receivingNo);
+        //                            _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonData));
+        //                            _wmsParams.Add("@ProcessType", "Pallet_Movement_U0U1");
+        //                            db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                            //PutPalletBinMappedInfo(wmsPalletBin);
+        //                        }
+        //                        else if (transactionDetails.WorkorderType == "L0")
+        //                        {
+        //                            wmsPalletBinInfoL0 = GetPalletBinMappedInfoL0(transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, transactionDetails.PalletTagID, i.ActualDestinationTagID);
+        //                            string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL0);
+        //                            var _wmsParams = new DynamicParameters();
+        //                            _wmsParams.Add("@ID", transactionDetails.TransID);
+        //                            _wmsParams.Add("@DRN", wmsPalletBinInfoL0.dispatchNo);
+        //                            _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonData));
+        //                            _wmsParams.Add("@ProcessType", "Pallet_Movement_L0");
+        //                            db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                            //PutPalletBinMappedInfoL0(wmsPalletBinInfoL0);
+        //                        }
+        //                        else if (transactionDetails.WorkorderType == "L1")
+        //                        {
+        //                            wmsPalletBinInfoL1 = GetPalletBinMappedInfoL1(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.ActualDestinationTagID);
+        //                            wmsPalletBinInfoL1.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                            wmsPalletBinInfoL1.palletSensorId = transactionDetails.PalletTagID;
+        //                            string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL1);
+        //                            var query = "SELECT ProcessInfo1 FROM WorkOrder WHERE WONumber = @WorkOrderNumber";
+        //                            var dispatchNo = db.Query<string>(query, new { WorkorderNumber = transactionDetails.WorkorderNumber });
+        //                            var _wmsParams = new DynamicParameters();
+        //                            _wmsParams.Add("@ID", transactionDetails.TransID);
+        //                            _wmsParams.Add("@DRN", dispatchNo);
+        //                            _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonData));
+        //                            _wmsParams.Add("@ProcessType", "Pallet_Movement_L1");
+        //                            db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                            //PutPalletBinMappedInfoL1(wmsPalletBinInfoL1);
+        //                        } 
+        //                        else if (transactionDetails.WorkorderType == "I0")
+        //                        {
+        //                            wmsPalletBinInfoI0 = GetPalletBinMappedInfoI0(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.ActualDestinationTagID);
+        //                            wmsPalletBinInfoI0.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
+        //                            wmsPalletBinInfoI0List.Add(wmsPalletBinInfoI0);
+        //                            wmsPalletBinInfoInternal.data = wmsPalletBinInfoI0List;
+        //                            string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoInternal);
+        //                            var _wmsParams = new DynamicParameters();
+        //                            _wmsParams.Add("@ID", transactionDetails.TransID);
+        //                            _wmsParams.Add("@DRN", "Internal Movement");
+        //                            _wmsParams.Add("@JSONData", Encoding.UTF8.GetBytes(jsonData));
+        //                            _wmsParams.Add("@ProcessType", "Pallet_Movement_I0");
+        //                            db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //            else
+        //            {
+        //                //Should never be here..
+        //            }
+
+        //        }
+        //        else if (transactionDetails.TransID != null && transactionDetails.SubTagDetails != null && transactionDetails.SubTagDetails.Count == 0)
+        //        {
+        //            //Posting Parent if Subitems count is zero
+        //            _params.Add("@TransID", transactionDetails.TransID);
+        //            _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
+        //            _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+        //            _params.Add("@CategoryID", transactionDetails.CategoryID);
+        //            _params.Add("@AntennaID", transactionDetails.AntennaID);
+        //            _params.Add("@ListItemStatus", transactionDetails.ListItemStatus);
+        //            _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+        //            _params.Add("@WorkorderType", transactionDetails.WorkorderType);
+        //            _params.Add("@Count", transactionDetails.Count);
+        //            _params.Add("@RSSI", transactionDetails.RSSI);
+        //            _params.Add("@TransDatetime", transactionDetails.TransDatetime);
+        //            _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //            db.Execute(AppSettings.SQLQueryCommand.SP_InsertReaderTransLogForService, _params, commandType: CommandType.StoredProcedure);
+        //            retval = _params.Get<bool>("@Status");
+
+        //            //retval = true;
+        //        }
+        //        else if (transactionDetails.TransID != null && transactionDetails.SubTagDetails == null)
+        //        {
+        //            //Posting Parent if Subitems come as null...
+        //            _params.Add("@TransID", transactionDetails.TransID);
+        //            _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
+        //            _params.Add("@PalletTagID", transactionDetails.PalletTagID);
+        //            _params.Add("@CategoryID", transactionDetails.CategoryID);
+        //            _params.Add("@AntennaID", transactionDetails.AntennaID);
+        //            _params.Add("@ListItemStatus", transactionDetails.ListItemStatus);
+        //            _params.Add("@WorkorderNumber", transactionDetails.WorkorderNumber);
+        //            _params.Add("@WorkorderType", transactionDetails.WorkorderType);
+        //            _params.Add("@Count", transactionDetails.Count);
+        //            _params.Add("@RSSI", transactionDetails.RSSI);
+        //            _params.Add("@TransDatetime", transactionDetails.TransDatetime);
+        //            _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
+        //            db.Execute(AppSettings.SQLQueryCommand.SP_InsertReaderTransLogForService, _params, commandType: CommandType.StoredProcedure);
+        //            retval = _params.Get<bool>("@Status");
+
+        //            //retval = true;
+        //        }
+        //    }
+        //    return retval;
+        //}
         public bool InsertTransactionDetailsForBotService(TransactionDetailsV1 transactionDetails)
         {
             bool retval = false;
@@ -1923,7 +5249,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                     _params.Add("@Status", dbType: DbType.Boolean, direction: ParameterDirection.Output);
                     db.Execute(AppSettings.SQLQueryCommand.SP_InsertReaderTransLogForService, _params, commandType: CommandType.StoredProcedure);
                     retval = _params.Get<bool>("@Status");
-                    
+
                     if (transactionDetails.SubTagDetails != null && transactionDetails.SubTagDetails.Count != 0)
                     {
                         foreach (SubTagDataV1 i in transactionDetails.SubTagDetails)
@@ -1931,7 +5257,9 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                             WmsPalletBinInfo wmsPalletBin = new WmsPalletBinInfo();
                             WmsPalletBinInfoL0 wmsPalletBinInfoL0 = new WmsPalletBinInfoL0();
                             WmsPalletBinInfoL1 wmsPalletBinInfoL1 = new WmsPalletBinInfoL1();
-                            WmsPalletBinInfoI0 wmsPalletBinInfoI0 = new WmsPalletBinInfoI0();
+                            List<WmsPalletBinInfoInternalDetails> wmsPalletBinInfoI0List = new List<WmsPalletBinInfoInternalDetails>();
+                            WmsPalletBinInfoInternalDetails wmsPalletBinInfoI0 = new WmsPalletBinInfoInternalDetails();
+                            WmsPalletBinInfoInternal wmsPalletBinInfoInternal = new WmsPalletBinInfoInternal();
                             _params.Add("@TransID", transactionDetails.TransID);
                             _params.Add("@ClientDeviceID", transactionDetails.ClientDeviceID);
                             _params.Add("@PalletTagID", transactionDetails.PalletTagID);
@@ -1964,23 +5292,60 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                     wmsPalletBin.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
                                     wmsPalletBin.palletSensorId = transactionDetails.PalletTagID;
                                     string jsonData = JsonConvert.SerializeObject(wmsPalletBin);
+                                    
                                     var _wmsParams = new DynamicParameters();
-                                    _wmsParams.Add("@DRN", wmsPalletBin.receivingNo);
-                                    _wmsParams.Add("@JSONData", jsonData);
-                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_U0U1");
-                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
-                                    //PutPalletBinMappedInfo(wmsPalletBin);
+                                    _wmsParams.Add("@ID", transactionDetails.TransID);
+                                    _wmsParams.Add("@Type", "Pallet_Movement_U0U1");
+                                    _wmsParams.Add("@receivingNo", wmsPalletBin.receivingNo);
+                                    _wmsParams.Add("@dispatchNo", null);
+                                    _wmsParams.Add("@warehouseId", wmsPalletBin.warehouseId);
+                                    _wmsParams.Add("@palletName", wmsPalletBin.palletName);
+                                    _wmsParams.Add("@palletSensorId", wmsPalletBin.palletSensorId);
+                                    _wmsParams.Add("@binName", null);
+                                    _wmsParams.Add("@fromBinName", wmsPalletBin.fromBinName);
+                                    _wmsParams.Add("@fromPalletName", null);
+                                    _wmsParams.Add("@toPalletName", null);
+                                    _wmsParams.Add("@toBinName", wmsPalletBin.toBinName);
+                                    _wmsParams.Add("@comment", null);
+                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
                                 }
                                 else if (transactionDetails.WorkorderType == "L0")
                                 {
                                     wmsPalletBinInfoL0 = GetPalletBinMappedInfoL0(transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, transactionDetails.PalletTagID, i.ActualDestinationTagID);
                                     string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL0);
+                                    
                                     var _wmsParams = new DynamicParameters();
-                                    _wmsParams.Add("@DRN", wmsPalletBinInfoL0.dispatchNo);
-                                    _wmsParams.Add("@JSONData", jsonData);
-                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_L0");
-                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
-                                    //PutPalletBinMappedInfoL0(wmsPalletBinInfoL0);
+                                    _wmsParams.Add("@ID", transactionDetails.TransID);
+                                    _wmsParams.Add("@Type", "Pallet_Movement_L0");
+                                    _wmsParams.Add("@receivingNo", null);
+                                    _wmsParams.Add("@dispatchNo", wmsPalletBinInfoL0.dispatchNo);
+                                    _wmsParams.Add("@warehouseId", null);
+                                    _wmsParams.Add("@palletName", null);
+                                    _wmsParams.Add("@palletSensorId", transactionDetails.PalletTagID);
+                                    _wmsParams.Add("@binName", null);
+                                    _wmsParams.Add("@fromBinName", null);
+                                    _wmsParams.Add("@fromPalletName", null);
+                                    _wmsParams.Add("@toPalletName", wmsPalletBinInfoL0.toPalletName);
+                                    _wmsParams.Add("@toBinName", wmsPalletBinInfoL0.toBinName);
+                                    _wmsParams.Add("@comment", null);
+                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                                    foreach (var wmsData in wmsPalletBinInfoL0.items)
+                                    {
+                                        var _wmsParamsDetails = new DynamicParameters();
+                                        _wmsParamsDetails.Add("@ParentID", transactionDetails.TransID);
+                                        _wmsParamsDetails.Add("@Type", "Pallet_Movement_L0");
+                                        _wmsParamsDetails.Add("@fromBinName", wmsData.fromBinName);
+                                        _wmsParamsDetails.Add("@fromPalletName", wmsData.fromPalletName);
+                                        _wmsParamsDetails.Add("@stockBinId", wmsData.stockBinId);
+                                        _wmsParamsDetails.Add("@serialNumber", null);
+                                        _wmsParamsDetails.Add("@skuCode", wmsData.skuCode);
+                                        _wmsParamsDetails.Add("@batchNumber", wmsData.batchNumber);
+                                        _wmsParamsDetails.Add("@batchDateTime", null);
+                                        _wmsParamsDetails.Add("@status", null);
+                                        _wmsParamsDetails.Add("@qty", wmsData.qty);
+                                        db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataChild, _wmsParamsDetails, commandType: CommandType.StoredProcedure);
+                                    }
+
                                 }
                                 else if (transactionDetails.WorkorderType == "L1")
                                 {
@@ -1990,24 +5355,46 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                                     string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoL1);
                                     var query = "SELECT ProcessInfo1 FROM WorkOrder WHERE WONumber = @WorkOrderNumber";
                                     var dispatchNo = db.Query<string>(query, new { WorkorderNumber = transactionDetails.WorkorderNumber });
+                                   
                                     var _wmsParams = new DynamicParameters();
-                                    _wmsParams.Add("@DRN", dispatchNo);
-                                    _wmsParams.Add("@JSONData", jsonData);
-                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_L1");
-                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
-                                    //PutPalletBinMappedInfoL1(wmsPalletBinInfoL1);
-                                } 
+                                    _wmsParams.Add("@ID", transactionDetails.TransID);
+                                    _wmsParams.Add("@Type", "Pallet_Movement_L1");
+                                    _wmsParams.Add("@receivingNo", null);
+                                    _wmsParams.Add("@dispatchNo", dispatchNo);
+                                    _wmsParams.Add("@warehouseId", wmsPalletBinInfoL1.warehouseId);
+                                    _wmsParams.Add("@palletName", wmsPalletBinInfoL1.palletName);
+                                    _wmsParams.Add("@palletSensorId", wmsPalletBinInfoL1.palletSensorId);
+                                    _wmsParams.Add("@binName", null);
+                                    _wmsParams.Add("@fromBinName", wmsPalletBinInfoL1.fromBinName);
+                                    _wmsParams.Add("@fromPalletName", null);
+                                    _wmsParams.Add("@toPalletName", null);
+                                    _wmsParams.Add("@toBinName", wmsPalletBinInfoL1.toBinName);
+                                    _wmsParams.Add("@comment", null);
+                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
+                                }
                                 else if (transactionDetails.WorkorderType == "I0")
                                 {
                                     wmsPalletBinInfoI0 = GetPalletBinMappedInfoI0(transactionDetails.PalletTagID, transactionDetails.WorkorderNumber, transactionDetails.WorkorderType, i.ActualDestinationTagID);
                                     wmsPalletBinInfoI0.warehouseId = ConfigurationManager.AppSettings["warehouseId"];
-                                    wmsPalletBinInfoI0.palletSensorId = transactionDetails.PalletTagID;
-                                    string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoI0);
+                                    wmsPalletBinInfoI0List.Add(wmsPalletBinInfoI0);
+                                    wmsPalletBinInfoInternal.data = wmsPalletBinInfoI0List;
+                                    string jsonData = JsonConvert.SerializeObject(wmsPalletBinInfoInternal);
+                                    
                                     var _wmsParams = new DynamicParameters();
-                                    _wmsParams.Add("@DRN", "Internal Movement");
-                                    _wmsParams.Add("@JSONData", jsonData);
-                                    _wmsParams.Add("@ProcessType", "Pallet_Movement_I0");
-                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSData, _wmsParams, commandType: CommandType.StoredProcedure);
+                                    _wmsParams.Add("@ID", transactionDetails.TransID);
+                                    _wmsParams.Add("@Type", "Pallet_Movement_I0");
+                                    _wmsParams.Add("@receivingNo", null);
+                                    _wmsParams.Add("@dispatchNo", null);
+                                    _wmsParams.Add("@warehouseId", wmsPalletBinInfoI0.warehouseId);
+                                    _wmsParams.Add("@palletName", null);
+                                    _wmsParams.Add("@palletSensorId", null);
+                                    _wmsParams.Add("@binName", null);
+                                    _wmsParams.Add("@fromBinName", wmsPalletBinInfoI0.fromBinName);
+                                    _wmsParams.Add("@fromPalletName", wmsPalletBinInfoI0.fromPalletName);
+                                    _wmsParams.Add("@toPalletName", wmsPalletBinInfoI0.toPalletName);
+                                    _wmsParams.Add("@toBinName", wmsPalletBinInfoI0.toBinName);
+                                    _wmsParams.Add("@comment", null);
+                                    db.Execute(AppSettings.SQLQueryCommand.SP_InsertWMSDataParent, _wmsParams, commandType: CommandType.StoredProcedure);
                                 }
                             }
                         }
@@ -2678,7 +6065,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
 
             return palletData;
         }
-        private WMSPalletDataDispatch GetPalletInfoDispatch(string TruckNo, string ParentTagID)
+        private WMSPalletDataDispatch GetPalletInfoDispatch(string DRN, string ParentTagID)
         {
             WMSPalletDataDispatch palletData = new WMSPalletDataDispatch();
 
@@ -2688,7 +6075,7 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                 SqlCommand command = new SqlCommand(AppSettings.SQLQueryCommand.SP_GetPalletInfoDis, connection);
                 command.CommandType = CommandType.StoredProcedure;
 
-                command.Parameters.Add("@TruckNumber", SqlDbType.VarChar).Value = TruckNo;
+                command.Parameters.Add("@DRN", SqlDbType.VarChar).Value = DRN;
                 command.Parameters.Add("@ParentTagID", SqlDbType.VarChar).Value = ParentTagID;
 
                 try
@@ -2860,7 +6247,8 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
                             {
                                 fromBinName = reader1["fromBinName"].ToString(),
                                 skuCode = reader1["skuCode"].ToString(),
-                                batchNumber = reader1["batchNumber"].ToString(),
+                                batchNumber = reader1["batchNumber"].ToString() == "null" ? null : reader1["batchNumber"].ToString(),
+                                stockBinId = reader1["stockBinId"] as int?,
                                 qty = Convert.ToInt32(reader1["qty"])
 
                             };
@@ -2935,9 +6323,9 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
 
             return palletBinData;
         }
-        private WmsPalletBinInfoI0 GetPalletBinMappedInfoI0(string PalletTagID, string WorkorderNumber, string WorkorderType, string SubTagID)
+        private WmsPalletBinInfoInternalDetails GetPalletBinMappedInfoI0(string PalletTagID, string WorkorderNumber, string WorkorderType, string SubTagID)
         {
-            WmsPalletBinInfoI0 palletBinData = new WmsPalletBinInfoI0();
+            WmsPalletBinInfoInternalDetails palletBinData = new WmsPalletBinInfoInternalDetails();
 
             // Create SqlConnection and SqlCommand objects
             using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
@@ -2970,7 +6358,14 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
 
                     while (reader.Read())
                     {
-                        palletBinData.palletName = reader.GetString(0);
+                        palletBinData.fromPalletName = reader.GetString(0);
+                    }
+
+                    reader.NextResult();
+
+                    while (reader.Read())
+                    {
+                        palletBinData.toPalletName = reader.GetString(0);
                     }
 
                     reader.NextResult();
@@ -2990,6 +6385,67 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
 
 
             return palletBinData;
+        }
+        private WmsPalletBinInfoInternalDetails GetPalletInfoForItemMovement(string SourcePalletTagID, string DestinationPalletTagID, string SourceBinTagID, string DestinationBinTagID)
+        {
+            WmsPalletBinInfoInternalDetails internalMoveData = new WmsPalletBinInfoInternalDetails();
+
+            // Create SqlConnection and SqlCommand objects
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
+            {
+                SqlCommand command = new SqlCommand(AppSettings.SQLQueryCommand.SP_GetPalletBinMappedInfoForItemMovement, connection);
+                command.CommandType = CommandType.StoredProcedure;
+
+                command.Parameters.Add("@SourcePalletTagID", SqlDbType.VarChar).Value = SourcePalletTagID;
+                command.Parameters.Add("@DestinationPalletTagID", SqlDbType.VarChar).Value = DestinationPalletTagID;
+                command.Parameters.Add("@SourceBinTagID", SqlDbType.VarChar).Value = SourceBinTagID;
+                command.Parameters.Add("@DestinationBinTagID", SqlDbType.VarChar).Value = DestinationBinTagID;
+
+                try
+                {
+
+                    connection.Open();
+
+
+                    SqlDataReader reader = command.ExecuteReader();
+
+
+                    while (reader.Read())
+                    {
+                        internalMoveData.fromPalletName = reader.GetString(0);
+                    }
+
+
+                    reader.NextResult();
+
+
+                    while (reader.Read())
+                    {
+                        internalMoveData.toPalletName = reader.GetString(0);
+                    }
+
+                    reader.NextResult();
+
+                    while (reader.Read())
+                    {
+                        internalMoveData.fromBinName = reader.GetString(0);
+                    }
+                    reader.NextResult();
+                    while (reader.Read())
+                    {
+                        internalMoveData.toBinName = reader.GetString(0);
+                    }
+
+                    reader.Close();
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine("Error: " + ex.Message);
+                }
+            }
+
+
+            return internalMoveData;
         }
         //public bool PutPalletInfo(WMSPalletData wMSPallet)
         //{
@@ -3178,6 +6634,202 @@ namespace PSL.Laundry.CentralService.DataAccessLayer
             response.Close();
 
             return authorization;
+        }
+        public string GetWMSSyncData(string URL, string Token, int warehouseid)
+        {
+            string ReponseConvert = string.Empty;
+            try
+            {
+
+                var client = new HttpClient();
+                client.DefaultRequestHeaders.ConnectionClose = true;
+                var request = new HttpRequestMessage(HttpMethod.Get, URL);
+                request.Headers.Add("Accept", "*/*");
+                request.Headers.Add("Authorization", "Bearer " + Token);
+                request.Headers.Add("X-TenantId", warehouseid.ToString());
+                try
+                {
+                    var response = client.SendAsync(request);
+                    //response.EnsureSuccessStatusCode();
+                    //ReponseConvert =response.Content.ReadAsStringAsync();
+                    Task<string> responseBody = response.Result.Content.ReadAsStringAsync();
+                    ReponseConvert = responseBody.Result.ToString();
+                }
+                catch (HttpRequestException ex)
+                {
+                    // handle exception
+                   
+                    throw;
+                }
+            }
+            catch (Exception ex)
+            {
+                
+            }
+            return ReponseConvert;
+
+        }
+
+        private string ExistsSOCheckQuery = "SELECT CASE WHEN EXISTS (SELECT * FROM SalesOrder WHERE DeliveryNo='@CheckDataVar') THEN 1 ELSE 0 END AS IsDataExists";
+        private string ExistsSOItemsCheckQuery = "SELECT CASE WHEN EXISTS (SELECT * FROM SalesOrderLineItems SOL, SalesOrder SO WHERE SO.SOID = SOL.SOID AND SO.DeliveryNo='@dispatchNo' AND SOL.SalesDocumentItem = '@orderItemNo' AND ItemCode = '@skuCode') THEN 1 ELSE 0 END AS IsDataExists";
+        public bool CheckifEntryExists(string Value, string Query)
+        {
+            bool retval = false;
+            Query = Query.Replace("@CheckDataVar", Value);
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
+            {
+                SqlCommand command = new SqlCommand(Query, connection);
+
+                connection.Open();
+                retval = Convert.ToBoolean(command.ExecuteScalar());
+                connection.Close();
+            }
+
+            return retval;
+        }
+        public bool CheckifLineItemsExists(string dispatchNo, string orderItemNo, string skuCode, string Query)
+        {
+            bool retval = false;
+            Query = Query.Replace("@dispatchNo", dispatchNo);
+            Query = Query.Replace("@orderItemNo", orderItemNo);
+            Query = Query.Replace("@skuCode", skuCode);
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
+            {
+                SqlCommand command = new SqlCommand(Query, connection);
+
+                connection.Open();
+                retval = Convert.ToBoolean(command.ExecuteScalar());
+                connection.Close();
+            }
+
+            return retval;
+        }
+        public bool InsetSODetails(DispatchData SO)
+        {
+            bool retval = false;
+            try
+            {
+                using (SqlConnection db = new SqlConnection(AppSettings.ConnectionString))
+                {
+                    db.Open();
+
+                    foreach (var b in SO.items)
+                    {
+
+                        using (SqlCommand command = db.CreateCommand())
+                        {
+
+                            if (CheckifEntryExists(SO.dispatchNo, ExistsSOCheckQuery))
+                            {
+                                if(CheckifLineItemsExists(SO.dispatchNo, b.orderItemNo, b.skuCode, ExistsSOItemsCheckQuery))
+                                {
+                                    try
+                                    {
+                                        UpdateLineItemsforSO(SO.dispatchNo, b.orderItemNo, b.skuCode, b.recordStatus, b.qty);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        LogManager.Logger.LogError("WMS Items Update Function() ERROR.:" + ex.ToString());
+                                    }
+                                }
+                                else
+                                {
+                                    string soID = string.Empty;
+                                    try
+                                    {
+                                        string query = "SELECT * FROM SalesOrder WHERE DeliveryNo = '@dcNo'";
+                                        using (SqlCommand getCmnd = new SqlCommand(query, db))
+                                        {
+                                            getCmnd.Parameters.AddWithValue("@dcNo", SO.dispatchNo);
+                                            using (SqlDataReader reader = getCmnd.ExecuteReader())
+                                            {
+                                                while (reader.Read())
+                                                {
+                                                    if (reader["SOID"] != DBNull.Value)
+                                                        soID = Convert.ToString(reader["SOID"]);
+                                                }
+                                            }
+                                        }
+                                    } 
+                                    catch(Exception ex)
+                                    {
+
+                                    }
+
+                                    command.CommandText = INSERT_SOLineItems;
+                                    command.CommandType = System.Data.CommandType.Text;
+                                    command.Parameters.AddWithValue("@ID", Guid.NewGuid());
+                                    command.Parameters.AddWithValue("@SOID_ITEMS", soID);
+                                    command.Parameters.AddWithValue("@SalesDocumentItem", b.orderItemNo);
+                                    command.Parameters.AddWithValue("@OrderQty", b.qty);
+                                    command.Parameters.AddWithValue("@ItemCode", b.skuCode);
+                                    command.Parameters.AddWithValue("@ItemDescription", b.skuName);
+                                    command.Parameters.AddWithValue("@LoadedQty", 0);
+                                    command.Parameters.AddWithValue("@RecordStatus", b.recordStatus);
+                                    command.Parameters.AddWithValue("@IsActive", 1);
+                                    command.Parameters.AddWithValue("@IsProcessed", 1);
+                                    command.Parameters.AddWithValue("@ModifiedDateTime", DateTime.Now);
+                                    command.Parameters.AddWithValue("@ServerDateTime", DateTime.Now);
+                                    command.ExecuteNonQuery();
+
+                                }
+                                
+                            }
+                            retval = true;
+                            // Check Error
+                        }
+                    }
+                }
+
+                return retval;
+            }
+
+            catch (Exception ex)
+            {
+                throw new Exception("InsetSODetails() :--", ex);
+                retval = false;
+                return retval;
+            }
+            finally
+            {
+
+            }
+        }
+        public bool UpdateLineItemsforSO(string dispatchNo, string orderItemNo, string skuCode, string recordStatus, double qty)
+        {
+            bool retValue = false;
+
+            string existingrecordStatus = string.Empty;
+            double existingQty = 0.0;
+            string Query = "Select SOL.RecordStatus, SOL.OrderQty from SalesOrderLineItems SOL, SalesOrder SO where SO.SOID = SOL.SOID and SO.DeliveryNo = '" + dispatchNo + "' and SOL.SalesDocumentItem = '" + orderItemNo + "' and SOL.ItemCode = '" + skuCode + "'";
+            using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(Query, connection);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (reader["RecordStatus"] != DBNull.Value)
+                            existingrecordStatus = Convert.ToString(reader["RecordStatus"]);
+                        if (reader["OrderQty"] != DBNull.Value)
+                            existingQty = Convert.ToDouble(reader["OrderQty"]);
+                    }
+                }
+            }
+
+            if (existingrecordStatus != recordStatus || existingQty != qty)
+            {
+                string updateQuery = "Update SOL set SOL.RecordStatus = '" + recordStatus + "', SOL.OrderQty = '" + qty + "' from SalesOrderLineItems SOL, SalesOrder SO where SO.SOID = SOL.SOID and SO.DeliveryNo = '" + dispatchNo + "' and SOL.SalesDocumentItem = '" + orderItemNo + "' and SOL.ItemCode = '" + skuCode + "'";
+                using (SqlConnection connection = new SqlConnection(AppSettings.ConnectionString))
+                {
+                    connection.Open();
+                    SqlCommand command = new SqlCommand(updateQuery, connection);
+                    command.ExecuteNonQuery();
+                    retValue = true;
+                }
+            }
+            return retValue;
         }
 
 

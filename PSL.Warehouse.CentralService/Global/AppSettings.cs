@@ -290,8 +290,26 @@ namespace PSL.Warehouse.CentralService.Global
             public static string SP_CloseWorkorderU0 { get; private set; }
 
             public static string SP_InsertWMSData { get; private set; }
+            public static string SP_InsertWMSDataParent { get; private set; }
+            public static string SP_InsertWMSDataChild { get; private set; }
             public static string SP_CreateWorkOrderI0 { get; private set; }
             public static string SP_CreateWorkOrderDetailsI0 { get; private set; }
+            public static string SP_InsertItemMovementActivity { get; private set; }
+            public static string SP_InsertItemMovementActivityDetails { get; private set; }
+            public static string SP_GetPalletBinMappedInfoForItemMovement { get; private set; }
+            public static string SP_InsertItemQrActivity { get; private set; }
+            public static string SP_InsertItemQrActivityDetails { get; private set; }
+            public static string SP_GetAllBarcodesForTransaction { get; private set; }
+            public static string SP_GET_TranscationNoQR { get; private set; }
+            public static string SP_GET_QR_Details { get; private set; }
+            public static string SP_InsertDigitizerData { get; private set; }
+            public static string SP_InsertDigitizerDataDetails { get; private set; }
+            public static string SP_GetDCDetailsForPDA { get; private set; }
+            public static string SP_GetSKUDetailsForPDA { get; private set; }
+            public static string SP_InsertActivityForPlant { get; private set; }
+            public static string SP_InsertScannedActivityDetailsForPlant { get; private set; }
+            public static string SP_InsertManualActivityDetailsForPlant { get; private set; }
+            public static string SP_InsertQRManualActivityDetailsForPlant { get; private set; }
 
 
             public static string SP_Insert_ApprovalRecord { get; private set; }
@@ -361,6 +379,22 @@ namespace PSL.Warehouse.CentralService.Global
                     SP_GetWorkorderListForPDA = ConfigurationManager.AppSettings["SP_GetWorkorderListForPDA"].ToString().Trim();
                     SP_UploadCurrentBin = ConfigurationManager.AppSettings["SP_UploadCurrentBin"].ToString().Trim();
                     SP_GetPalletBinMappedInfoI0 = ConfigurationManager.AppSettings["SP_GRB_GetPalletBinMappedInfoI0"].ToString().Trim();
+                    SP_InsertItemMovementActivity = ConfigurationManager.AppSettings["SP_InsertItemMovementActivity"].ToString().Trim();
+                    SP_InsertItemMovementActivityDetails = ConfigurationManager.AppSettings["SP_InsertItemMovementActivityDetails"].ToString().Trim();
+                    SP_GetPalletBinMappedInfoForItemMovement = ConfigurationManager.AppSettings["SP_GetPalletBinMappedInfoForItemMovement"].ToString().Trim();
+                    SP_InsertItemQrActivity = ConfigurationManager.AppSettings["SP_InsertItemQrActivity"].ToString().Trim();
+                    SP_InsertItemQrActivityDetails = ConfigurationManager.AppSettings["SP_InsertItemQrActivityDetails"].ToString().Trim();
+                    SP_GetAllBarcodesForTransaction = ConfigurationManager.AppSettings["SP_GetAllBarcodesForTransaction"].ToString().Trim();
+                    SP_GET_TranscationNoQR = ConfigurationManager.AppSettings["SP_GET_TranscationNoQR"].ToString().Trim();
+                    SP_GET_QR_Details = ConfigurationManager.AppSettings["SP_GET_QR_Details"].ToString().Trim();
+                    SP_InsertDigitizerData = ConfigurationManager.AppSettings["SP_InsertDigitizerData"].ToString().Trim();
+                    SP_InsertDigitizerDataDetails = ConfigurationManager.AppSettings["SP_InsertDigitizerDataDetails"].ToString().Trim();
+                    SP_GetDCDetailsForPDA = ConfigurationManager.AppSettings["SP_GetDCDetailsForPDA"].ToString().Trim();
+                    SP_GetSKUDetailsForPDA = ConfigurationManager.AppSettings["SP_GetSKUDetailsForPDA"].ToString().Trim();
+                    SP_InsertActivityForPlant = ConfigurationManager.AppSettings["SP_InsertActivityForPlant"].ToString().Trim();
+                    SP_InsertScannedActivityDetailsForPlant = ConfigurationManager.AppSettings["SP_InsertScannedActivityDetailsForPlant"].ToString().Trim();
+                    SP_InsertManualActivityDetailsForPlant = ConfigurationManager.AppSettings["SP_InsertManualActivityDetailsForPlant"].ToString().Trim();
+                    SP_InsertQRManualActivityDetailsForPlant = ConfigurationManager.AppSettings["SP_InsertQRManualActivityDetailsForPlant"].ToString().Trim();
 
 
 
@@ -373,6 +407,8 @@ namespace PSL.Warehouse.CentralService.Global
                     SP_CloseWorkorderU0 = ConfigurationManager.AppSettings["SP_CloseWorkorderU0"].ToString().Trim();
 
                     SP_InsertWMSData = ConfigurationManager.AppSettings["SP_InsertWMSData"].ToString().Trim();
+                    SP_InsertWMSDataParent = ConfigurationManager.AppSettings["SP_InsertWMSDataParent"].ToString().Trim();
+                    SP_InsertWMSDataChild = ConfigurationManager.AppSettings["SP_InsertWMSDataChild"].ToString().Trim();
                     SP_CreateWorkOrderI0 = ConfigurationManager.AppSettings["SP_CreateWorkOrderI0"].ToString().Trim();
                     SP_CreateWorkOrderDetailsI0 = ConfigurationManager.AppSettings["SP_CreateWorkOrderDetailsI0"].ToString().Trim();
 

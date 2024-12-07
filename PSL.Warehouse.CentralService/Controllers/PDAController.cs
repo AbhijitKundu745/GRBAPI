@@ -7,6 +7,7 @@ using PSL.Warehouse.CentralService.Logger;
 using PSL.Warehouse.CentralService.IDataAccessLayer;
 using PSL.Warehouse.CentralService.Models;
 using System.Web.Http.Cors;
+using System.Threading.Tasks;
 
 namespace PSL.Warehouse.CentralService.Controllers
 {
@@ -542,24 +543,24 @@ namespace PSL.Warehouse.CentralService.Controllers
         public IHttpActionResult InsertPartialWorkorderDetails([FromBody] PartialTransactionDetails transactionDetails)
         {
             Response responseData = new Response();
-            bool retval = false;
+            Response response = null; 
             string messageVal = string.Empty;
             try
             {
                 if (transactionDetails != null)
                 {
-                    retval = pdaDAO.InsertPartialWorkorderDetails(transactionDetails);
+                    response = pdaDAO.InsertPartialWorkorderDetails(transactionDetails);
 
-                    if (retval)
+                    if (response.status)
                     {
                         responseData.status = true;
-                        responseData.message = "Data Inserted";
+                        responseData.message = "Data Inserted Successfully";
                     }
                     else
                     {
                         responseData.status = false;
-                        responseData.message = "Data Insertion failed.";
-                        responseData.message = messageVal;
+                        responseData.message = response.message;
+                      
                     }
                 }
             }
@@ -614,8 +615,540 @@ namespace PSL.Warehouse.CentralService.Controllers
             }
             return Ok(response);
         }
+        [HttpPost, Route("ItemMovementTransaction")]
+        public IHttpActionResult ItemMovementTransaction(ActivityModelInternal activityInternal)
+        {
+            Response responseData = new Response();
+            bool retVal = false;
+            try
+            {
+                retVal = pdaDAO.ItemMovementTransaction(activityInternal);
+
+                if (retVal)
+                {
+                    responseData.status = true;
+                    responseData.message = "Data inserted successfully";
+                }
+                else
+                {
+                    responseData.status = false;
+                    responseData.message = "Error to insert the data";
+                }
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+        [HttpPost, Route("InsertItemQRData")]
+        public IHttpActionResult InsertItemQRData(ItemsQRActivityModel itemsQRActivity)
+        {
+            Response responseData = new Response();
+            bool retVal = false;
+            try
+            {
+                retVal = pdaDAO.InsertItemQRData(itemsQRActivity);
+
+                if (retVal)
+                {
+                    responseData.status = true;
+                    responseData.message = "Data inserted successfully";
+                }
+                else
+                {
+                    responseData.status = false;
+                    responseData.message = "Error to insert the data";
+                }
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+        [HttpPost, Route("InsertDigitizerItemQRData")]
+        public IHttpActionResult InsertDigitizerItemQRData(DigitizerModel digitizerModel)
+        {
+            Response responseData = new Response();
+            bool retVal = false;
+            try
+            {
+                retVal = pdaDAO.InsertDigitizerItemQRData(digitizerModel);
+
+                if (retVal)
+                {
+                    responseData.status = true;
+                    responseData.message = "Data inserted successfully";
+                }
+                else
+                {
+                    responseData.status = false;
+                    responseData.message = "Error to insert the data";
+                }
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+        [HttpPost, Route("GetAllBarcodesForTransaction")]
+        public IHttpActionResult GetAllBarcodesForTransaction([FromBody] Barcode barcode)
+        {
+            ResponseData responseData = new ResponseData();
+            List<BarcodeResponse> barcodeDetails = null;
+           
+            try
+            {
+                barcodeDetails = pdaDAO.GetAllBarcodesForTransaction(barcode);
+
+               
+                    responseData.status = true;
+                    responseData.message = "";
+                    responseData.data = barcodeDetails;
+
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+        [HttpPost, Route("InsertPalletBinTransaction")]
+        public IHttpActionResult InsertPalletBinTransaction(PalletBinTransModel transModel)
+        {
+            Response responseData = new Response();
+            bool retVal = false;
+            try
+            {
+                retVal = pdaDAO.InsertPalletBinTransaction(transModel);
+
+                if (retVal)
+                {
+                    responseData.status = true;
+                    responseData.message = "Data inserted successfully";
+                }
+                else
+                {
+                    responseData.status = false;
+                    responseData.message = "Error to insert the data";
+                }
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+        [HttpPost, Route("InsertTransactionForQRManual")]
+        public IHttpActionResult InsertTransactionForQRManual(ActivityModelItems activityItems)
+        {
+            Response response = new Response();
+            ActivityResponseData responseData = null;
+            //bool retVal;
+            try
+            {
+                responseData = pdaDAO.InsertTransactionForQRManual(activityItems);
+                if (responseData.status)
+                {
+                    if (responseData.isUnique)
+                    {
+                        if (responseData.isItemUnique)
+                        {
+                            response.status = true;
+                            response.message = "The pallet has been mapped successfully";
+                            Log.Info(responseData.wmsData);
+                        }
+                        else
+                        {
+                            response.status = false;
+                            response.message = responseData.message;
+                        }
+                    }
+                    else
+                    {
+                        response.status = false;
+                        response.message = responseData.message;
+                    }
+                }
+                else
+                {
+                    response.status = false;
+                    response.message = responseData.message;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.status = false;
+                response.message = ex.Message;
+                Log.Error(ex);
+            }
+            return Ok(response);
+        }
+        [HttpPost, Route("GetDCDetailsForPDA")]
+        public IHttpActionResult GetDCDetailsForPDA([FromBody] DCDetails dcTagID)
+        {
+            ResponseObjectData responseData = new ResponseObjectData();
+            TruckResponseDetails data = null;
+
+            try
+            {
+                data = pdaDAO.GetDCDetailsForPDA(dcTagID);
+                if (data.Status)
+                {
+                    responseData.status = true;
+                    responseData.message = "";
+                    responseData.data = data;
+                }
+                else
+                {
+                    responseData.status = false;
+                    responseData.message = "This DC Tag is not registered yet";
+                }
+               
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+
+            return Ok(responseData);
+        }
+        [HttpPost, Route("GetSKUDetailsForPDA")]
+        public IHttpActionResult GetSKUDetailsForPDA([FromBody] SKUDetails sKUDetails)
+        {
+            ResponseObjectData responseData = new ResponseObjectData();
+            List<SKUResponse> data = null;
+
+            try
+            {
+                data = pdaDAO.GetSKUDetailsForPDA(sKUDetails);
+                responseData.status = true;
+                responseData.message = "";
+                responseData.data = data;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+
+            return Ok(responseData);
+        }
+        [HttpGet, Route("GetAllSKUsPDA")]
+        public IHttpActionResult GetAllSKUsPDA()
+        {
+            ResponseData responseData = new ResponseData();
+            List<SKUData> data = null;
+
+            try
+            {
+                data = pdaDAO.GetAllSKUsPDA();
+                responseData.status = true;
+                responseData.message = "";
+                responseData.data = data;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+
+            return Ok(responseData);
+        }
+        [HttpPost, Route("GetSOLineItemsLoading")]
+        public IHttpActionResult GetSOLineItemsLoading([FromBody] DCDetails dcTagID)
+        {
+            bool retVal = false;
+            Response responseData = new Response();
+
+            try
+            {
+                retVal = pdaDAO.GetSOLineItemsLoading(dcTagID);
+                if (retVal)
+                {
+                    responseData.status = true;
+                    responseData.message = "";
+                }
+                else
+                {
+                    responseData.status = false;
+                    responseData.message = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                Log.Error(ex);
+            }
+
+            return Ok(responseData);
+        }
+        [HttpGet, Route("GetWarehouseDetails")]
+        public IHttpActionResult GetWarehouseDetails()
+        {
+            ResponseData responseData = new ResponseData();
+            List<WarehouseDetails> data = null;
+
+            try
+            {
+                data = pdaDAO.GetWarehouseDetails();
+                responseData.status = true;
+                responseData.message = "";
+                responseData.data = data;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+
+            return Ok(responseData);
+        }
+
+        #region PLANT
+        [HttpPost, Route("GetDCNumbersForPlant")]
+        public IHttpActionResult GetDCNumbersForPlant(DeviceData deviceID)
+        {
+            ResponseData responseData = new ResponseData();
+           
+
+            try
+            {
+                responseData.data = pdaDAO.GetDCNumbersForPlant(deviceID);
+                if (responseData.data != null)
+                {
+                    responseData.status = true;
+                    responseData.message = "";
+                    responseData.data = responseData.data;
+                }
+                else
+                {
+                    responseData.status = false;
+                    responseData.message = "This DC Tag is not registered yet";
+                }
+
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+
+            return Ok(responseData);
+        }
+        [HttpPost, Route("PlantTransactionForScannedItems")]
+        public IHttpActionResult PlantTransactionForScannedItems(ScannedItemModel activity)
+        {
+            ResponseObjectData responseData = new ResponseObjectData();
+            PlantActivityResponse listdata = null;
+            try
+            {
+               listdata = pdaDAO.PlantTransactionForScannedItems(activity);
+
+                if (listdata.status)
+                {
+                    if (listdata.isUnique)
+                    {
+                        if (listdata.isItemUnique)
+                        {
+                            responseData.status = true;
+                            responseData.message = "The pallet has been mapped successfully";
+                        }
+                        else
+                        {
+                            responseData.status = false;
+                            responseData.message = listdata.message;
+                        }
+                    }
+                    else
+                    {
+                        responseData.status = false;
+                        responseData.message = listdata.message;
+                    }
+                }
+                else
+                {
+                    responseData.status = false;
+                    responseData.message = listdata.message;
+                }
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(responseData);
+        }
+        [HttpPost, Route("PlantTransactionForWithoutScannedItems")]
+        public IHttpActionResult PlantTransactionForWithoutScannedItems(ManualItemModel activityItems)
+        {
+            Response response = new Response();
+            PlantActivityResponse responseData = null;
+            //bool retVal;
+            try
+            {
+                responseData = pdaDAO.PlantTransactionForWithoutScannedItems(activityItems);
+                if (responseData.status)
+                {
+                    if (responseData.isUnique)
+                    {
+                        if (responseData.isItemUnique)
+                        {
+                            response.status = true;
+                            response.message = "The pallet has been mapped successfully";
+                        }
+                        else
+                        {
+                            response.status = false;
+                            response.message = responseData.message;
+                        }
+                    }
+                    else
+                    {
+                        response.status = false;
+                        response.message = responseData.message;
+                    }
+                }
+                else
+                {
+                    response.status = false;
+                    response.message = responseData.message;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.status = false;
+                response.message = ex.Message;
+                Log.Error(ex);
+            }
+            return Ok(response);
+        }
+        [HttpPost, Route("PlantTransactionForQRManualItems")]
+        public IHttpActionResult PlantTransactionForQRManualItems(ManualItemModel activityItems)
+        {
+            Response response = new Response();
+            PlantActivityResponse responseData = null;
+            //bool retVal;
+            try
+            {
+                responseData = pdaDAO.PlantTransactionForQRManualItems(activityItems);
+                if (responseData.status)
+                {
+                    if (responseData.isUnique)
+                    {
+                        if (responseData.isItemUnique)
+                        {
+                            response.status = true;
+                            response.message = "The pallet has been mapped successfully";
+                        }
+                        else
+                        {
+                            response.status = false;
+                            response.message = responseData.message;
+                        }
+                    }
+                    else
+                    {
+                        response.status = false;
+                        response.message = responseData.message;
+                    }
+                }
+                else
+                {
+                    response.status = false;
+                    response.message = responseData.message;
+                }
+            }
+            catch (Exception ex)
+            {
+                response.status = false;
+                response.message = ex.Message;
+                Log.Error(ex);
+            }
+            return Ok(response);
+        }
         #endregion
 
+        #endregion
+
+        //For Display the ItemsQR
+        #region Report
+        [HttpPost, Route("GetItemsQRActivityDetails")]
+        public IHttpActionResult GetItemsQRActivityDetails([FromBody] LocationDetails locationDetails)
+        {
+            ResponseData responseData = new ResponseData();
+            List<QRTranscationDetails> data = null;
+
+            try
+            {
+                int LocationId = Convert.ToInt32(locationDetails.LocationName);
+                data = pdaDAO.GetItemsQRActivityDetails(LocationId);
+                responseData.status = true;
+                responseData.message = "";
+                responseData.data = data;
+            }
+            catch (Exception ex)
+            {
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+
+            return Ok(responseData);
+        }
+
+
+        [HttpGet, Route("GetQRLocationName")]
+        public IHttpActionResult GetQRLocationName()
+        {
+            ResponseData responseData = new ResponseData();
+            List<LocationDetails> data = null;
+            try
+            {
+                data = pdaDAO.GetQRLocationName();
+                responseData.status = true;
+                responseData.message = "";
+                responseData.data = data;
+            }
+            catch (Exception ex)
+            {
+
+                responseData.status = false;
+                responseData.message = ex.Message;
+                responseData.data = null;
+                Log.Error(ex);
+            }
+            return Ok(data);
+        }
+        #endregion
 
         [HttpPost, Route("RegisterAsset")]
         public IHttpActionResult RegisterAsset(RegisterModel registerModel)
@@ -709,12 +1242,43 @@ namespace PSL.Warehouse.CentralService.Controllers
             {
                 responseData.status = false;
                 responseData.message = ex.StackTrace;
-                //retval = 0;
+                retval = false;
                 Log.Error("TransactionDetailsController => " + ex.Message + "\n" + ex.StackTrace);
             }
             return Ok(responseData);
         }
+        //[HttpPost, Route("InsertTransactionDetails")]
+        //public IHttpActionResult TransactionDetails([FromBody] TransactionDetails transactionDetails)
+        //{
+        //    ResponseData responseData = new ResponseData();
+        //    Response response = null;
+        //    try
+        //    {
+        //        if (transactionDetails != null)
+        //        {
+        //            response = pdaDAO.InsertTransactionDetails(transactionDetails);
 
+        //            if (response.status)
+        //            {
+        //                responseData.status = true;
+        //                responseData.message = response.message;
+        //            }
+        //            else
+        //            {
+        //                responseData.status = false;
+        //                responseData.message = response.message;
+        //            }
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        responseData.status = false;
+        //        responseData.message = ex.StackTrace;
+        //        //retval = 0;
+        //        Log.Error("TransactionDetailsController => " + ex.Message + "\n" + ex.StackTrace);
+        //    }
+        //    return Ok(responseData);
+        //}
         [HttpPost, Route("InsertTagLoggerDetails")]
         public IHttpActionResult TransactionDetails1([FromBody] TagDetailsRequest transactionDetails)
         {
@@ -919,8 +1483,6 @@ namespace PSL.Warehouse.CentralService.Controllers
                 Log.Error(ex);
             }
             return Ok(responseData);
-
-
         }
 
         [HttpGet, Route("GetReaderStatus")]
